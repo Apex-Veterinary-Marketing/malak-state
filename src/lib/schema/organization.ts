@@ -16,6 +16,9 @@
 import { getSiteInfo } from "../data/site";
 import { getAllSocialLinks } from "../data/socialLinks";
 import { BLOG_BASE } from "../data/blog";
+import { areaServedNode } from "./areaServed";
+
+export { areaServedNode };
 
 /** @ids that name site-wide entities; every other "#name" is page-scoped. */
 export const SITE_ENTITY_IDS = ["#website", "#business"];
@@ -67,7 +70,8 @@ export async function getSiteSchemaNodes(origin: URL): Promise<Record<string, an
     email: site.email,
     address: Object.keys(address).length > 1 ? address : undefined,
     hasMap: site.addressLink,
-    areaServed: areas.map((name) => ({ "@type": "City", name })),
+    areaServed: areas.map(areaServedNode),
+    parentOrganization: site.brokerageName ? { "@type": "Organization", name: site.brokerageName } : undefined,
     openingHoursSpecification: (site.openingHoursSpecification || []).map((h) => ({ "@type": "OpeningHoursSpecification", ...h })),
     sameAs: [...new Set([...socials, ...reviewLinks])],
     potentialAction: site.bookingUrl
@@ -88,8 +92,8 @@ const SEGMENTS: Record<string, { name: string; href?: string }> = {
   "services-categories": { name: "Services", href: "/services" },
   [BLOG_BASE.slice(1)]: { name: "Blog" },
   "blog-categories": { name: "Blog", href: BLOG_BASE },
-  doctors: { name: "Meet the Team", href: "/meet-the-team" },
-  staff: { name: "Meet the Team", href: "/meet-the-team" },
+  agents: { name: "Meet Marissa", href: "/meet-the-team" },
+  listings: { name: "Listings" },
 };
 
 export function buildBreadcrumb(pathname: string, pageName: string, origin: URL) {

@@ -17,6 +17,7 @@ import { getSiteInfo } from "../../lib/data/site";
 import { unlinkScheduledArticles } from "../../lib/data/blog";
 import { stripHtml } from "../../lib/utils/stripHtml";
 import { withTrackingPhone } from "../../lib/utils/phone";
+import { areaServedNode } from "../../lib/schema/areaServed";
 
 export async function getStaticPaths() {
   const services = await getAllServices();
@@ -48,7 +49,7 @@ const graph: Record<string, any>[] = [
     url: new URL(`/services/${service.id}`, Astro.site).href,
     image: service.data.pageHeaderImage ? new URL(service.data.pageHeaderImage.src, Astro.site).href : undefined,
     provider: { "@id": "#business" },
-    areaServed: areas.length ? areas.map((name) => ({ "@type": "City", name })) : undefined,
+    areaServed: areas.length ? areas.map(areaServedNode) : undefined,
   },
 ];
 

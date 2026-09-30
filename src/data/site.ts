@@ -74,38 +74,37 @@ export interface SiteInfo {
   // use e.g. ["LocalBusiness", "ProfessionalService"]. A mobile business
   // also sets mobileVet + serviceAreaOfCoverage (→ areaServed).
   businessSchemaType?: string | string[];
+  // Real estate fork additions (all optional):
+  brokerageName?: string; // the supervising brokerage, shown in header/footer and as schema parentOrganization (Ohio license law: brokerage name in advertising)
+  brokerageLicense?: string; // brokerage license number, shown in the footer once supplied
+  calendlyUrl?: string; // booking scheduler; /schedule embeds it (CalendlyEmbed)
 }
 
-// Placeholder example data — replace during client intake. Kept non-empty
-// so components/pages have something real to render while the skeleton is
-// being built and reviewed.
+// The Malak Estate Group — values from the client's onboarding form (2026-09-18)
+// and follow-up notes. Items still owed by the client are marked "requested".
 export const siteInfo: SiteInfo = {
-  practiceName: "[Practice Name]",
-  phoneNumber: "(000) 000-0000",
-  email: "hello@example.com",
-  address: "123 Main St",
-  addressLine2: "[City, ST 00000]",
-  bookingUrl: "/appointment-request",
-  bookingLabel: "Book Now",
-  cityState: "[City, ST]",
-  hours: "<p>Mon&ndash;Fri: 8am&ndash;6pm<br>Sat: 9am&ndash;1pm<br>Sun: Closed</p>",
-  // Exactly 160 characters — replace during client intake with real copy.
+  practiceName: "The Malak Estate Group",
+  phoneNumber: "440.420.0580",
+  callTrackingNumber: "+14404204549",
+  email: "marissa@malakestates.com",
+  showStreetAddress: false, // intake: address TBD (cloud brokerage) — confirm before publishing one
+  cityState: "Northeast Ohio",
+  serviceAreaOfCoverage: "Cuyahoga County, Medina County, Summit County, Stark County, Lake County, Lorain County",
+  businessSchemaType: "RealEstateAgent",
+  businessDescription:
+    "The Malak Estate Group is a relationship-first real estate team led by Realtor Marissa Lubera, helping buyers, sellers and builders across Greater Cleveland and Northeast Ohio.",
+  brokerageName: "Real of Ohio",
+  // brokerageLicense: requested from client
+  calendlyUrl: "https://calendly.com/marissa-malakestates/30min",
+  bookingUrl: "/schedule",
+  bookingLabel: "Book a call",
+  hours: "<p>Monday to Sunday: 8am to 8pm<br>Evenings by appointment</p>",
+  openingHoursSpecification: [
+    { dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], opens: "08:00", closes: "20:00" },
+  ],
   footerAbout:
-    "[Practice Name] provides compassionate, high-quality veterinary care for dogs, cats, and other companion animals throughout [City, ST] and the surrounding area.",
-  // Example values — replace during client intake. Kept non-empty (same
-  // reasoning as the other placeholder fields above) so ReputationWidget's
-  // "leave a public review" stage actually has links to render instead of
-  // silently filtering all three out.
-  googleReviewsLink: "https://g.page/r/example/review",
-  facebookReviewsLink: "https://www.facebook.com/example/reviews",
-  yelpReviewLink: "https://www.yelp.com/biz/example",
-  googleRating: 4.8, // example value — matches the real V2 export's placeholder rating
-  googleReviewCount: 120, // example value only, not sourced from anywhere real
-  url: "https://example.com", // REPLACE with the real domain before launch — see the field comment above
-  // Placeholder mark + wordmark (scripts/generate-logo-placeholders.mjs) —
-  // proves Header's crossfade renders end-to-end. REPLACE both with the
-  // client's real logo files before launch (same public/ paths, or update
-  // these to point at new ones).
-  logoWhite: "/logo-white.svg",
-  logoColor: "/logo-color.svg",
+    "Honest guidance, clear communication and a plan built around your goals, for buyers, sellers and builders across Northeast Ohio.",
+  // googleReviewsLink: requested from client (Google Business Profile review URL)
+  url: "https://www.themalakestategroup.com",
+  // logoColor / logoWhite: requested from client — Header/Footer render a text wordmark until then
 };

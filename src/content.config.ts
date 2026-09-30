@@ -30,6 +30,8 @@ const serviceCategories = defineCollection({
   loader: glob({ pattern: "**/*.{md,json}", base: "./src/content/service-categories" }),
   schema: z.object({
     name: z.string(), // plain text only — categories are just names
+    description: z.string().optional(), // meta description for /services-categories/<id>
+    intro: z.string().optional(), // one-line page intro
   }),
 });
 
@@ -76,6 +78,7 @@ const services = defineCollection({
         )
         .default([]),
       manualSchema: z.string().optional(),
+      audience: z.string().optional(), // schema.org Audience.audienceType on the Service node, e.g. "Home buyers"
     }),
 });
 

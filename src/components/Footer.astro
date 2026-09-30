@@ -50,7 +50,7 @@ const countiesText = countiesSentence(site.serviceAreaOfCoverage);
     <nav class="footer__col" aria-label="Services">
       <h2 class="footer__title">Services</h2>
       <ul>
-        {services.map((s) => <li><a href={`/services/${s.id}`}>{s.data.customName || s.data.name}</a></li>)}
+        {services.map((s) => <li><a href={`/services/${s.id}`}>{s.data.name}</a></li>)}
       </ul>
     </nav>
 

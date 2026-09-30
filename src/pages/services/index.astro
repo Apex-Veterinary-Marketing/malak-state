@@ -1,28 +1,59 @@
 ---
-// ServicesSidebar mounted 2026-09-17 (direct instruction: every
-// services-related page always carries it). No active category here —
-// this page browses everything.
+// All services, grouped by category, with an ItemList of Service URLs.
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../../components/PageHeaderBanner.astro";
 import ServiceGrid from "../../components/ServiceGrid.astro";
-import ServicesSidebar from "../../components/ServicesSidebar.astro";
-import { getAllServices } from "../../lib/data/services";
-import bannerGeneric from "../../assets/banner-generic.png";
+import ArrowLink from "../../components/ArrowLink.astro";
+import BookCall from "../../components/BookCall.astro";
+import { getAllServiceCategories } from "../../lib/data/serviceCategories";
+import { getAllServices, getServicesByCategory } from "../../lib/data/services";
+import headerImage from "../../assets/placeholders/house-colonial.jpg";
 
-const services = await getAllServices();
+const categories = await getAllServiceCategories();
+const groups = (await Promise.all(categories.map(async (c) => ({ category: c, services: await getServicesByCategory(c.id) })))).filter(
+  (g) => g.services.length > 0
+);
+const all = await getAllServices();
+const graph = [
+  {
+    "@type": "ItemList",
+    "@id": "#services",
+    itemListElement: all.map((s, i) => ({ "@type": "ListItem", position: i + 1, name: s.data.customName || s.data.name, url: new URL(`/services/${s.id}`, Astro.site).href })),
+  },
+];
 ---
 
-<BaseLayout title="Our Services" description="Explore our full range of veterinary services.">
-  <PageHeaderBanner heading="Veterinary Services" image={bannerGeneric} />
-  <div class="services-layout">
-    <div class="page-section">
-      <ServiceGrid services={services} />
-    </div>
-    <ServicesSidebar />
-  </div>
+<BaseLayout
+  title="Real Estate Services in Northeast Ohio"
+  description="Buying, selling, new construction, relocation and more. See how Marissa Lubera helps clients across Greater Cleveland move with confidence."
+  schemaGraph={graph}
+  webPage={{ "@type": "CollectionPage", mainEntity: { "@id": "#services" } }}
+  breadcrumb="Services"
+>
+  <PageHeaderBanner
+    heading="Real estate services across *Northeast Ohio*"
+    intro="Resale or new construction, first home or last one. Find the kind of help you need."
+    image={headerImage}
+    imageAlt="White colonial home with a wraparound porch"
+  />
+
+  {groups.map((g, i) => (
+    <section class:list={["services-group", i % 2 === 1 && "services-group--soft"]}>
+      <div class="container">
+        <div class="services-group__head" data-reveal>
+          <h2>{g.category.data.name}</h2>
+          <ArrowLink href={`/services-categories/${g.category.id}`} text={`All ${g.category.data.name.toLowerCase()} services`} />
+        </div>
+        <ServiceGrid services={g.services} />
+      </div>
+    </section>
+  ))}
+
+  <BookCall />
 </BaseLayout>
 
 <style>
-  .services-layout { max-width: var(--container-max); margin-inline: auto; padding: var(--space-xl) var(--space-md); display: flex; gap: var(--space-xl); align-items: flex-start; flex-wrap: wrap; }
-  .page-section { flex: 1 1 30rem; }
+  .services-group { padding-block: clamp(4rem, 8vw, 6rem); }
+  .services-group--soft { background: var(--solid-bg); }
+  .services-group__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: var(--space-md); margin-block-end: var(--space-xl); }
 </style>

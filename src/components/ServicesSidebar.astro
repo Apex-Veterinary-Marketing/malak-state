@@ -41,7 +41,7 @@ const groups = (
       <summary class="services-sidebar__group-title">{group.category.data.name}</summary>
       <ul class="services-sidebar__list">
         {group.services.map((service) => (
-          <li><a href={`/services/${service.id}`}>{service.data.customName || service.data.name}</a></li>
+          <li><a href={`/services/${service.id}`}>{service.data.name}</a></li>
         ))}
       </ul>
     </details>

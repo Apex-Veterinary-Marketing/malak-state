@@ -1,16 +1,14 @@
 ---
-// CMS-powered service detail. contentBlocks render as simple alternating
-// image/text blocks (generic — contentBlocks has no per-block heading, so
-// this doesn't reuse FeatureSplit, which expects one); a block with
-// style: "cta" renders as the closing booking block. Schema follows
-// Skeleton-Build-Spec.md §9: Service node always, FAQPage only when
-// faqs.length > 0, manualSchema merged in (append-only, never replacing).
+// Service detail (agency standard): 3 text+image blocks alternating sides, a
+// closing "cta" block with the booking button, 5 researched FAQs (sources are
+// linked inside the answers). Schema: Service (+ audience), FAQPage when there
+// are FAQs, manualSchema appended (escape hatch, never replacing).
 import { Image } from "astro:assets";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../../components/PageHeaderBanner.astro";
 import FaqAccordion from "../../components/FaqAccordion.astro";
-import CtaBand from "../../components/CtaBand.astro";
 import ServicesSidebar from "../../components/ServicesSidebar.astro";
+import BookCall from "../../components/BookCall.astro";
 import { getAllServices } from "../../lib/data/services";
 import { getServiceCategoryBySlug } from "../../lib/data/serviceCategories";
 import { getSiteInfo } from "../../lib/data/site";
@@ -34,9 +32,7 @@ const clean = async (html: string) => withTrackingPhone(await unlinkScheduledArt
 const blocks = await Promise.all(service.data.contentBlocks.map(async (b) => ({ ...b, body: await clean(b.body) })));
 const faqs = await Promise.all(service.data.faqs.map(async (f) => ({ ...f, answer: await clean(f.answer) })));
 
-const categories = await Promise.all(
-  service.data.serviceCategory.map((ref) => getServiceCategoryBySlug(ref.id))
-);
+const categories = (await Promise.all(service.data.serviceCategory.map((ref) => getServiceCategoryBySlug(ref.id)))).filter(Boolean);
 const areas = (site.serviceAreaOfCoverage || "").split(",").map((s) => s.trim()).filter(Boolean);
 
 const graph: Record<string, any>[] = [
@@ -44,12 +40,14 @@ const graph: Record<string, any>[] = [
     "@type": "Service",
     "@id": "#service",
     name: heading,
+    serviceType: service.data.name,
     description: service.data.metaDescription || service.data.featuredText || undefined,
-    category: categories.filter(Boolean).map((c) => c!.data.name),
+    category: categories.map((c) => c!.data.name),
     url: new URL(`/services/${service.id}`, Astro.site).href,
     image: service.data.pageHeaderImage ? new URL(service.data.pageHeaderImage.src, Astro.site).href : undefined,
     provider: { "@id": "#business" },
     areaServed: areas.length ? areas.map(areaServedNode) : undefined,
+    audience: service.data.audience ? { "@type": "Audience", audienceType: service.data.audience } : undefined,
   },
 ];
 
@@ -70,75 +68,72 @@ if (service.data.manualSchema) {
     const parsed = JSON.parse(service.data.manualSchema);
     graph.push(...(Array.isArray(parsed) ? parsed : [parsed]));
   } catch {
-    // Malformed manualSchema shouldn't break the build — see §9 (escape hatch, append-only).
+    // Malformed manualSchema shouldn't break the build (escape hatch, append-only).
   }
 }
+const contentBlocks = blocks.filter((b) => b.style !== "cta");
+const ctaBlock = blocks.find((b) => b.style === "cta");
 ---
 
 <BaseLayout
   title={service.data.metaTitle || heading}
   description={service.data.metaDescription}
   ogImage={service.data.pageHeaderImage}
-  ogImageAlt={`${heading} at ${site.practiceName}`}
+  ogImageAlt={`${heading}, ${site.practiceName}`}
   schemaGraph={graph}
   webPage={{ mainEntity: { "@id": "#service" } }}
   breadcrumb={heading}
 >
-  <PageHeaderBanner heading={heading} image={service.data.pageHeaderImage} />
+  <PageHeaderBanner heading={heading} intro={service.data.featuredText} image={service.data.pageHeaderImage}>
+    <div class="service-hero__cta"><a class="btn btn--cta" href={site.bookingUrl}>{site.bookingLabel}</a></div>
+  </PageHeaderBanner>
 
-  <div class="services-layout">
-    <div class="service-detail">
-      {categories.length > 0 && (
-        <p class="service-detail__categories">
-          {categories.filter(Boolean).map((c) => c!.data.name).join(" · ")}
-        </p>
-      )}
-
-      {service.data.featured && service.data.featuredHeading && (
-        <div class="service-detail__featured">
-          <h2>{service.data.featuredHeading}</h2>
-          {service.data.featuredText && <p>{service.data.featuredText}</p>}
-        </div>
-      )}
-
-      {blocks.map((block, i) =>
-        block.style === "cta" ? (
-          <div class="service-cta">
-            <div class="service-cta__body services-content-rt" set:html={block.body} />
-            {site.bookingUrl && <a class="service-cta__button" href={site.bookingUrl}>{site.bookingLabel || "Book Now"}</a>}
+  <section class="service">
+    <div class="container service__layout">
+      <div class="service__main">
+        {contentBlocks.map((block, i) => (
+          <div class:list={["service-block", i % 2 === 1 && "service-block--reverse"]} data-reveal>
+            {block.image && <Image src={block.image} alt="" class="service-block__image" widths={[480, 800, 1100]} sizes="(max-width: 900px) 100vw, 35vw" />}
+            <div class="service-block__body service-rt" set:html={block.body} />
           </div>
-        ) : (
-          <div class:list={["service-content-block", i % 2 === 1 && "service-content-block--reverse"]}>
-            {block.image && (
-              <div class="service-content-block__media">
-                <Image src={block.image} alt="" class="service-content-block__image" />
-              </div>
-            )}
-            <div class="service-content-block__body services-content-rt" set:html={block.body} />
-          </div>
-        )
-      )}
+        ))}
 
-      {faqs.length > 0 && <FaqAccordion faqs={faqs} heading={`${heading}: Frequently Asked Questions`} />}
+        {ctaBlock && (
+          <div class="service-cta" data-reveal>
+            <div class="service-rt" set:html={ctaBlock.body} />
+            <a class="btn btn--cta" href={site.bookingUrl}>{site.bookingLabel}</a>
+          </div>
+        )}
+
+        {faqs.length > 0 && (
+          <div class="service__faqs" data-reveal>
+            <FaqAccordion faqs={faqs} heading="Frequently asked questions" />
+          </div>
+        )}
+      </div>
+      <ServicesSidebar activeCategoryId={categories[0]?.id} activeServiceId={service.id} />
     </div>
+  </section>
 
-    <ServicesSidebar activeCategoryId={categories[0]?.id} activeServiceId={service.id} />
-  </div>
-
-  <CtaBand heading={`Ready to book ${heading}?`} />
+  <BookCall />
 </BaseLayout>
 
 <style>
-  .services-layout { max-width: var(--container-max); margin-inline: auto; padding: var(--space-xl) var(--space-md); display: flex; gap: var(--space-xl); align-items: flex-start; flex-wrap: wrap; }
-  .service-detail { flex: 1 1 30rem; display: flex; flex-direction: column; gap: var(--space-xl); }
-  .service-detail__categories { text-transform: uppercase; letter-spacing: 0.06em; font-size: var(--font-size-sm); color: var(--main); }
-  .service-detail__featured { background: var(--solid-bg); border-radius: var(--radius-md); padding: var(--space-lg); }
-  .service-content-block { display: flex; flex-wrap: wrap; gap: var(--space-lg); align-items: center; }
-  .service-content-block--reverse { flex-direction: row-reverse; }
-  .service-content-block__media { flex: 1 1 18rem; }
-  .service-content-block__image { width: 100%; height: auto; border-radius: var(--radius-md); }
-  .service-content-block__body { flex: 2 1 24rem; }
-  .service-cta { background: var(--solid-bg); border-radius: var(--radius-md); padding: var(--space-lg); }
-  .service-cta__button { display: inline-block; margin-block-start: var(--space-md); padding: var(--space-sm) var(--space-lg); border-radius: var(--radius-sm); background: var(--cta); color: var(--on-cta); text-decoration: none; font-weight: 600; }
-  .service-cta__button:hover { background: var(--cta-hover); }
+  .service-hero__cta { margin-block-start: var(--space-xl); }
+  .service { padding-block: clamp(5rem, 10vw, 8rem); }
+  .service__layout { display: flex; flex-wrap: wrap; gap: clamp(2rem, 5vw, 5rem); align-items: flex-start; }
+  .service__main { flex: 1 1 36rem; min-width: 0; display: flex; flex-direction: column; gap: clamp(3rem, 7vw, 6rem); }
+  .service-block { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; }
+  .service-block--reverse .service-block__image { order: 2; }
+  .service-block__image { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+  .service-rt :global(h2) { font-size: clamp(1.8rem, 2.8vw, 2.4rem); margin: 0 0 var(--space-md); }
+  .service-rt :global(p) { margin: 0 0 var(--space-md); }
+  .service-rt :global(p:last-child) { margin-block-end: 0; }
+  .service-cta { padding: clamp(2rem, 4vw, 3rem); background: var(--solid-bg); }
+  .service-cta .btn { margin-block-start: var(--space-lg); }
+  @media (max-width: 900px) {
+    .service-block { grid-template-columns: 1fr; }
+    .service-block--reverse .service-block__image { order: 0; }
+    .service-block__image { aspect-ratio: 4 / 3; }
+  }
 </style>

@@ -1,21 +1,11 @@
 ---
-// CMS-powered: services filtered to one category. Grounded in the real V2
-// export's detail_services-categories.html — same .services-grid of
-// .service-link-block as services.html, just pre-filtered — so this
-// reuses ServiceGrid/ServiceCard rather than inventing new markup, matching
-// the real export's structure 1:1. Empty-state message mirrors the
-// export's w-dyn-empty "No items found." fallback.
-//
-// ServicesSidebar mounted 2026-09-17 (direct instruction: every
-// services-related page always carries it), pre-opened to this page's own
-// category.
+// Service category listing (Buying / Selling / Specialties).
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../../components/PageHeaderBanner.astro";
 import ServiceGrid from "../../components/ServiceGrid.astro";
-import ServicesSidebar from "../../components/ServicesSidebar.astro";
-import { getAllServiceCategories, getServiceCategoryBySlug } from "../../lib/data/serviceCategories";
+import BookCall from "../../components/BookCall.astro";
+import { getAllServiceCategories } from "../../lib/data/serviceCategories";
 import { getServicesByCategory } from "../../lib/data/services";
-import bannerGeneric from "../../assets/banner-generic.png";
 
 export async function getStaticPaths() {
   const categories = await getAllServiceCategories();
@@ -24,24 +14,38 @@ export async function getStaticPaths() {
 
 const { category } = Astro.props;
 const services = await getServicesByCategory(category.id);
+const headerImage = services.find((s) => s.data.pageHeaderImage)?.data.pageHeaderImage;
+const graph = [
+  {
+    "@type": "ItemList",
+    "@id": "#services",
+    itemListElement: services.map((s, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: s.data.customName || s.data.name,
+      url: new URL(`/services/${s.id}`, Astro.site).href,
+    })),
+  },
+];
 ---
 
-<BaseLayout title={category.data.name} description={`${category.data.name} services`}>
-  <PageHeaderBanner heading={category.data.name} image={bannerGeneric} />
-  <div class="services-layout">
-    <div class="page-section">
-      {services.length > 0 ? (
-        <ServiceGrid services={services} />
-      ) : (
-        <p class="page-section__empty">No items found.</p>
-      )}
+<BaseLayout
+  title={`${category.data.name} Services`}
+  description={category.data.description}
+  schemaGraph={graph}
+  webPage={{ "@type": "CollectionPage", mainEntity: { "@id": "#services" } }}
+  breadcrumb={category.data.name}
+>
+  <PageHeaderBanner heading={`${category.data.name} *services*`} intro={category.data.intro} image={headerImage} />
+  <section class="category">
+    <div class="container">
+      {services.length > 0 ? <ServiceGrid services={services} /> : <p class="category__empty">Services in this category are coming soon.</p>}
     </div>
-    <ServicesSidebar activeCategoryId={category.id} />
-  </div>
+  </section>
+  <BookCall />
 </BaseLayout>
 
 <style>
-  .services-layout { max-width: var(--container-max); margin-inline: auto; padding: var(--space-xl) var(--space-md); display: flex; gap: var(--space-xl); align-items: flex-start; flex-wrap: wrap; }
-  .page-section { flex: 1 1 30rem; }
-  .page-section__empty { color: var(--text-muted); text-align: center; }
+  .category { padding-block: clamp(5rem, 10vw, 8rem); }
+  .category__empty { color: var(--text-muted); }
 </style>

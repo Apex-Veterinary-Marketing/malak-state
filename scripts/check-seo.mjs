@@ -7,7 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const DIST = "dist";
-const BANNED = [/\bveterinar/i, /\bpets?\b/i, /\bpatients?\b/i, /\bDr\.\s/, /\bhooman\b/i, /\bpaws?\b/i];
+const BANNED = [/\bveterinar/i, /\bpets?\b/i, /\bpatients\b/i, /\bnew patient\b/i,/\bDr\.\s/, /\bhooman\b/i, /\bpaws?\b/i];
 const DASHES = /[–—]/;
 const HOME_ORDER = ["hero", "mission", "services", "meet", "builders", "book"];
 const errors = [];

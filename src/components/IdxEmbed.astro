@@ -1,0 +1,30 @@
+---
+// Renders an IDX provider snippet from src/data/idx.ts (see that file). Empty
+// slot or idxEnabled = false renders nothing at all.
+import { idxEnabled, idxEmbeds } from "../data/idx";
+
+export interface Props {
+  name: string; // key into idxEmbeds ("slot" is reserved by Astro)
+}
+const { name } = Astro.props;
+const snippet = idxEnabled ? idxEmbeds[name]?.trim().replace(/\b(src|href)="(?:https?:)?\/\//g, '$1="https://') : undefined;
+---
+
+{snippet && <div class="idx-embed" data-idx-embed set:html={snippet} />}
+
+<style>
+  .idx-embed { width: 100%; }
+  .idx-embed :global(iframe) { width: 100%; min-height: 40rem; border: 0; }
+</style>
+
+<script>
+  // Same reason as GravityFormEmbed: re-create scripts so a JS-widget embed runs.
+  document.querySelectorAll<HTMLElement>("[data-idx-embed]").forEach((container) => {
+    container.querySelectorAll("script").forEach((old) => {
+      const fresh = document.createElement("script");
+      for (const attr of Array.from(old.attributes)) fresh.setAttribute(attr.name, attr.value);
+      fresh.textContent = old.textContent;
+      old.replaceWith(fresh);
+    });
+  });
+</script>

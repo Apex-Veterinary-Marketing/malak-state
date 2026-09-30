@@ -30,8 +30,8 @@ const { tone = "default", narrow = false } = Astro.props;
 </section>
 
 <style>
-  .section { padding-block: var(--space-xl); }
-  .section__inner { max-width: var(--container-max); margin-inline: auto; padding-inline: var(--space-md); }
+  .section { padding-block: clamp(5rem, 10vw, 9rem); }
+  .section__inner { max-width: var(--container-max); margin-inline: auto; padding-inline: clamp(var(--space-md), 4vw, var(--space-xl)); }
   .section__inner--narrow { max-width: var(--container-max-narrow); }
 
   .section--soft { background: var(--solid-bg); }
@@ -60,9 +60,11 @@ const { tone = "default", narrow = false } = Astro.props;
      normal element's — confirmed empirically too (TestimonialSlider's
      prev/next buttons measured plain black on the dark tone before this
      line existed). Same fix either way: force `color: inherit` back on. */
-  .section--dark, .section--alt { color: var(--on-main); }
+  .section--dark, .section--alt { color: var(--on-dark-muted); }
   .section--dark :global(:is(h1, h2, h3, h4, h5, h6, a, button, input, select, textarea)),
   .section--alt :global(:is(h1, h2, h3, h4, h5, h6, a, button, input, select, textarea)) {
     color: inherit;
   }
+  /* Headings on dark read white (body text stays --on-dark-muted); same specificity as the rule above, so order wins. */
+  .section--dark :global(:is(h1, h2, h3, h4)), .section--alt :global(:is(h1, h2, h3, h4)) { color: var(--white); }
 </style>

@@ -1,0 +1,20 @@
+---
+// Text link with a trailing arrow that nudges on hover (V2 ".arrow-link").
+export interface Props {
+  href: string;
+  text: string;
+  light?: boolean; // on dark sections
+}
+const { href, text, light = false } = Astro.props;
+---
+
+<a class:list={["arrow-link", light && "arrow-link--light"]} href={href}>{text}<span class="arrow-link__arrow" aria-hidden="true">&rarr;</span></a>
+
+<style>
+  .arrow-link { display: inline-flex; gap: var(--space-xs); align-items: center; font-weight: 600; color: var(--main); text-decoration: none; }
+  .arrow-link:hover { color: var(--main-dark); }
+  .arrow-link--light { color: var(--white); }
+  .arrow-link--light:hover { color: var(--cta); }
+  .arrow-link__arrow { transition: transform var(--motion-duration-slow) var(--motion-ease); }
+  .arrow-link:hover .arrow-link__arrow { transform: translateX(4px); }
+</style>

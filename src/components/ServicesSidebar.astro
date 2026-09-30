@@ -35,7 +35,7 @@ const groups = (
 ---
 
 <nav class="services-sidebar" aria-label="Other services">
-  <h2 class="services-sidebar__heading">Other Services</h2>
+  <h2 class="services-sidebar__heading">Other services</h2>
   {groups.map((group) => (
     <details class="services-sidebar__group" open={group.category.id === activeCategoryId}>
       <summary class="services-sidebar__group-title">{group.category.data.name}</summary>
@@ -46,18 +46,18 @@ const groups = (
       </ul>
     </details>
   ))}
-  <a class="services-sidebar__all-link" href="/services">All Services</a>
+  <a class="services-sidebar__all-link" href="/services">All services &rarr;</a>
 </nav>
 
 <style>
   .services-sidebar { flex: 0 0 16rem; }
-  .services-sidebar__heading { margin: 0 0 var(--space-sm); font-size: var(--font-size-md); text-transform: uppercase; letter-spacing: 0.04em; }
+  .services-sidebar__heading { margin: 0 0 var(--space-md); font: 600 var(--font-size-xs) / 1 var(--font-body); text-transform: uppercase; letter-spacing: var(--letter-spacing-label); color: var(--text-muted); }
   .services-sidebar__group { border-block-start: 1px solid var(--light-grey); padding-block: var(--space-xs); }
-  .services-sidebar__group-title { cursor: pointer; font-weight: 600; padding-block: var(--space-xs); }
+  .services-sidebar__group-title { cursor: pointer; font: 400 var(--font-size-lg) / 1.3 var(--font-heading); color: var(--main-dark); padding-block: var(--space-xs); }
   .services-sidebar__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-xs); margin-block-start: var(--space-xs); }
   .services-sidebar__list a { color: inherit; text-decoration: none; }
   .services-sidebar__list a:hover { text-decoration: underline; }
-  .services-sidebar__all-link { display: inline-block; margin-block-start: var(--space-sm); font-weight: 700; color: var(--main); text-decoration: none; }
+  .services-sidebar__all-link { display: inline-block; margin-block-start: var(--space-sm); font-weight: 600; color: var(--main); text-decoration: none; }
   .services-sidebar__all-link:hover { text-decoration: underline; }
 
   @media (max-width: 767px) {

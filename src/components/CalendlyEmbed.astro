@@ -1,0 +1,35 @@
+---
+// Inline Calendly scheduler (site.calendlyUrl). The brand color passed to
+// Calendly is read from tokens.css (--main), never hard-coded, the same way
+// BaseLayout derives theme-color. A plain link stays visible as a fallback
+// (blocked third-party frames, no JS, slow networks).
+import { getSiteInfo } from "../lib/data/site";
+import tokensRaw from "../styles/tokens.css?raw";
+
+export interface Props {
+  height?: string; // CSS length
+}
+const { height = "44rem" } = Astro.props;
+const site = await getSiteInfo();
+const hex = (name: string) => tokensRaw.match(new RegExp(`--${name}:\s*#([0-9a-fA-F]{6})`))?.[1];
+const params = new URLSearchParams({ hide_gdpr_banner: "1" });
+const main = hex("main"), text = hex("text");
+if (main) params.set("primary_color", main);
+if (text) params.set("text_color", text);
+params.set("background_color", "ffffff");
+const src = site.calendlyUrl ? `${site.calendlyUrl}?${params}` : undefined;
+---
+
+{src && (
+  <div class="calendly">
+    <iframe class="calendly__frame" src={src} title="Schedule a call with Marissa Lubera" loading="lazy" style={`height:${height}`}></iframe>
+    <p class="calendly__fallback">Scheduler not loading? <a href={site.calendlyUrl} target="_blank" rel="noopener">Open the scheduler</a></p>
+  </div>
+)}
+
+<style>
+  .calendly { background: var(--white); }
+  .calendly__frame { display: block; width: 100%; border: 0; }
+  .calendly__fallback { margin: 0; padding: var(--space-sm) var(--space-md); font-size: var(--font-size-sm); color: var(--text-muted); background: var(--white); }
+  .calendly__fallback a { color: var(--main); }
+</style>

@@ -38,12 +38,12 @@ const { testimonials } = Astro.props;
 )}
 
 <style>
-  .testimonial-slider { max-width: 40rem; margin-inline: auto; text-align: center; padding: var(--space-lg); }
-  .testimonial-slider__image { inline-size: 4rem; block-size: 4rem; border-radius: 50%; object-fit: cover; margin: 0 auto var(--space-sm); }
-  .testimonial-slider__quote { font-size: var(--font-size-lg); font-style: italic; margin: 0 0 var(--space-sm); }
-  .testimonial-slider__author { font-weight: 600; }
+  .testimonial-slider { max-width: 52rem; margin-inline: auto; text-align: center; padding: var(--space-lg); }
+  .testimonial-slider__image { inline-size: 4rem; block-size: 4rem; border-radius: var(--radius-round); object-fit: cover; margin: 0 auto var(--space-sm); }
+  .testimonial-slider__quote { font: italic 400 clamp(1.5rem, 2.6vw, var(--font-size-2xl)) / 1.4 var(--font-heading); margin: 0 0 var(--space-lg); color: var(--main-dark); }
+  .testimonial-slider__author { font-size: var(--font-size-sm); color: var(--text-muted); }
   .testimonial-slider__controls { display: flex; justify-content: center; gap: var(--space-md); margin-block-start: var(--space-md); }
-  .testimonial-slider__prev, .testimonial-slider__next { background: none; border: 1px solid var(--light-grey); border-radius: 50%; width: 2.25rem; height: 2.25rem; cursor: pointer; font-size: 1rem; }
+  .testimonial-slider__prev, .testimonial-slider__next { background: none; border: 1px solid var(--light-grey); border-radius: var(--radius-sm); width: 3rem; height: 3rem; color: var(--main-dark); cursor: pointer; font-size: 1rem; }
 </style>
 
 <script>

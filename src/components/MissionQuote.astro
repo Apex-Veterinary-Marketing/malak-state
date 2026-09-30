@@ -1,0 +1,24 @@
+---
+// Centered editorial statement (V2 "manifesto"): the client's mission in one line.
+import { renderEmphasis } from "../lib/utils/emphasis";
+
+export interface Props {
+  quote: string; // supports *italic* word
+  label: string;
+}
+const { quote, label } = Astro.props;
+---
+
+<section class="mission" data-home="mission">
+  <div class="container" data-reveal>
+    <blockquote class="mission__quote" set:html={renderEmphasis(quote)} />
+    <p class="mission__label">{label}</p>
+  </div>
+</section>
+
+<style>
+  .mission { padding-block: clamp(5rem, 10vw, 9rem); text-align: center; }
+  .mission__quote { margin: 0 auto; max-width: 30ch; font: 400 clamp(1.9rem, 3.6vw, 3rem)/1.3 var(--font-heading); color: var(--main-dark); }
+  .mission__quote :global(em) { font-style: italic; color: var(--main); }
+  .mission__label { margin: var(--space-xl) 0 0; font-size: var(--font-size-xs); letter-spacing: var(--letter-spacing-label); text-transform: uppercase; color: var(--text-muted); }
+</style>

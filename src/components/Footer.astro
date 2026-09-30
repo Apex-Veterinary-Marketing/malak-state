@@ -9,13 +9,13 @@ import { getAllSocialLinks } from "../lib/data/socialLinks";
 import { SOCIAL_LABELS } from "../lib/icons/social";
 import { phoneHref } from "../lib/utils/phone";
 import ReviewsBand from "./ReviewsBand.astro";
+import { countiesSentence } from "../lib/utils/areas";
 
 const site = await getSiteInfo();
 const services = await getAllServices();
 const socialLinks = await getAllSocialLinks();
 const year = new Date().getFullYear();
-const counties = (site.serviceAreaOfCoverage || "").split(",").map((s) => s.trim().replace(/ County$/, "")).filter(Boolean);
-const countiesText = counties.length > 1 ? `${counties.slice(0, -1).join(", ")} and ${counties.at(-1)} counties` : counties[0];
+const countiesText = countiesSentence(site.serviceAreaOfCoverage);
 ---
 
 <footer class="footer">

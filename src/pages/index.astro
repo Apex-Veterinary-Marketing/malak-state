@@ -1,91 +1,119 @@
 ---
-// Homepage. Not grounded in a staged real-markup reference (the V2
-// homepage export wasn't part of the files read for this build) — section
-// choice/order is a reasonable generic default (Hero → About Us → featured
-// services → Why Choose Us → testimonials → CTA → location), easy to
-// reorder per client. About Us added 2026-09-08, directly beneath Hero
-// per direct instruction. ReviewsBand no longer lives here — it's mounted
-// site-wide via Footer.astro (also 2026-09-08). Testimonials are
-// CMS-powered (testimonials collection, also 2026-09-08) rather than a
-// hardcoded prop array. See Skeleton-Build-Spec.md §5/§6.
+// Homepage, built to the approved V2 preview
+// (docs/design/homepage-variations/v2-fullscreen-menu.html), section for
+// section: split hero → mission → service strips → Meet Marissa → builders →
+// featured homes → testimonial (only with real reviews) → Gather & Ground →
+// book a call. `npm run check:seo` asserts the section order.
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Hero from "../components/Hero.astro";
-import Section from "../components/Section.astro";
-import ServiceGrid from "../components/ServiceGrid.astro";
-import FeatureSplit from "../components/FeatureSplit.astro";
+import HomeHero from "../components/HomeHero.astro";
+import MissionQuote from "../components/MissionQuote.astro";
+import ServiceStrips from "../components/ServiceStrips.astro";
+import MeetBroker from "../components/MeetBroker.astro";
+import BuildersFeature from "../components/BuildersFeature.astro";
+import ListingGrid from "../components/ListingGrid.astro";
+import ArrowLink from "../components/ArrowLink.astro";
 import TestimonialSlider from "../components/TestimonialSlider.astro";
-import CtaBand from "../components/CtaBand.astro";
-import LocationSection from "../components/LocationSection.astro";
-import { getFeaturedServices } from "../lib/data/services";
+import GatherTeaser from "../components/GatherTeaser.astro";
+import BookCall from "../components/BookCall.astro";
 import { getSiteInfo } from "../lib/data/site";
+import { getHomeBrokers } from "../lib/data/brokers";
+import { getFeaturedListings } from "../lib/data/listings";
 import { getAllTestimonials } from "../lib/data/testimonials";
-import bannerGeneric from "../assets/banner-generic.png";
+import heroImage from "../assets/brand/marissa-doorway-wide.jpg";
+import buyingImage from "../assets/placeholders/interior-living.jpg";
+import sellingImage from "../assets/placeholders/house-brick.jpg";
+import newBuildImage from "../assets/placeholders/house-new-build.jpg";
+import relocationImage from "../assets/placeholders/house-colonial.jpg";
+import buildersImage from "../assets/placeholders/house-white-modern.jpg";
 
 const site = await getSiteInfo();
-const featuredServices = await getFeaturedServices();
+const [broker] = await getHomeBrokers();
+const listings = await getFeaturedListings(3);
 const testimonials = await getAllTestimonials();
+
+const strips = [
+  { title: "Buying", text: "A strategy shaped around your budget, timeline, and the neighborhoods that fit your life.", href: "/services/buying-a-home", image: buyingImage },
+  { title: "Selling", text: "Pricing, preparation, and marketing tailored to your home and your street.", href: "/services/selling-your-home", image: sellingImage },
+  { title: "New construction", text: "Builder-side experience on your side of the table, from lot selection to final walkthrough.", href: "/services/new-construction", image: newBuildImage },
+  { title: "Relocation & downsizing", text: "Moving to Northeast Ohio or into your next chapter, with every detail handled.", href: "/services/relocation", image: relocationImage },
+];
+
+const graph = [
+  {
+    "@type": "ItemList",
+    "@id": "#services",
+    name: "Real estate services",
+    itemListElement: strips.map((s, i) => ({ "@type": "ListItem", position: i + 1, name: s.title, url: new URL(s.href, Astro.site).href })),
+  },
+];
+const about = [{ "@id": "#business" }, ...(broker ? [{ "@id": `/agents/${broker.id}#person` }] : [])];
 ---
 
-<BaseLayout title={`${site.practiceName} | Veterinary Care`} titleTemplate="full" description={`Compassionate veterinary care from ${site.practiceName}.`}>
-  <Hero
-    eyebrow="Welcome to"
-    heading={site.practiceName}
-    subheading="Compassionate, comprehensive care for every stage of your pet's life."
-    ctaText={site.bookingLabel || "Book Now"}
-    ctaHref={site.bookingUrl || "/contact-us"}
-    secondaryCtaText="Our Services"
-    secondaryCtaHref="/services"
-    image={bannerGeneric}
+<BaseLayout
+  title="Northeast Ohio Realtor | The Malak Estate Group"
+  titleTemplate="full"
+  description="Buy, sell, or build in Greater Cleveland with Realtor Marissa Lubera. Honest guidance, clear communication, and new construction expertise."
+  schemaGraph={graph}
+  webPage={{ about }}
+  breadcrumb={false}
+>
+  <HomeHero
+    heading="Real estate, handled with *care.*"
+    intro="Personal strategy for buyers, sellers, and new construction across Northeast Ohio, from first conversation through closing."
+    image={heroImage}
+    imageAlt="Marissa Lubera opening the double front doors of a home"
+    primary={{ text: site.bookingLabel || "Book a call", href: site.bookingUrl || "/schedule" }}
+    secondary={{ text: "View listings", href: "/listings" }}
   />
 
-  <div data-reveal>
-    <FeatureSplit heading="About Us" ctaText="Meet the Team" ctaHref="/meet-the-team">
-      <p>A short introduction to the practice goes here — replace with real client copy about who you are, how long you've served the area, and what pet owners can expect.</p>
-    </FeatureSplit>
-  </div>
+  <MissionQuote quote="Honest guidance, clear communication, and an advocate who puts *your* interests first." label="Our mission" />
 
-  {featuredServices.length > 0 && (
-    <div data-reveal>
-      <Section tone="soft">
-        <h2 class="home-heading">Our Services</h2>
-        <ServiceGrid services={featuredServices} />
-      </Section>
-    </div>
+  <ServiceStrips heading="Every kind of move, one steady guide." items={strips} />
+
+  {broker && (
+    <MeetBroker
+      broker={broker}
+      intro="With six years across resale and new construction, Marissa brings a well-rounded perspective to every move. What sets her apart is how invested she is in the people she serves: you'll feel informed, supported, and genuinely cared for."
+    />
   )}
 
-  <div data-reveal>
-    <FeatureSplit heading="Why Choose Us" ctaText="Our Services" ctaHref="/services" reverse>
-      <p>A short paragraph about the practice's approach to care goes here — replace with real client copy.</p>
-    </FeatureSplit>
-  </div>
+  <BuildersFeature
+    heading="For builders and developers."
+    text="Greater Cleveland is building. Marissa's new-construction sales background and marketing-first approach help communities reach the buyers they were designed for."
+    image={buildersImage}
+    imageAlt="Newly completed white contemporary home"
+    cta={{ text: "Partner with Marissa", href: "/builders-developers" }}
+  />
 
-  <div data-reveal>
-    {/* dark tone, added with Section (2026-09-21) — proves the tone system's
-       heading/link contrast fix on a real page; also closes a real gap this
-       block had (every other home section has an intro heading, this
-       didn't). "alt" tone is Section's other dark option, meant for a
-       section with a real background image behind it — nothing on this
-       page needs that yet (see Plan.md item A4), so it isn't demoed here. */}
-    <Section tone="dark">
-      <h2 class="home-heading">What Our Clients Say</h2>
-      <TestimonialSlider
-        testimonials={testimonials.map((t) => ({
-          name: t.data.name,
-          testimonial: t.data.testimonial,
-          image: t.data.image,
-          imageAltText: t.data.imageAltText,
-        }))}
-      />
-    </Section>
-  </div>
+  {listings.length > 0 && (
+    <section class="home-listings">
+      <div class="container">
+        <div class="home-listings__head" data-reveal>
+          <h2>Featured homes.</h2>
+          <ArrowLink href="/listings" text="All listings" />
+        </div>
+        <ListingGrid listings={listings} layout="feature" />
+      </div>
+    </section>
+  )}
 
-  <CtaBand heading="Ready to schedule a visit?" />
+  {testimonials.length > 0 && (
+    <section class="home-quote">
+      <div class="container" data-reveal>
+        <TestimonialSlider
+          testimonials={testimonials.map((t) => ({ name: t.data.name, testimonial: t.data.testimonial, image: t.data.image, imageAltText: t.data.imageAltText }))}
+        />
+      </div>
+    </section>
+  )}
 
-  <div data-reveal>
-    <LocationSection />
-  </div>
+  <GatherTeaser />
+
+  <BookCall home />
 </BaseLayout>
 
 <style>
-  .home-heading { text-align: center; margin: 0 0 var(--space-lg); }
+  .home-listings { padding-block: clamp(5rem, 10vw, 9rem); }
+  .home-listings__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: var(--space-lg); margin-block-end: var(--space-xl); }
+  .home-quote { padding-block-end: clamp(5rem, 10vw, 9rem); }
 </style>

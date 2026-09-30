@@ -36,12 +36,12 @@ const looksLikeBareShortcode = !!snippet && /^\[gravityform\b/i.test(snippet);
         <strong>{formId}</strong>'s entry in <code>src/data/forms.ts</code> looks like a bare WordPress shortcode
         (<code>{snippet}</code>), which only renders inside WordPress's own pages. Paste the client's real embeddable
         snippet instead (an <code>&lt;iframe&gt;</code> pointing at a WP page hosting that form, or their embed
-        script) — see that file's comments.
+        script). See that file's comments.
       </p>
     </div>
   ) : (
     <div class="form-embed__body form-embed__placeholder" data-gravity-form-id={formId}>
-      <p>[Gravity Forms embed: {formId} — add it to <code>src/data/forms.ts</code>]</p>
+      <p>[Gravity Forms embed: {formId}. Add it to <code>src/data/forms.ts</code>]</p>
     </div>
   )}
 </div>

@@ -1,0 +1,44 @@
+---
+// One listing: photo, price, city, facts. Sample (placeholder) listings say so.
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import { formatPrice, listingFacts } from "../lib/utils/format";
+
+export interface Props {
+  listing: CollectionEntry<"listings">;
+  size?: "lg" | "sm";
+}
+const { listing, size = "sm" } = Astro.props;
+const d = listing.data;
+const img = d.images[0];
+const STATUS = { active: "", "coming-soon": "Coming soon", pending: "Pending", sold: "Sold" } as const;
+---
+
+<a class:list={["listing-card", `listing-card--${size}`]} href={`/listings/${listing.id}`} data-status={d.status}>
+  <div class="listing-card__frame">
+    <Image src={img.src} alt={img.alt} class="listing-card__image" widths={size === "lg" ? [640, 1000, 1400] : [480, 800]} sizes={size === "lg" ? "(max-width: 767px) 100vw, 60vw" : "(max-width: 767px) 100vw, 40vw"} />
+  </div>
+  <div class="listing-card__row">
+    <span class="listing-card__price">{formatPrice(d.price)}</span>
+    <span class="listing-card__city">{d.city}, {d.state}</span>
+  </div>
+  <p class="listing-card__meta">
+    {listingFacts(d)}{STATUS[d.status] && <span class="listing-card__status">{STATUS[d.status]}</span>}
+  </p>
+  <p class="listing-card__address">{d.address}</p>
+  {d.sample && <p class="listing-card__sample">Sample listing</p>}
+</a>
+
+<style>
+  .listing-card { display: block; text-decoration: none; color: inherit; min-width: 0; }
+  .listing-card__frame { overflow: hidden; }
+  .listing-card__image { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; transition: transform var(--motion-duration-image) var(--motion-ease-out); }
+  .listing-card--lg .listing-card__image { aspect-ratio: 5 / 4; }
+  .listing-card:hover .listing-card__image { transform: scale(1.03); }
+  .listing-card__row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-2xs) var(--space-md); margin-block-start: var(--space-md); }
+  .listing-card__price { font: 400 var(--font-size-xl)/1 var(--font-heading); color: var(--main-dark); white-space: nowrap; }
+  .listing-card__city, .listing-card__meta, .listing-card__address, .listing-card__sample { font-size: var(--font-size-sm); color: var(--text-muted); }
+  .listing-card__meta, .listing-card__address, .listing-card__sample { margin: var(--space-2xs) 0 0; overflow-wrap: anywhere; }
+  .listing-card__status { margin-inline-start: var(--space-sm); padding: 0.1em 0.5em; background: var(--solid-bg); color: var(--main-dark); font-size: var(--font-size-xs); font-weight: 600; letter-spacing: var(--letter-spacing-button); text-transform: uppercase; }
+  .listing-card__sample { font-style: italic; }
+</style>

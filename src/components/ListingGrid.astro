@@ -1,0 +1,38 @@
+---
+// Listing layouts: "feature" = one large + two stacked (V2 homepage);
+// "grid" = responsive columns (listings index). Renders nothing when empty.
+import type { CollectionEntry } from "astro:content";
+import ListingCard from "./ListingCard.astro";
+
+export interface Props {
+  listings: CollectionEntry<"listings">[];
+  layout?: "feature" | "grid";
+}
+const { listings, layout = "grid" } = Astro.props;
+const [first, ...rest] = listings;
+---
+
+{listings.length > 0 && (layout === "feature" ? (
+  <div class="lgrid lgrid--feature">
+    <div data-reveal><ListingCard listing={first} size="lg" /></div>
+    {rest.length > 0 && (
+      <div class="lgrid__stack">
+        {rest.slice(0, 2).map((l) => <div data-reveal><ListingCard listing={l} /></div>)}
+      </div>
+    )}
+  </div>
+) : (
+  <div class="lgrid lgrid--grid" data-reveal-stagger>
+    {listings.map((l) => <div data-reveal data-listing-status={l.data.status}><ListingCard listing={l} /></div>)}
+  </div>
+))}
+
+<style>
+  .lgrid--feature { display: grid; grid-template-columns: 1.5fr 1fr; gap: var(--space-xl); }
+  .lgrid__stack { display: grid; gap: var(--space-xl); align-content: start; }
+  .lgrid--grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr)); gap: var(--space-2xl) var(--space-xl); }
+  @media (max-width: 767px) {
+    .lgrid--feature { grid-template-columns: 1fr; }
+    .lgrid--grid { grid-template-columns: 1fr; }
+  }
+</style>

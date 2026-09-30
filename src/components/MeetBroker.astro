@@ -1,0 +1,48 @@
+---
+// Homepage "Meet Marissa" block (V2): portrait left; heading, intro, awards
+// in a 2x2 grid and a link to the agent's profile on the right.
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import ArrowLink from "./ArrowLink.astro";
+
+export interface Props {
+  broker: CollectionEntry<"brokers">;
+  intro: string;
+}
+const { broker, intro } = Astro.props;
+const { name, shortName, mainImage, imageAltText, awards } = broker.data;
+---
+
+<section class="meet" data-home="meet">
+  <div class="container meet__grid">
+    {mainImage && (
+      <Image src={mainImage} alt={imageAltText || name} class="meet__image" data-reveal widths={[480, 800, 1100]} sizes="(max-width: 767px) 100vw, 45vw" />
+    )}
+    <div data-reveal>
+      <h2>Meet {name}.</h2>
+      <p class="lede">{intro}</p>
+      {awards.length > 0 && (
+        <dl class="meet__awards">
+          {awards.map((a) => (
+            <div class="meet__award">
+              <dt>{a.name}</dt>
+              <dd>{a.years}{a.detail && `, ${a.detail.charAt(0).toLowerCase()}${a.detail.slice(1)}`}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      <div class="meet__link"><ArrowLink href={`/agents/${broker.id}`} text={`More about ${shortName || name}`} /></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .meet { padding-block-end: clamp(5rem, 10vw, 9rem); }
+  .meet__grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(2rem, 7vw, 7rem); align-items: start; }
+  .meet__image { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%; }
+  .meet__awards { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl) 2.5rem; margin: var(--space-xl) 0 0; padding-block-start: 2.5rem; border-block-start: 1px solid var(--light-grey); }
+  .meet__award dt { font: 400 1.35rem/1.25 var(--font-heading); color: var(--main-dark); }
+  .meet__award dd { margin: var(--space-2xs) 0 0; font-size: var(--font-size-sm); color: var(--text-muted); }
+  .meet__link { margin-block-start: 2.5rem; }
+  @media (max-width: 767px) { .meet__grid, .meet__awards { grid-template-columns: 1fr; } }
+</style>

@@ -7,6 +7,7 @@
 // - Pre-launch preview: set the build variable SITE_URL to the workers.dev
 //   address (see astro.config.mjs); remove it at launch.
 {
+  // TODO(client): set to the Cloudflare Worker name for themalakestategroup.com (check:launch blocks until then)
   "name": "skeleton",
   "compatibility_date": "2026-09-24",
   "assets": {

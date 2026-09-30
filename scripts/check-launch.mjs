@@ -104,6 +104,34 @@ if (read("src/pages/privacy-policy.astro").includes("[Month DD, YYYY]")) errors.
 if (/content goes here|replace with real legal copy/i.test(read("src/pages/terms-of-use.astro"))) warnings.push(`terms-of-use.astro still has placeholder text — get the client's terms.`);
 
 // Report.
+// ---- Real estate fork (The Malak Estate Group) ----
+const listDir = (d, re) => (fs.existsSync(d) ? fs.readdirSync(d).filter((f) => re.test(f)) : []);
+const samples = listDir("src/content/listings", /\.mdx?$/).filter((f) => /^\s*sample:\s*true/m.test(read(`src/content/listings/${f}`)));
+if (samples.length) warnings.push(`${samples.length} sample listing(s) still published (sample: true): ${samples.join(", ")} — replace with real listings or delete.`);
+const phUsers = [];
+(function walk(dir) {
+  if (!fs.existsSync(dir)) return;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, entry.name);
+    if (entry.isDirectory()) walk(p);
+    else if (/\.(astro|md|mdx|json|ts)$/.test(p) && /assets\/placeholders\//.test(read(p))) phUsers.push(p);
+  }
+})("src");
+if (phUsers.length) warnings.push(`${phUsers.length} file(s) still use Unsplash placeholder photos (src/assets/placeholders/) — swap in client photos:\n    ${phUsers.join("\n    ")}`);
+if (!listDir("src/content/testimonials", /\.(md|mdx|json)$/).length) warnings.push(`No testimonials yet — add the client's Google reviews she wants featured (src/content/testimonials/).`);
+if (/example/.test(read("src/content/social-links/facebook.json"))) warnings.push(`src/content/social-links/facebook.json is still a placeholder link — get the client's Facebook URL.`);
+if (!/^\s*brokerageLicense:/m.test(site)) warnings.push(`site.ts brokerageLicense is unset — get the Real of Ohio license number (shown in the footer).`);
+if (/idxEnabled\s*=\s*false/.test(read("src/data/idx.ts"))) warnings.push(`IDX is not enabled (src/data/idx.ts) — expected until an IDX provider is chosen.`);
+if (/noindex/.test(read("src/pages/terms-of-use.astro"))) warnings.push(`terms-of-use.astro is a noindexed placeholder — get the client's Terms of Use.`);
+const today = new Date().toISOString().slice(0, 10);
+const galleryHasGG = listDir("src/content/gallery", /\.json$/).some((f) => /"gather-and-ground"/.test(read(`src/content/gallery/${f}`)));
+for (const f of listDir("src/content/events", /\.mdx?$/)) {
+  const src = read(`src/content/events/${f}`);
+  const date = src.match(/^\s*startDate:\s*"?(\d{4}-\d{2}-\d{2})/m)?.[1];
+  const status = src.match(/^\s*status:\s*"?(\w+)/m)?.[1] || "scheduled";
+  if (date && date < today && status === "scheduled" && !galleryHasGG) errors.push(`src/content/events/${f} is past (${date}) with no Gather & Ground photos — add photos to the gallery or delete the event.`);
+}
+
 for (const w of warnings) console.log(`! ${w}`);
 for (const e of errors) console.log(`✖ ${e}`);
 if (errors.length) {

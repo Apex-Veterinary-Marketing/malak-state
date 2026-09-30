@@ -8,6 +8,21 @@ piece already built and **no fixed visual design**. Each client gets their own f
 
 `CLAUDE.md` is a symlink to this file.
 
+## This fork: The Malak Estate Group (real estate)
+
+This clone is a **real estate** site, not a vet clinic. Deviations from the Skeleton template, all deliberate:
+
+- **Design:** the V2 full-screen-menu design (`docs/design/homepage-variations/v2-fullscreen-menu.html`). Spec: `docs/superpowers/specs/2026-09-30-malak-estate-site-design.md`.
+- **Collections:** `doctors` renamed **`brokers`** (profiles at `/agents/<id>`, nav label "Meet Marissa"); `staff` removed; new **`listings`** (`sample: true` marks placeholders), **`events`** (Gather & Ground; upcoming vs past via `lib/utils/events.ts`), **`gallery`** (albums).
+- **Blog contract:** the `author` field now references `brokers` (same field name); `check-posts` reads `src/content/brokers` and ignores dotfiles (`.gitkeep` keeps the empty blog folder in git).
+- **IDX:** `src/data/idx.ts` + `IdxEmbed` (same pattern as `forms.ts`); renders nothing until `idxEnabled` and a snippet are set.
+- **Booking:** every "Book a call" goes to `/schedule` (Calendly embed, `site.calendlyUrl`).
+- **Redirects:** `/online-forms` and `/general-information-request` go to `/contact-us`; `/appointment-request` goes to `/schedule`.
+- **Checks:** `npm run test:unit` (node --test, pure helpers in `tests/`) and `npm run check:seo` (built output: title ≤ 60 and description ≤ 160 chars, both unique; JSON-LD `@id` references resolve across pages; no vet wording or em/en dashes; homepage section order) are part of `verify`.
+- **Banned wording** (check:seo): veterinar*, pet(s), patients, "new patient", "Dr. ", hooman, paw(s).
+- **Local builds:** Astro's glob loader can keep stale entries in `.astro/data-store.json` when a collection becomes empty. Delete that file (and `node_modules/.astro/data-store.json`) if removed content still renders. CI builds start clean.
+- **Brand images:** `scripts/make-brand-images.mjs` built the OG card and favicons from the brand photo; replace them with the real logo when it arrives.
+
 ## Golden rules
 
 1. **Never hard-code a design value.** No literal colors, no `var(--x, fallback)`, no literal

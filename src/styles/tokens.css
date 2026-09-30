@@ -167,6 +167,7 @@
   --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* decelerate; entrances */
   --motion-distance: 1.5rem; /* how far reveals travel */
   --motion-stagger: 80ms; /* delay step between staggered siblings */
+  --stagger-index: 0; /* per-element position in a staggered list; set inline (style="--stagger-index:N") */
 
   /* Image scrims and text on dark — derived from --main-dark's hue (#352f2b family),
      kept here so components never hold literal colors. Re-derive if the palette changes. */

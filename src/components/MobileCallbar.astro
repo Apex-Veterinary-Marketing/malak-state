@@ -15,12 +15,7 @@
 // Icons (2026-09-08): all four now use the agency's real IcoMoon font
 // (src/styles/icon-font.css) instead of placeholder inline SVG — Hours
 // uses icon-hours, Call uses icon-call, Contact Us uses icon-location, all
-// exact matches in the font. Our Team has no literal match in the font's
-// icon set (no "team"/"people" glyph); using icon-paw as a themed stand-in
-// until a better one exists — swap if the agency adds one. Header.astro's
-// own phone bits (utility-bar phone link, mobile-call button) stay
-// unchanged — explicitly excluded from this swap.
-// See Skeleton-Build-Spec.md §6.
+// exact matches in the font. // See Skeleton-Build-Spec.md §6.
 import { getSiteInfo } from "../lib/data/site";
 import Modal from "./Modal.astro";
 import { phoneHref } from "../lib/utils/phone";
@@ -32,13 +27,15 @@ const callNumber = site.phoneNumber; // shown/announced; the link dials the trac
 <div class="callbar">
   <button type="button" class="callbar__link" data-modal-target="hours-modal">
     <i class="callbar__icon icon-hours" aria-hidden="true"></i>
-    <span class="callbar__label">Office<br>Hours</span>
+    <span class="callbar__label">Office<br>hours</span>
   </button>
 
-  <a class="callbar__link" href="/meet-the-team">
-    <i class="callbar__icon icon-paw" aria-hidden="true"></i>
-    <span class="callbar__label">Our<br>Team</span>
-  </a>
+  {site.bookingUrl && (
+    <a class="callbar__link" href={site.bookingUrl}>
+      <i class="callbar__icon icon-calendar" aria-hidden="true"></i>
+      <span class="callbar__label">Book a<br>call</span>
+    </a>
+  )}
 
   {callNumber && (
     <a class="callbar__link callbar__link--call" href={phoneHref(site)}>
@@ -49,10 +46,10 @@ const callNumber = site.phoneNumber; // shown/announced; the link dials the trac
     </a>
   )}
 
-  <button type="button" class="callbar__link" data-modal-target="contact-modal">
-    <i class="callbar__icon icon-location" aria-hidden="true"></i>
-    <span class="callbar__label">Contact<br>Us</span>
-  </button>
+  <a class="callbar__link" href="/contact-us">
+    <i class="callbar__icon icon-mail" aria-hidden="true"></i>
+    <span class="callbar__label">Send a<br>message</span>
+  </a>
 
   <div class="callbar__widget-slot" aria-hidden="true"></div>
 </div>
@@ -81,8 +78,8 @@ const callNumber = site.phoneNumber; // shown/announced; the link dials the trac
       grid-template-columns: repeat(5, 1fr);
       align-items: end;
       block-size: var(--callbar-height);
-      background: var(--main);
-      color: var(--on-main);
+      background: var(--main-dark);
+      color: var(--white);
       box-shadow: var(--shadow-callbar);
       overflow: visible; /* lets the raised call button protrude above the bar */
     }
@@ -135,7 +132,7 @@ const callNumber = site.phoneNumber; // shown/announced; the link dials the trac
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 50%;
+      border-radius: var(--radius-round);
       background: var(--cta);
       box-shadow: var(--shadow-float);
     }

@@ -8,13 +8,12 @@
 // Skeleton-Build-Spec.md §6.
 //
 // Visually cloned 2026-09-15 against the user's real reference
-// screenshots (reference1/2/3.png) of the live V2.5 build: the colored
-// paw-shaped Like/Dislike icons (paw-like.svg/paw-dislike.svg — already
-// colored in the source file, no CSS tinting needed), and the circular
+// screenshots (reference1/2/3.png) of the live V2.5 build: the circular
 // platform-icon treatment on the review links (stays on the icon font per
 // the earlier icon-font decision, not the original's raster platform
-// logos). The peeking dog mascot photo was removed for this client
-// (real estate, 2026-09-30).
+// logos). This real estate fork removed the dog mascot and the paw buttons;
+// the Good / Could be better buttons use Phosphor thumbs icons (MIT,
+// public/images/reputation/thumbs-*.svg) tinted via CSS mask with --main.
 import Modal from "./Modal.astro";
 import GravityFormEmbed from "./GravityFormEmbed.astro";
 import { getSiteInfo } from "../lib/data/site";
@@ -33,22 +32,22 @@ const reviewLinks = (
 <Modal id="reputation-widget">
   <div class="reputation-widget" data-reputation-widget>
     <div class="reputation-widget__stage" data-rm-stage="prompt">
-      <h2 class="reputation-widget__heading">Tell us how we are doing?</h2>
-      <div class="reputation-widget__paws">
-        <button type="button" class="reputation-widget__paw" data-rm-action="like">
-          <img src="/images/reputation/paw-like.svg" alt="" class="reputation-widget__paw-icon" />
-          <span class="reputation-widget__paw-label">Like</span>
+      <h2 class="reputation-widget__heading">How are we doing?</h2>
+      <div class="reputation-widget__choices">
+        <button type="button" class="reputation-widget__choice" data-rm-action="like">
+          <span class="reputation-widget__choice-icon reputation-widget__choice-icon--up" aria-hidden="true"></span>
+          <span class="reputation-widget__choice-label">Good</span>
         </button>
-        <button type="button" class="reputation-widget__paw" data-rm-action="dislike">
-          <img src="/images/reputation/paw-dislike.svg" alt="" class="reputation-widget__paw-icon" />
-          <span class="reputation-widget__paw-label">Dislike</span>
+        <button type="button" class="reputation-widget__choice" data-rm-action="dislike">
+          <span class="reputation-widget__choice-icon reputation-widget__choice-icon--down" aria-hidden="true"></span>
+          <span class="reputation-widget__choice-label">Could be better</span>
         </button>
       </div>
     </div>
 
     <div class="reputation-widget__stage" data-rm-stage="positive" hidden>
-      <h2 class="reputation-widget__heading">Thank you hooman!!</h2>
-      <p class="reputation-widget__tagline">Can you please be more specific and leave us a review on your preferred platform.</p>
+      <h2 class="reputation-widget__heading">Thank you!</h2>
+      <p class="reputation-widget__tagline">It would mean a lot if you shared your experience in a public review.</p>
       {reviewLinks.length > 0 ? (
         <div class="reputation-widget__review-links">
           {reviewLinks.map((r) => (
@@ -69,7 +68,7 @@ const reviewLinks = (
 
     <div class="reputation-widget__stage" data-rm-stage="negative" hidden>
       <h2 class="reputation-widget__heading">What can we improve?</h2>
-      <p class="reputation-widget__tagline">Please tell us what we can improve. We love to hear from our clients. Please let us know if there are any areas that you think we could improve upon.</p>
+      <p class="reputation-widget__tagline">Your feedback goes straight to Marissa. Tell us what we could do better and we will follow up personally.</p>
       <GravityFormEmbed formId="reputation-feedback" context="reputation" />
     </div>
   </div>
@@ -80,11 +79,13 @@ const reviewLinks = (
   .reputation-widget__heading { margin-block-start: 0; text-transform: uppercase; font-size: 1.4rem; }
   .reputation-widget__tagline { color: var(--text-muted); }
 
-  .reputation-widget__paws { display: flex; gap: var(--space-lg); justify-content: center; margin-block-start: var(--space-lg); }
-  .reputation-widget__paw { display: flex; flex-direction: column; align-items: center; gap: 0.5em; background: none; border: 0; font: inherit; cursor: pointer; }
-  .reputation-widget__paw-icon { width: 5rem; height: 5rem; transition: transform var(--motion-duration-base) var(--motion-ease); }
-  .reputation-widget__paw:hover .reputation-widget__paw-icon { transform: scale(1.08); }
-  .reputation-widget__paw-label { text-transform: uppercase; font-weight: 700; font-size: 0.85rem; }
+  .reputation-widget__choices { display: flex; gap: var(--space-lg); justify-content: center; margin-block-start: var(--space-lg); }
+  .reputation-widget__choice { display: flex; flex-direction: column; align-items: center; gap: 0.5em; background: none; border: 0; font: inherit; color: var(--main-dark); cursor: pointer; }
+  .reputation-widget__choice-icon { display: block; width: 4.5rem; height: 4.5rem; background: var(--main); mask: center / contain no-repeat; transition: transform var(--motion-duration-base) var(--motion-ease); }
+  .reputation-widget__choice-icon--up { mask-image: url(/images/reputation/thumbs-up.svg); }
+  .reputation-widget__choice-icon--down { mask-image: url(/images/reputation/thumbs-down.svg); }
+  .reputation-widget__choice:hover .reputation-widget__choice-icon { transform: scale(1.08); }
+  .reputation-widget__choice-label { text-transform: uppercase; font-weight: 600; font-size: var(--font-size-xs); letter-spacing: var(--letter-spacing-button); }
 
   .reputation-widget__review-links { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-lg); margin-block-start: var(--space-lg); }
   .reputation-widget__review-link { display: flex; flex-direction: column; align-items: center; gap: 0.6em; width: 9rem; text-decoration: none; color: var(--heading); }
@@ -94,7 +95,7 @@ const reviewLinks = (
     justify-content: center;
     width: 4rem;
     height: 4rem;
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     color: var(--white);
     font-size: 1.8rem;
     transition: transform var(--motion-duration-base) var(--motion-ease);

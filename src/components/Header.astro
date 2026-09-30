@@ -1,283 +1,223 @@
 ---
-// Sitewide fixed header. Generalized from the real V2 Webflow export's
-// header.html (utility bar + primary nav with a Services flyout) — see
-// Skeleton-Build-Spec.md §6. The Services dropdown is fully dynamic
-// (one flyout per live service category) rather than hardcoding category
-// names the way the V2 source does, since Skeleton has no fixed category
-// list.
+// V2 header (approved preview: docs/design/homepage-variations/v2-fullscreen-menu.html).
+// A fixed 76px bar — wordmark, "Book a call", MENU — that opens a full-screen
+// espresso overlay with large serif links. The bar has a solid background from
+// the start and every page starts below it, so its links never sit on a photo.
 //
-// Scroll-state color system (2026-09-08, real visual ref: ref1.jpg):
-// always sticky (position: fixed); default state is transparent
-// background + white text/icons/logo, meant to sit over a hero/banner's
-// dark overlay (see Hero.astro / PageHeaderBanner.astro, both padded to
-// render full-bleed behind this header rather than pushed below it);
-// past a small scroll threshold, .header gets is-scrolled (JS below),
-// which flips to a white background + dark text/icons/logo. The "Book
-// Now" CTA button stays solid-colored in both states — it's a button, not
-// a nav link. The mobile slide-out menu panel is exempted from the
-// swap (forced dark-on-white always, see the max-width:900px block) since
-// it's a full solid panel, not part of the transparent top bar.
-//
-// Logo: site.logoWhite/logoColor (src/data/site.ts) stack and crossfade
-// with the same scroll state, the classic two-image-variant technique.
-// Only one configured → shown plain, no crossfade. Neither configured →
-// falls back to text, which still participates in the color swap.
+// DOM contract (CSS, scripts and the a11y check rely on these):
+//   [data-header]         gets .is-scrolled via an IntersectionObserver sentinel
+//   [data-menu-toggle]    aria-expanded, aria-controls="site-menu"
+//   #site-menu            role=dialog, aria-modal; body.menu-open while open
+// The About slot (Photo Gallery, How'd We Do?) is kept in the secondary list —
+// How'd We Do? is the only way to open the reputation widget.
+import { Image } from "astro:assets";
 import { getSiteInfo } from "../lib/data/site";
 import { getAllServiceCategories } from "../lib/data/serviceCategories";
 import { getServicesByCategory } from "../lib/data/services";
 import { getAllSocialLinks } from "../lib/data/socialLinks";
-import { SOCIAL_ICON_CLASSES, SOCIAL_LABELS } from "../lib/icons/social";
+import { SOCIAL_LABELS } from "../lib/icons/social";
 import { phoneHref } from "../lib/utils/phone";
-import { BLOG_BASE } from "../lib/data/blog";
+import menuImage from "../assets/brand/marissa-living-room.jpg";
 
 const site = await getSiteInfo();
 const categories = await getAllServiceCategories();
-const servicesByCategory = await Promise.all(
-  categories.map(async (category) => ({
-    category,
-    services: await getServicesByCategory(category.id),
-  }))
-);
+const services = (await Promise.all(categories.map((c) => getServicesByCategory(c.id)))).flat();
 const socialLinks = await getAllSocialLinks();
+
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/meet-the-team", label: "Meet Marissa" },
+  { href: "/services", label: "Services", services: true },
+  { href: "/builders-developers", label: "Builders & Developers" },
+  { href: "/listings", label: "Listings" },
+  { href: "/gather-and-ground", label: "Gather & Ground" },
+  { href: "/contact-us", label: "Contact" },
+];
+const current = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isCurrent = (href: string) => (href === "/" ? current === "/" : current === href || current.startsWith(href + "/"));
 ---
 
+<div class="header-sentinel" data-header-sentinel aria-hidden="true"></div>
 <header class="header" data-header>
-  <div class="header__utility">
-    <div class="header__utility-inner">
-      <div class="header__contact-info">
-        {site.address && (
-          <span class="header__utility-item header__utility-item--address">
-            {site.address}{site.addressLine2 ? `, ${site.addressLine2}` : ""}
-          </span>
-        )}
-        {site.phoneNumber && (
-          <a class="header__utility-item header__utility-item--phone" href={phoneHref(site)}>
-            {site.phoneNumber}
-          </a>
-        )}
-      </div>
-      <div class="header__utility-actions">
-        {socialLinks.map((social) => (
-          <a
-            class="header__social-link"
-            href={social.data.link}
-            aria-label={SOCIAL_LABELS[social.data.icon]}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <i class={SOCIAL_ICON_CLASSES[social.data.icon]} aria-hidden="true"></i>
-          </a>
-        ))}
-        {site.bookingUrl && <a class="header__cta" href={site.bookingUrl}>{site.bookingLabel || "Book Now"}</a>}
-      </div>
+  <div class="header__bar">
+    <a class="header__brand" href="/" aria-label={`${site.practiceName}, home`}>
+      {site.logoColor ? (
+        <img class="header__logo" src={site.logoColor} alt={site.practiceName} />
+      ) : (
+        <span class="header__wordmark">The <em>Malak</em> Estate Group</span>
+      )}
+    </a>
+    <div class="header__actions">
+      {site.bookingUrl && <a class="header__book" href={site.bookingUrl}>{site.bookingLabel}</a>}
+      <button class="header__toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-menu">
+        <span class="header__toggle-label" data-menu-label>Menu</span>
+        <span class="header__toggle-lines" aria-hidden="true"></span>
+      </button>
     </div>
   </div>
+</header>
 
-  <nav class="header__nav" aria-label="Primary">
-    <div class="header__nav-inner">
-      <button class="header__menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="primary-menu">
-        <span class="header__menu-toggle-bar" aria-hidden="true"></span>
-        <span class="header__menu-toggle-bar" aria-hidden="true"></span>
-        <span class="header__menu-toggle-bar" aria-hidden="true"></span>
-        <span class="sr-only">Menu</span>
-      </button>
-
-      <a class="header__logo" href="/" aria-label={site.practiceName}>
-        {site.logoWhite && site.logoColor ? (
-          <span class="header__logo-stack">
-            <img class="header__logo-image header__logo-image--white" src={site.logoWhite} alt={site.practiceName} />
-            <img class="header__logo-image header__logo-image--color" src={site.logoColor} alt={site.practiceName} />
-          </span>
-        ) : site.logoWhite || site.logoColor ? (
-          <img class="header__logo-image" src={site.logoWhite || site.logoColor} alt={site.practiceName} />
+<div class="menu" id="site-menu" role="dialog" aria-modal="true" aria-label="Site menu" data-menu hidden>
+  <nav class="menu__nav" aria-label="Primary">
+    <ul class="menu__links">
+      {links.map((link, i) =>
+        link.services ? (
+          <li style={`--stagger-index:${i}`}>
+            <details class="menu__services">
+              <summary class="menu__link">{link.label}</summary>
+              <ul class="menu__sub">
+                {services.map((s) => (
+                  <li><a href={`/services/${s.id}`}>{s.data.customName || s.data.name}</a></li>
+                ))}
+                <li><a href="/services">All services</a></li>
+              </ul>
+            </details>
+          </li>
         ) : (
-          <span class="header__logo-text">{site.practiceName}</span>
-        )}
-      </a>
-
-      <ul class="header__menu" id="primary-menu" data-menu>
-        <li class="header__menu-item"><a class="header__menu-link" href="/">Home</a></li>
-
-        <li class="header__menu-item header__menu-item--dropdown">
-          <button class="header__menu-link header__dropdown-toggle" type="button" data-dropdown-toggle aria-expanded="false">
-            About <span class="header__caret" aria-hidden="true"></span>
-          </button>
-          {/* Fixed slot: keep all three items through any redesign (a redesign
-              once dropped How'd We Do?, the only way to open the reputation
-              widget). Rename or re-route items; don't remove them. */}
-          <ul class="header__dropdown-menu">
-            <li><a href="/meet-the-team">Meet the Team</a></li>
-            <li><a href="/photo-gallery">Photo Gallery</a></li>
-            <li><button type="button" class="header__dropdown-link-button" data-modal-target="reputation-widget">How'd We Do?</button></li>
-          </ul>
-        </li>
-
-        <li class="header__menu-item header__menu-item--dropdown">
-          <button class="header__menu-link header__dropdown-toggle" type="button" data-dropdown-toggle aria-expanded="false">
-            Services <span class="header__caret" aria-hidden="true"></span>
-          </button>
-          <ul class="header__dropdown-menu header__dropdown-menu--services">
-            {servicesByCategory.map(({ category, services }) => (
-              <li class="header__dropdown-item header__dropdown-item--has-submenu">
-                <button type="button" class="header__submenu-toggle" data-dropdown-toggle aria-expanded="false">
-                  {category.data.name} <span class="header__caret" aria-hidden="true"></span>
-                </button>
-                <ul class="header__submenu">
-                  {services.map((service) => (
-                    <li><a href={`/services/${service.id}`}>{service.data.customName || service.data.name}</a></li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-            <li class="header__dropdown-item header__dropdown-item--all"><a href="/services">All Services</a></li>
-          </ul>
-        </li>
-
-        <li class="header__menu-item header__menu-item--dropdown">
-          <button class="header__menu-link header__dropdown-toggle" type="button" data-dropdown-toggle aria-expanded="false">
-            For Pet Owners <span class="header__caret" aria-hidden="true"></span>
-          </button>
-          <ul class="header__dropdown-menu">
-            <li><a href="/faq">FAQs</a></li>
-            <li><a href="/online-forms">New Patient Forms</a></li>
-            <li><a href={BLOG_BASE}>Our Blog</a></li>
-          </ul>
-        </li>
-
-        <li class="header__menu-item"><a class="header__menu-link" href="/contact-us">Contact</a></li>
-      </ul>
-
+          <li style={`--stagger-index:${i}`}>
+            <a class="menu__link" href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>{link.label}</a>
+          </li>
+        )
+      )}
+    </ul>
+    <ul class="menu__secondary">
+      <li><a href="/photo-gallery">Photo Gallery</a></li>
+      <li><button type="button" data-modal-target="reputation-widget" data-menu-close>How'd We Do?</button></li>
+      <li><a href="/faq">FAQ</a></li>
+    </ul>
+    <div class="menu__meta">
       {site.phoneNumber && (
-        <a class="header__mobile-call" href={phoneHref(site)} aria-label={`Call us at ${site.phoneNumber}`}>
-          <span aria-hidden="true">&#128222;</span>
-        </a>
+        <div><p class="menu__meta-label">Call</p><a class="menu__phone" href={phoneHref(site)}>{site.phoneNumber}</a></div>
+      )}
+      {site.email && (
+        <div><p class="menu__meta-label">Email</p><a href={`mailto:${site.email}`}>{site.email}</a></div>
+      )}
+      {socialLinks.length > 0 && (
+        <div>
+          <p class="menu__meta-label">Follow</p>
+          {socialLinks.map((s) => (
+            <a class="menu__social" href={s.data.link} target="_blank" rel="noopener noreferrer">{SOCIAL_LABELS[s.data.icon]}</a>
+          ))}
+        </div>
       )}
     </div>
   </nav>
-</header>
+  <div class="menu__media" aria-hidden="true">
+    <Image src={menuImage} alt="" class="menu__image" widths={[640, 960]} sizes="45vw" loading="lazy" />
+  </div>
+</div>
 
 <style>
-  .header {
-    position: fixed;
-    inset-block-start: 0;
-    inset-inline: 0;
-    z-index: 50;
-    background: var(--header-bg);
-    box-shadow: none;
-    transition: background-color var(--motion-duration-slow) var(--motion-ease), box-shadow var(--motion-duration-slow) var(--motion-ease);
-    color: var(--header-fg);
+  .header-sentinel { position: absolute; inset-block-start: 40px; inline-size: 1px; block-size: 1px; }
+  .header { position: fixed; inset: 0 0 auto; z-index: 60; block-size: var(--header-height); display: flex; align-items: center; background: var(--solid-bg); transition: background-color var(--motion-duration-slow) var(--motion-ease), box-shadow var(--motion-duration-slow) var(--motion-ease); }
+  .header.is-scrolled { background: var(--white-o85); box-shadow: 0 1px 0 var(--light-grey); backdrop-filter: blur(12px); }
+  :global(body.menu-open) .header { background: var(--main-dark); box-shadow: none; backdrop-filter: none; }
+  .header__bar { inline-size: 100%; max-inline-size: var(--container-max); margin-inline: auto; padding-inline: clamp(var(--space-md), 4vw, var(--space-xl)); display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); }
+  .header__brand { text-decoration: none; }
+  .header__wordmark { font: 400 1.3rem/1 var(--font-heading); color: var(--main-dark); white-space: nowrap; }
+  .header__wordmark em { font-style: italic; }
+  .header__logo { block-size: var(--logo-height); inline-size: auto; }
+  .header__actions { display: flex; align-items: center; gap: var(--space-lg); }
+  .header__book { font-weight: 600; font-size: var(--font-size-sm); text-decoration: none; color: var(--main-dark); border-block-end: 1px solid var(--cta); padding-block-end: 2px; white-space: nowrap; }
+  .header__toggle { display: inline-flex; align-items: center; gap: var(--space-sm); border: 0; background: none; padding: var(--space-sm) 0; cursor: pointer; font: 600 var(--font-size-xs)/1 var(--font-body); letter-spacing: var(--letter-spacing-label); text-transform: uppercase; color: var(--main-dark); }
+  .header__toggle-lines { position: relative; inline-size: 28px; block-size: 10px; }
+  .header__toggle-lines::before, .header__toggle-lines::after { content: ""; position: absolute; inset-inline: 0; block-size: 1.5px; background: currentColor; transition: transform var(--motion-duration-slow) var(--motion-ease), inset-block-start var(--motion-duration-slow) var(--motion-ease); }
+  .header__toggle-lines::before { inset-block-start: 0; }
+  .header__toggle-lines::after { inset-block-start: 8px; }
+  :global(body.menu-open) .header__wordmark,
+  :global(body.menu-open) .header__book,
+  :global(body.menu-open) .header__toggle { color: var(--white); }
+  :global(body.menu-open) .header__toggle-lines::before { inset-block-start: 4px; transform: rotate(45deg); }
+  :global(body.menu-open) .header__toggle-lines::after { inset-block-start: 4px; transform: rotate(-45deg); }
+  @media (max-width: 420px) {
+    .header__wordmark { font-size: 1.1rem; }
+    .header__actions { gap: var(--space-md); }
+    /* visually hidden, still announced */
+    .header__toggle-label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   }
-  .header.is-scrolled {
-    --header-bg: var(--white);
-    --header-fg: var(--heading);
-    box-shadow: var(--shadow-header);
-  }
 
-  .header__utility { font-size: var(--font-size-sm); }
-  .header__utility-inner { max-width: var(--container-max); margin-inline: auto; padding: var(--space-xs) var(--space-md); display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); }
-  .header__contact-info { display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap; }
-  .header__utility-item { color: inherit; text-decoration: none; }
-  /* Address is address+addressLine2 joined into one string (see markup) —
-     force it to stay on one line rather than wrapping mid-address if the
-     combined string is long and the utility bar is narrow. */
-  .header__utility-item--address { white-space: nowrap; }
-  .header__utility-actions { display: flex; align-items: center; gap: var(--space-sm); }
-  .header__social-link { color: inherit; display: inline-flex; font-size: 1.1rem; }
-  .header__cta { display: inline-block; background: var(--cta); color: var(--on-cta); padding: var(--space-xs) var(--space-md); border-radius: var(--radius-sm); text-decoration: none; font-weight: 600; transition: background-color var(--motion-duration-fast) var(--motion-ease); }
-  .header__cta:hover { background: var(--cta-hover); }
-
-  .header__nav-inner { max-width: var(--container-max); margin-inline: auto; padding: var(--space-sm) var(--space-md); display: flex; align-items: center; gap: var(--space-lg); }
-  .header__logo { display: inline-flex; margin-inline-end: auto; text-decoration: none; color: inherit; }
-  .header__logo:visited { color: inherit; }
-  .header__logo-text { font-weight: 700; font-size: var(--font-size-lg); color: inherit; }
-  .header__logo-stack { position: relative; display: inline-block; block-size: var(--logo-height); }
-  .header__logo-stack .header__logo-image { display: block; block-size: var(--logo-height); inline-size: auto; transition: opacity var(--motion-duration-slow) var(--motion-ease); }
-  .header__logo-stack .header__logo-image--color { position: absolute; inset-block-start: 0; inset-inline-start: 0; opacity: 0; }
-  .header.is-scrolled .header__logo-stack .header__logo-image--white { opacity: 0; }
-  .header.is-scrolled .header__logo-stack .header__logo-image--color { opacity: 1; }
-  .header__logo > .header__logo-image { display: block; block-size: var(--logo-height); inline-size: auto; }
-
-  .header__menu-toggle { display: none; flex-direction: column; gap: 4px; background: none; border: 0; cursor: pointer; padding: var(--space-xs); order: -1; }
-  .header__menu-toggle-bar { width: 22px; height: 2px; background: currentColor; display: block; }
-
-  .header__menu { display: flex; align-items: center; gap: var(--space-lg); list-style: none; margin: 0; padding: 0; }
-  .header__menu-link { background: none; border: 0; font: inherit; color: inherit; text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.3em; padding: 0; }
-  .header__caret { width: 0.5em; height: 0.5em; border-inline-end: 2px solid currentColor; border-block-end: 2px solid currentColor; transform: rotate(45deg); margin-block-start: -0.2em; }
-
-  .header__menu-item--dropdown { position: relative; }
-  .header__dropdown-menu { position: absolute; inset-block-start: 100%; inset-inline-start: 0; min-width: 12rem; background: var(--white); box-shadow: var(--shadow-dropdown); list-style: none; margin: 0; padding: var(--space-xs) 0; display: none; z-index: 10; }
-  .header__dropdown-toggle[aria-expanded="true"] + .header__dropdown-menu,
-  .header__menu-item--dropdown:has(> [aria-expanded="true"]) > .header__dropdown-menu { display: block; }
-  .header__dropdown-menu a,
-  .header__dropdown-link-button { display: block; width: 100%; text-align: start; padding: var(--space-xs) var(--space-md); color: var(--heading); text-decoration: none; background: none; border: 0; font: inherit; cursor: pointer; }
-  .header__dropdown-menu a:hover,
-  .header__dropdown-link-button:hover { background: var(--solid-bg); }
-
-  .header__dropdown-item--has-submenu { position: relative; }
-  .header__submenu-toggle { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 0.5em; padding: var(--space-xs) var(--space-md); background: none; border: 0; font: inherit; color: var(--heading); cursor: pointer; text-align: start; }
-  .header__submenu { position: absolute; inset-inline-start: 100%; inset-block-start: 0; min-width: 12rem; background: var(--white); box-shadow: var(--shadow-dropdown); list-style: none; margin: 0; padding: var(--space-xs) 0; display: none; }
-  .header__submenu-toggle[aria-expanded="true"] + .header__submenu { display: block; }
-  .header__submenu a { display: block; padding: var(--space-xs) var(--space-md); color: var(--heading); text-decoration: none; }
-  .header__submenu a:hover { background: var(--solid-bg); }
-
-  /* color:inherit — same fix as .header__logo (2026-09-08): anchors need
-     this explicitly or the browser's default link color (blue/visited-
-     purple) wins over inheritance from --header-fg. Found while testing
-     the callbar/widget layout, unrelated to that but a real bug either way. */
-  .header__mobile-call { display: none; color: inherit; }
-  .header__mobile-call:visited { color: inherit; }
-
-  @media (max-width: 900px) {
-    .header__menu-toggle { display: inline-flex; }
-    .header__contact-info { display: none; }
-    /* The slide-out panel is a solid white sheet regardless of scroll
-       state — force dark-on-white here rather than inheriting --header-fg. */
-    .header__menu { position: fixed; inset-block-start: var(--header-height); inset-inline: 0; inset-block-end: 0; background: var(--white); flex-direction: column; align-items: stretch; padding: var(--space-md); overflow-y: auto; transform: translateX(-100%); transition: transform var(--motion-duration-base) var(--motion-ease); color: var(--heading); }
-    .header__menu.is-open { transform: translateX(0); }
-    .header__dropdown-menu, .header__submenu { position: static; box-shadow: none; padding-inline-start: var(--space-md); }
-    .header__mobile-call { display: inline-flex; align-items: center; justify-content: center; }
-  }
+  /* Full-screen menu */
+  .menu { position: fixed; inset: 0; z-index: 55; display: grid; grid-template-columns: 1.3fr 1fr; background: var(--main-dark); color: var(--on-dark-muted); clip-path: inset(0 0 100% 0); transition: clip-path var(--motion-duration-menu) var(--motion-ease-out); }
+  .menu[hidden] { display: none; }
+  .menu.is-open { clip-path: inset(0 0 0 0); }
+  .menu__nav { display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-xl); overflow-y: auto; padding: calc(var(--header-height) + var(--space-xl)) clamp(var(--space-lg), 6vw, 6rem) var(--space-xl); }
+  .menu__links, .menu__sub, .menu__secondary { list-style: none; margin: 0; padding: 0; }
+  .menu__links { display: grid; gap: 0.2rem; }
+  .menu__links > li { opacity: 0; transform: translateY(var(--motion-distance)); transition: opacity var(--motion-duration-reveal) var(--motion-ease-out), transform var(--motion-duration-reveal) var(--motion-ease-out); }
+  .menu.is-open .menu__links > li { opacity: 1; transform: none; transition-delay: calc(var(--motion-duration-base) + var(--stagger-index) * var(--motion-stagger)); }
+  .menu__link { display: inline-block; cursor: pointer; font: 400 clamp(2rem, 4.4vw, 3.6rem)/1.15 var(--font-heading); color: var(--white); text-decoration: none; list-style: none; transition: color var(--motion-duration-slow) var(--motion-ease); }
+  .menu__link::-webkit-details-marker { display: none; }
+  .menu__link:hover, .menu__link[aria-current="page"] { color: var(--cta); font-style: italic; }
+  .menu__services[open] .menu__link { color: var(--cta); }
+  .menu__sub { display: grid; gap: var(--space-xs); padding: var(--space-sm) 0 var(--space-md) var(--space-2xs); }
+  .menu__sub a { color: var(--on-dark-muted); text-decoration: none; font-size: var(--font-size-md); }
+  .menu__sub a:hover { color: var(--white); }
+  .menu__secondary { display: flex; flex-wrap: wrap; gap: var(--space-lg); }
+  .menu__secondary a, .menu__secondary button { background: none; border: 0; padding: 0; font: 500 var(--font-size-md)/1.4 var(--font-body); color: var(--on-dark-muted); text-decoration: none; cursor: pointer; }
+  .menu__secondary a:hover, .menu__secondary button:hover { color: var(--white); }
+  .menu__meta { display: flex; flex-wrap: wrap; gap: var(--space-lg) var(--space-2xl); font-size: var(--font-size-sm); }
+  .menu__meta-label { margin: 0 0 var(--space-xs); font-size: var(--font-size-xs); font-weight: 600; letter-spacing: var(--letter-spacing-label); text-transform: uppercase; color: var(--cta); }
+  .menu__meta a { color: var(--white); text-decoration: none; }
+  .menu__phone { white-space: nowrap; }
+  .menu__social + .menu__social { margin-inline-start: var(--space-md); }
+  .menu__media { position: relative; overflow: hidden; margin-block-start: var(--header-height); }
+  .menu__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; transform: scale(1.08); transition: transform var(--motion-duration-image) var(--motion-ease-out); }
+  .menu.is-open .menu__image { transform: scale(1); }
+  @media (max-width: 900px) { .menu { grid-template-columns: 1fr; } .menu__media { display: none; } }
 </style>
 
 <script>
-  const header = document.querySelector("[data-header]");
-  function updateHeaderScrollState() {
-    header?.classList.toggle("is-scrolled", window.scrollY > 10);
+  const header = document.querySelector<HTMLElement>("[data-header]");
+  const sentinel = document.querySelector("[data-header-sentinel]");
+  const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+  const label = document.querySelector<HTMLElement>("[data-menu-label]");
+  const menu = document.querySelector<HTMLElement>("[data-menu]");
+
+  if (header && sentinel) {
+    new IntersectionObserver(([entry]) => header.classList.toggle("is-scrolled", !entry.isIntersecting)).observe(sentinel);
   }
-  updateHeaderScrollState();
-  window.addEventListener("scroll", updateHeaderScrollState, { passive: true });
 
-  document.addEventListener("click", (e) => {
-    if (!(e.target instanceof Element)) return;
+  if (toggle && menu && header) {
+    const focusables = () =>
+      [...header.querySelectorAll<HTMLElement>("a, button"), ...menu.querySelectorAll<HTMLElement>("a, button, summary")].filter(
+        (el) => el.offsetParent !== null
+      );
+    const isOpen = () => document.body.classList.contains("menu-open");
 
-    const menuToggle = e.target.closest("[data-menu-toggle]");
-    if (menuToggle) {
-      const menu = document.querySelector("[data-menu]");
-      const expanded = menuToggle.getAttribute("aria-expanded") === "true";
-      menuToggle.setAttribute("aria-expanded", String(!expanded));
-      menu?.classList.toggle("is-open", !expanded);
-      return;
-    }
+    const setOpen = (open: boolean, returnFocus = true) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      if (label) label.textContent = open ? "Close" : "Menu";
+      document.body.classList.toggle("menu-open", open);
+      document.body.style.overflow = open ? "hidden" : "";
+      if (open) {
+        menu.hidden = false;
+        requestAnimationFrame(() => {
+          menu.classList.add("is-open");
+          menu.querySelector<HTMLElement>(".menu__link")?.focus({ preventScroll: true });
+        });
+      } else {
+        menu.classList.remove("is-open");
+        const hide = () => { if (!isOpen()) menu.hidden = true; };
+        menu.addEventListener("transitionend", hide, { once: true });
+        setTimeout(hide, 1000); // no transition under reduced motion
+        if (returnFocus) toggle.focus({ preventScroll: true });
+      }
+    };
 
-    const dropdownToggle = e.target.closest("[data-dropdown-toggle]");
-    if (dropdownToggle) {
-      const expanded = dropdownToggle.getAttribute("aria-expanded") === "true";
-      const parentList = dropdownToggle.parentElement?.parentElement;
-      parentList?.querySelectorAll(":scope > li > [data-dropdown-toggle]").forEach((btn) => {
-        if (btn !== dropdownToggle) btn.setAttribute("aria-expanded", "false");
-      });
-      dropdownToggle.setAttribute("aria-expanded", String(!expanded));
-      return;
-    }
+    toggle.addEventListener("click", () => setOpen(!isOpen()));
+    menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setOpen(false, false)));
+    menu.querySelectorAll("[data-menu-close]").forEach((b) => b.addEventListener("click", () => setOpen(false, false)));
 
-    if (!e.target.closest(".header__menu-item--dropdown")) {
-      document.querySelectorAll('[data-dropdown-toggle][aria-expanded="true"]').forEach((btn) => btn.setAttribute("aria-expanded", "false"));
-    }
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      document.querySelectorAll('[data-dropdown-toggle][aria-expanded="true"]').forEach((btn) => btn.setAttribute("aria-expanded", "false"));
-    }
-  });
+    document.addEventListener("keydown", (e) => {
+      if (!isOpen()) return;
+      if (e.key === "Escape") { e.preventDefault(); setOpen(false); return; }
+      if (e.key !== "Tab") return;
+      const items = focusables();
+      if (!items.length) return;
+      const i = items.indexOf(document.activeElement as HTMLElement);
+      const next = e.shiftKey ? (i <= 0 ? items.length - 1 : i - 1) : (i === items.length - 1 || i < 0 ? 0 : i + 1);
+      e.preventDefault();
+      items[next].focus();
+    });
+  }
 </script>

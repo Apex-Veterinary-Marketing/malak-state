@@ -17,8 +17,8 @@ const telHref = phoneHref(site);
 const siteHost = new URL(site.url || "https://example.com").hostname;
 ---
 
-<BaseLayout title="Privacy Policy" description={`How ${site.practiceName} collects, uses, and protects your information.`}>
-  <PageHeaderBanner eyebrow="Legal" heading="Privacy Policy" />
+<BaseLayout title="Privacy Policy" description={`How ${site.practiceName} collects and uses information submitted through this website.`}>
+  <PageHeaderBanner eyebrow="Legal" heading="Privacy *policy*" />
   <section class="legal">
     <div class="legal__body">
       <p class="legal__effective">Effective {effectiveDate}</p>
@@ -26,10 +26,10 @@ const siteHost = new URL(site.url || "https://example.com").hostname;
 
       <h2>Information We Collect</h2>
       <h3>Information you give us</h3>
-      <p>When you fill out a form, request an appointment, call, text, or email us, you may share information such as:</p>
+      <p>When you fill out a form, book a call, call, text, or email us, you may share information such as:</p>
       <ul>
         <li>Your name, email address, and phone number</li>
-        <li>Your pet's name, species, breed, and details about their health or care</li>
+        <li>Details about the home you're buying, selling, or building, your timeline, and your preferences</li>
         <li>Any other information you choose to include in your message</li>
       </ul>
 
@@ -40,7 +40,7 @@ const siteHost = new URL(site.url || "https://example.com").hostname;
       <p>We use the information we collect to:</p>
       <ul>
         <li>Respond to your questions and inquiries</li>
-        <li>Contact you about our services, schedule appointments, and follow up as a prospective or current client</li>
+        <li>Contact you about our services, schedule calls and showings, and follow up as a prospective or current client</li>
         <li>Provide our services and support</li>
         <li>Understand how visitors use the Site so we can improve it</li>
         <li>Measure and improve our marketing and advertising efforts</li>
@@ -89,7 +89,8 @@ const siteHost = new URL(site.url || "https://example.com").hostname;
 </BaseLayout>
 
 <style>
-  .legal { max-inline-size: var(--container-max-narrow); margin-inline: auto; padding: var(--space-xl) var(--space-md); }
+  .legal { max-inline-size: var(--container-max-narrow); margin-inline: auto; padding: clamp(4rem, 8vw, 6rem) var(--space-md); }
+  .legal :global(h2) { font-size: var(--font-size-2xl); margin-block: var(--space-xl) var(--space-sm); }
   .legal__effective { color: var(--text-muted); }
   .legal__contact { padding: var(--space-lg); border-radius: var(--radius-lg); background: var(--solid-bg); border-inline-start: 2px solid var(--cta); font-style: normal; line-height: 1.8; }
 </style>

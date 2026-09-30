@@ -1,15 +1,10 @@
 ---
+// Terms of Use must come from the client (never agent-written). Noindexed
+// until real terms are supplied; check:launch keeps warning.
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../components/PageHeaderBanner.astro";
 ---
 
-<BaseLayout title="Terms of Use" description="Terms of use for this website.">
-  <PageHeaderBanner heading="Terms of Use" />
-  <div class="page-section">
-    <p>Terms of use content goes here — replace with real legal copy per client.</p>
-  </div>
+<BaseLayout title="Terms of Use" description="Terms of use for The Malak Estate Group website." noindex>
+  <PageHeaderBanner eyebrow="Legal" heading="Terms of *use*" intro="Our terms of use will be posted here. Questions in the meantime? Contact us any time." />
 </BaseLayout>
-
-<style>
-  .page-section { max-width: 40rem; margin-inline: auto; padding: var(--space-xl) var(--space-md); }
-</style>

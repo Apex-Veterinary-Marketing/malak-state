@@ -1,0 +1,156 @@
+---
+// Builders & Developers (client's direct request): why builders should hire
+// Marissa to list and market new homes or communities. Copy drafted from the
+// client's notes; client to approve. Schema: Service for a business audience
+// + FAQPage.
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeaderBanner from "../components/PageHeaderBanner.astro";
+import FaqAccordion from "../components/FaqAccordion.astro";
+import { getSiteInfo } from "../lib/data/site";
+import { phoneHref } from "../lib/utils/phone";
+import { areaServedNode } from "../lib/schema/areaServed";
+import { stripHtml } from "../lib/utils/stripHtml";
+import headerImage from "../assets/placeholders/house-new-build.jpg";
+import storyImage from "../assets/placeholders/house-modern-dusk.jpg";
+
+const site = await getSiteInfo();
+const areas = (site.serviceAreaOfCoverage || "").split(",").map((s) => s.trim()).filter(Boolean);
+
+const offers = [
+  { title: "Positioning and pricing", text: "Pricing and product positioning informed by years of builder-side sales, so each home and floor plan meets the right buyer." },
+  { title: "Launch marketing", text: "Photography, listing presentation and a launch plan for single homes or full communities, built to create early momentum." },
+  { title: "Buyer guidance to closing", text: "Every buyer is guided from first visit through selections, walkthrough and closing, which keeps your timelines on track." },
+];
+const steps = [
+  { title: "Walk the project", text: "We tour the homes or community, talk through your buyer profile, timeline and goals." },
+  { title: "Position and price", text: "I bring a pricing and positioning plan grounded in local sales and new-construction experience." },
+  { title: "Launch", text: "We launch with strong presentation, targeted marketing and a clear showing plan." },
+  { title: "Sell through", text: "I manage buyers from inquiry to closing and report back to you regularly." },
+];
+const faqs = [
+  { question: "Do you represent single spec homes or only full communities?", answer: "<p>Both. I work with builders on single spec homes, small infill projects and full communities across Greater Cleveland.</p>" },
+  { question: "What makes new-construction listings different from resale?", answer: "<p>New construction sells a plan, a lot and a timeline as much as a finished house. Buyers need guidance on selections, standard versus upgraded features, and build schedules. My background in new-construction sales means I know those conversations well.</p>" },
+  { question: "Can you work alongside our on-site sales team?", answer: "<p>Yes. I can support an existing sales team with marketing and buyer outreach, or lead listing and sales myself. We'll define roles clearly up front.</p>" },
+  { question: "Which areas do you cover?", answer: "<p>Cuyahoga, Medina, Summit, Stark, Lake and Lorain counties across Greater Cleveland and Northeast Ohio.</p>" },
+  { question: "How do we get started?", answer: '<p>Book a call and tell me about your project. From there we can walk the site together. <a href="/schedule">Book a call</a>.</p>' },
+];
+const graph = [
+  {
+    "@type": "Service",
+    "@id": "#service",
+    name: "New construction listing and marketing",
+    serviceType: "New construction listing and marketing for builders and developers",
+    provider: { "@id": "#business" },
+    audience: { "@type": "BusinessAudience", audienceType: "Home builders and developers" },
+    areaServed: areas.map(areaServedNode),
+    url: new URL("/builders-developers", Astro.site).href,
+  },
+  {
+    "@type": "FAQPage",
+    "@id": "#faq",
+    mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: stripHtml(f.answer) } })),
+  },
+];
+---
+
+<BaseLayout
+  title="New Construction Listing Agent for Builders"
+  description="Builders and developers in Greater Cleveland: list and market your new homes or community with an agent who comes from new-construction sales."
+  ogImage={headerImage}
+  ogImageAlt="Newly built modern home"
+  schemaGraph={graph}
+  webPage={{ mainEntity: { "@id": "#service" } }}
+  breadcrumb="Builders & Developers"
+>
+  <PageHeaderBanner
+    heading="Builders: your community deserves a *sharper* launch"
+    intro="New development is reshaping Greater Cleveland. Many projects never reach the buyers they were built for."
+    image={headerImage}
+    imageAlt="Newly built modern home with timber cladding"
+  >
+    <div class="bd-hero__cta"><a class="btn btn--cta" href={site.bookingUrl}>{site.bookingLabel}</a></div>
+  </PageHeaderBanner>
+
+  <section class="bd-why">
+    <div class="container bd-why__grid">
+      <Image src={storyImage} alt="New contemporary home at dusk" class="bd-why__image" data-reveal widths={[640, 1000]} sizes="(max-width: 900px) 100vw, 45vw" />
+      <div data-reveal>
+        <h2>Why builder experience matters on the listing side.</h2>
+        <p class="lede">Most of my career has been spent inside new-construction sales, with President's Club recognition three years running and the Home Builder Award from 2023 to 2025.</p>
+        <p>I've seen how much a thoughtful launch, clear positioning and patient buyer guidance change the pace of a project. I've also seen well-built homes sit because they weren't presented or marketed to their full potential. I bring that experience to builders and developers who want their homes represented the right way.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bd-offers">
+    <div class="container">
+      <h2 data-reveal>What I bring to your project.</h2>
+      <div class="bd-offers__grid" data-reveal-stagger>
+        {offers.map((o) => (
+          <div class="bd-offer" data-reveal>
+            <h3>{o.title}</h3>
+            <p>{o.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="bd-steps">
+    <div class="container">
+      <h2 data-reveal>How we'd work together.</h2>
+      <ol class="bd-steps__list" data-reveal-stagger>
+        {steps.map((s) => (
+          <li class="bd-step" data-reveal><h3>{s.title}</h3><p>{s.text}</p></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="bd-faq">
+    <div class="container bd-faq__inner" data-reveal>
+      <FaqAccordion faqs={faqs} heading="Questions builders ask" />
+    </div>
+  </section>
+
+  <section class="bd-close">
+    <div class="container bd-close__inner" data-reveal>
+      <div>
+        <h2>Let's talk about your project.</h2>
+        <p class="lede">Tell me about your homes or community and your timeline.</p>
+      </div>
+      <div class="bd-close__actions">
+        <a class="btn btn--cta" href={site.bookingUrl}>{site.bookingLabel}</a>
+        {site.phoneNumber && <a class="bd-close__phone" href={phoneHref(site)}>{site.phoneNumber}</a>}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .bd-hero__cta { margin-block-start: var(--space-xl); }
+  .bd-why { padding-block: clamp(5rem, 10vw, 8rem); }
+  .bd-why__grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(2rem, 7vw, 6rem); align-items: center; }
+  .bd-why__grid p:not(.lede) { max-width: 60ch; margin-block-start: var(--space-lg); }
+  .bd-why__image { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+  .bd-offers { padding-block: clamp(4rem, 8vw, 6rem); background: var(--solid-bg); }
+  .bd-offers__grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: var(--space-xl); margin-block-start: var(--space-xl); }
+  .bd-offer { padding-block-start: var(--space-lg); border-block-start: 1px solid var(--cta); }
+  .bd-offer h3 { font-size: var(--font-size-xl); margin: 0 0 var(--space-sm); }
+  .bd-offer p { margin: 0; }
+  .bd-steps { padding-block: clamp(5rem, 10vw, 8rem); background: var(--main-dark); color: var(--on-dark-muted); }
+  .bd-steps h2, .bd-steps h3 { color: var(--white); }
+  .bd-steps__list { list-style: none; margin: var(--space-xl) 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-xl); }
+  .bd-step { padding-block-start: var(--space-lg); border-block-start: 1px solid var(--hairline-on-dark); }
+  .bd-step h3 { font-size: var(--font-size-xl); margin: 0 0 var(--space-sm); }
+  .bd-step p { margin: 0; }
+  .bd-faq { padding-block: clamp(5rem, 10vw, 8rem); }
+  .bd-faq__inner { max-width: 56rem; }
+  .bd-close { padding-block: clamp(4rem, 8vw, 6rem); background: var(--solid-bg); }
+  .bd-close__inner { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-lg); }
+  .bd-close__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-lg); }
+  .bd-close__phone { font: 400 var(--font-size-xl)/1 var(--font-heading); color: var(--main-dark); text-decoration: none; white-space: nowrap; }
+  @media (max-width: 900px) { .bd-why__grid, .bd-offers__grid { grid-template-columns: 1fr; } .bd-steps__list { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 767px) { .bd-steps__list { grid-template-columns: 1fr; } }
+</style>

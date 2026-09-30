@@ -7,13 +7,14 @@ import { getAllPosts } from "../../lib/data/blog";
 const posts = await getAllPosts();
 ---
 
-<BaseLayout title="Our Blog" description="News and articles from our practice.">
-  <PageHeaderBanner heading="Our Blog" />
+<BaseLayout title="Real Estate Insights" description="Guides and market notes for buyers, sellers and builders across Northeast Ohio from Realtor Marissa Lubera." breadcrumb="Blog">
+  <PageHeaderBanner heading="Buying & selling *insights*" intro="Guides and market notes for buyers, sellers and builders across Northeast Ohio." />
   <div class="page-section">
-    <BlogGrid posts={posts} />
+    {posts.length > 0 ? <BlogGrid posts={posts} /> : <p class="page-section__empty">Articles are coming soon. In the meantime, <a href="/services">explore our services</a>.</p>}
   </div>
 </BaseLayout>
 
 <style>
-  .page-section { max-width: var(--container-max); margin-inline: auto; padding: var(--space-xl) var(--space-md); }
+  .page-section { max-width: var(--container-max); margin-inline: auto; padding: clamp(4rem, 8vw, 6rem) var(--space-md); }
+  .page-section__empty a { color: var(--main); font-weight: 600; }
 </style>

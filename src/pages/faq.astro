@@ -1,25 +1,65 @@
 ---
-// Aggregates every service's FAQs into one site-wide FAQ page, since
-// Skeleton has no separate "site FAQs" collection — services already
-// model FAQs (content.config.ts: services.faqs) and that's the richest
-// source of real Q&A content a client will have. See Skeleton-Build-Spec.md
-// §10 ("LLM data" — favor Q&A-shaped content).
+// Site FAQ: general questions from src/data/site-faqs.ts, grouped, with a
+// FAQPage node. Service FAQs stay on their own pages (their own FAQPage), so
+// they aren't duplicated here.
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../components/PageHeaderBanner.astro";
 import FaqAccordion from "../components/FaqAccordion.astro";
-import { getAllServices } from "../lib/data/services";
+import ServiceCard from "../components/ServiceCard.astro";
+import BookCall from "../components/BookCall.astro";
+import { siteFaqs } from "../data/site-faqs";
+import { getFeaturedServices } from "../lib/data/services";
+import { getSiteInfo } from "../lib/data/site";
+import { withTrackingPhone } from "../lib/utils/phone";
+import { stripHtml } from "../lib/utils/stripHtml";
 
-const services = await getAllServices();
-const faqs = services.flatMap((s) => s.data.faqs);
+const site = await getSiteInfo();
+const faqs = siteFaqs.map((f) => ({ ...f, answer: withTrackingPhone(f.answer, site) }));
+const groups = [...new Set(faqs.map((f) => f.group))].map((g) => ({ group: g, faqs: faqs.filter((f) => f.group === g) }));
+const services = await getFeaturedServices();
+const graph = [
+  {
+    "@type": "FAQPage",
+    "@id": "#faq",
+    mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: stripHtml(f.answer) } })),
+  },
+];
 ---
 
-<BaseLayout title="FAQs" description="Frequently asked questions.">
-  <PageHeaderBanner heading="Frequently Asked Questions" />
-  <div class="page-section">
-    <FaqAccordion faqs={faqs} />
-  </div>
+<BaseLayout
+  title="Real Estate FAQ for Northeast Ohio"
+  description="Answers to common questions about buying, selling and building a home in Northeast Ohio, from commission to closing costs and timelines."
+  schemaGraph={graph}
+  webPage={{ mainEntity: { "@id": "#faq" } }}
+  breadcrumb="FAQ"
+>
+  <PageHeaderBanner heading="Real estate questions, *answered*" intro="Straight answers to the questions buyers and sellers ask most. Don't see yours? Ask Marissa directly." />
+
+  <section class="faq-page">
+    <div class="container faq-page__inner">
+      {groups.map((g) => (
+        <div class="faq-page__group" data-reveal>
+          <FaqAccordion faqs={g.faqs} heading={g.group} />
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {services.length > 0 && (
+    <section class="faq-services">
+      <div class="container">
+        <h2 data-reveal>More answers by service.</h2>
+        <div class="faq-services__grid">{services.map((s) => <ServiceCard service={s} />)}</div>
+      </div>
+    </section>
+  )}
+
+  <BookCall />
 </BaseLayout>
 
 <style>
-  .page-section { max-width: 48rem; margin-inline: auto; padding: var(--space-xl) var(--space-md); }
+  .faq-page { padding-block: clamp(4rem, 8vw, 6rem); }
+  .faq-page__inner { max-width: 56rem; display: grid; gap: var(--space-2xl); }
+  .faq-services { padding-block: clamp(4rem, 8vw, 6rem); background: var(--solid-bg); }
+  .faq-services__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: var(--space-xl); margin-block-start: var(--space-xl); }
 </style>

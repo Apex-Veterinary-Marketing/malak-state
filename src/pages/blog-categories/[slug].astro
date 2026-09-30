@@ -19,7 +19,7 @@ const { category } = Astro.props;
 const posts = await getPostsByCategory(category.id);
 ---
 
-<BaseLayout title={category.data.name} description={`${category.data.name} articles`}>
+<BaseLayout title={`${category.data.name} Articles`} description={`${category.data.name} guides and market notes for Northeast Ohio from Realtor Marissa Lubera.`}>
   <PageHeaderBanner heading={category.data.name} />
   <div class="page-section">
     {posts.length > 0 ? (

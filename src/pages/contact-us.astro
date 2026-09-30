@@ -1,18 +1,66 @@
 ---
+// Contact: details on the left, the Gravity Forms contact form on the right
+// (src/data/forms.ts), then a nudge to book a call instead. No map: the
+// street address isn't public (site.showStreetAddress = false).
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../components/PageHeaderBanner.astro";
 import GravityFormEmbed from "../components/GravityFormEmbed.astro";
-import LocationSection from "../components/LocationSection.astro";
+import { getSiteInfo } from "../lib/data/site";
+import { phoneHref } from "../lib/utils/phone";
+import { countiesSentence } from "../lib/utils/areas";
+import headerImage from "../assets/brand/marissa-seated-wide.jpg";
+
+const site = await getSiteInfo();
+const counties = countiesSentence(site.serviceAreaOfCoverage);
 ---
 
-<BaseLayout title="Contact Us" description="Get in touch with our team.">
-  <PageHeaderBanner heading="Contact Us" />
-  <div class="page-section">
-    <GravityFormEmbed formId="contact" context="contact" heading="Send Us a Message" />
-  </div>
-  <LocationSection />
+<BaseLayout
+  title="Contact Marissa Lubera, Realtor"
+  description="Call 440.420.0580, email, or send a message to The Malak Estate Group. Available 8am-8pm, 7 days a week, and evenings by appointment."
+  webPage={{ "@type": "ContactPage" }}
+  breadcrumb="Contact"
+>
+  <PageHeaderBanner heading="Let's talk about your next *move*" intro="Call, email, or send a message. Marissa replies personally." image={headerImage} imageAlt="Marissa Lubera seated in a white-paneled studio" imagePosition="50% 55%" />
+
+  <section class="contact">
+    <div class="container contact__grid">
+      <div class="contact__details" data-reveal>
+        <h2>Reach Marissa.</h2>
+        <dl class="contact__list">
+          {site.phoneNumber && <div><dt>Call or text</dt><dd><a class="contact__phone" href={phoneHref(site)}>{site.phoneNumber}</a></dd></div>}
+          {site.email && <div><dt>Email</dt><dd><a href={`mailto:${site.email}`}>{site.email}</a></dd></div>}
+          <div><dt>Hours</dt><dd>Monday to Sunday, 8am to 8pm. Evenings by appointment.</dd></div>
+          {counties && <div><dt>Serving</dt><dd>{counties}</dd></div>}
+        </dl>
+      </div>
+      <div class="contact__form" data-reveal>
+        <GravityFormEmbed formId="contact" context="contact" heading="Send a message" />
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-book">
+    <div class="container contact-book__inner" data-reveal>
+      <div>
+        <h2>Prefer to pick a time?</h2>
+        <p class="lede">Book a free 30-minute call that fits your schedule.</p>
+      </div>
+      <a class="btn btn--cta" href={site.bookingUrl}>{site.bookingLabel}</a>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
-  .page-section { max-width: 40rem; margin-inline: auto; padding: var(--space-xl) var(--space-md); }
+  .contact { padding-block: clamp(5rem, 10vw, 8rem); }
+  .contact__grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: clamp(2rem, 7vw, 6rem); align-items: start; }
+  .contact__list { display: grid; gap: var(--space-lg); margin: var(--space-xl) 0 0; }
+  .contact__list dt { font-size: var(--font-size-xs); font-weight: 600; letter-spacing: var(--letter-spacing-label); text-transform: uppercase; color: var(--text-muted); }
+  .contact__list dd { margin: var(--space-2xs) 0 0; font-size: var(--font-size-md); }
+  .contact__list a { color: var(--main-dark); text-decoration: none; }
+  .contact__phone { font: 400 var(--font-size-2xl)/1.1 var(--font-heading); white-space: nowrap; }
+  .contact__form { padding: clamp(1.5rem, 4vw, 3rem); background: var(--solid-bg); }
+  .contact-book { padding-block: clamp(4rem, 8vw, 6rem); background: var(--main-dark); color: var(--on-dark-muted); }
+  .contact-book h2 { color: var(--white); }
+  .contact-book__inner { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-lg); }
+  @media (max-width: 900px) { .contact__grid { grid-template-columns: 1fr; } }
 </style>

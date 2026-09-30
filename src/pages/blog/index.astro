@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeaderBanner from "../../components/PageHeaderBanner.astro";
+import BlogGrid from "../../components/BlogGrid.astro";
+import { getAllPosts } from "../../lib/data/blog";
+
+const posts = await getAllPosts();
+---
+
+<BaseLayout title="Our Blog" description="News and articles from our practice.">
+  <PageHeaderBanner heading="Our Blog" />
+  <div class="page-section">
+    <BlogGrid posts={posts} />
+  </div>
+</BaseLayout>
+
+<style>
+  .page-section { max-width: var(--container-max); margin-inline: auto; padding: var(--space-xl) var(--space-md); }
+</style>

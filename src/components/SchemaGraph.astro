@@ -1,0 +1,12 @@
+---
+// Renders a JSON-LD @graph block. Nodes should link back to the site's
+// Business/Person nodes by @id reference rather than duplicating org info
+// per page — see Skeleton-Build-Spec.md §9.
+export interface Props {
+  graph: Record<string, any>[];
+}
+const { graph } = Astro.props;
+---
+{graph && graph.length > 0 && (
+  <script type="application/ld+json" is:inline set:html={JSON.stringify({ "@context": "https://schema.org", "@graph": graph })} />
+)}

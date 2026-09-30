@@ -1,13 +1,106 @@
 ---
-// Meet the team — interim version (rebuilt in plan Task 7).
+// Meet the team (nav label: "Meet Marissa"). Copy is the client's own
+// onboarding answers (mission, vision, values, what's unique), used close to
+// word for word. Agent profiles live at /agents/<id>.
+import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../components/PageHeaderBanner.astro";
+import BrokerGrid from "../components/BrokerGrid.astro";
+import BookCall from "../components/BookCall.astro";
 import { getAllBrokers } from "../lib/data/brokers";
+import headerImage from "../assets/brand/marissa-seated.jpg";
+import storyImage from "../assets/brand/marissa-laptop-living-room.jpg";
 
 const brokers = await getAllBrokers();
+const lead = brokers[0];
+const values = ["Honesty", "Integrity", "Trust", "Exceptional service", "Client-first advocacy", "Clear communication", "Genuine relationships"];
 ---
 
-<BaseLayout title="Meet the Team" description="Meet the agents of The Malak Estate Group.">
-  <PageHeaderBanner heading="Meet the Team" />
-  <ul>{brokers.map((b) => <li><a href={`/agents/${b.id}`}>{b.data.name}</a></li>)}</ul>
+<BaseLayout
+  title="About The Malak Estate Group"
+  description="A relationship-first real estate team in Greater Cleveland. Our mission, values, and the recognition behind every client we serve."
+  webPage={{ "@type": "AboutPage", ...(lead ? { mainEntity: { "@id": `/agents/${lead.id}#person` } } : {}) }}
+  breadcrumb="Meet Marissa"
+>
+  <PageHeaderBanner
+    heading="The *people* behind The Malak Estate Group"
+    intro="A relationship-first real estate team in Greater Cleveland, led by Realtor Marissa Lubera."
+    image={headerImage}
+    imageAlt="Marissa Lubera smiling in a velvet armchair"
+    imagePosition="50% 35%"
+  />
+
+  <section class="about-intro">
+    <div class="container about-intro__grid">
+      <div data-reveal>
+        <h2>What makes us different.</h2>
+        <p class="lede">What makes The Malak Estate Group unique is our personalized, relationship-first approach. We combine honest guidance, clear communication, strong market knowledge, and thoughtful strategy to help every client move with confidence.</p>
+        <p>Rather than offering a one-size-fits-all experience, we take the time to understand each client's goals and tailor our approach to their specific situation, whether they're buying, selling, relocating, investing, or exploring new construction. Our clients choose us because they feel informed, supported, and genuinely cared for from the first conversation through closing and beyond.</p>
+      </div>
+      <Image src={storyImage} alt="Marissa Lubera working from a sunlit living room" class="about-intro__image" data-reveal widths={[480, 800]} sizes="(max-width: 767px) 100vw, 40vw" />
+    </div>
+  </section>
+
+  <section class="about-pillars">
+    <div class="container about-pillars__grid">
+      <div data-reveal>
+        <h2 class="about-pillars__title">What we stand for</h2>
+        <p>Our mission is to provide an elevated real estate experience rooted in honesty, integrity, and exceptional service. Whether buying or selling, every client receives personalized guidance, clear communication, and an advocate who consistently puts their best interests first.</p>
+      </div>
+      <div data-reveal>
+        <h2 class="about-pillars__title">Where we're headed</h2>
+        <p>Our vision is to establish The Malak Estate Group as one of the most trusted and respected real estate names in Northeast Ohio, recognized for a luxury level of service at every price point. As our team grows, clients will know that anyone representing our name is committed to delivering the same high standard of care, knowledge, and professionalism.</p>
+      </div>
+      <div data-reveal>
+        <h2 class="about-pillars__title">How we work</h2>
+        <ul class="about-pillars__values">{values.map((v) => <li>{v}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  {brokers.length > 0 && (
+    <section class="about-team">
+      <div class="container">
+        <h2 data-reveal>{brokers.length === 1 ? `Meet ${lead.data.name}.` : "Our agents."}</h2>
+        <div class="about-team__grid"><BrokerGrid brokers={brokers} /></div>
+      </div>
+    </section>
+  )}
+
+  {lead && lead.data.awards.length > 0 && (
+    <section class="about-awards">
+      <div class="container">
+        <h2 data-reveal>Recognition.</h2>
+        <dl class="about-awards__grid" data-reveal>
+          {lead.data.awards.map((a) => (
+            <div><dt>{a.years}</dt><dd>{a.name}{a.detail && `, ${a.detail.charAt(0).toLowerCase()}${a.detail.slice(1)}`}</dd></div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  )}
+
+  <BookCall />
 </BaseLayout>
+
+<style>
+  .about-intro { padding-block: clamp(5rem, 10vw, 8rem); }
+  .about-intro__grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(2rem, 7vw, 7rem); align-items: center; }
+  .about-intro__grid p:not(.lede) { max-width: 60ch; margin-block-start: var(--space-lg); }
+  .about-intro__image { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+  .about-pillars { padding-block: clamp(4rem, 8vw, 6rem); background: var(--solid-bg); }
+  .about-pillars__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2xl) clamp(2rem, 4vw, 4rem); }
+  .about-pillars__title { font-size: var(--font-size-2xl); margin-block-end: var(--space-md); }
+  .about-pillars__grid p { margin: 0; }
+  .about-pillars__values { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+  .about-pillars__values li { padding: var(--space-xs) var(--space-md); background: var(--white); font-size: var(--font-size-sm); }
+  .about-team { padding-block: clamp(5rem, 10vw, 8rem); }
+  .about-team__grid { margin-block-start: var(--space-xl); }
+  .about-awards { padding-block: 0 clamp(5rem, 10vw, 8rem); }
+  .about-awards__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-xl); margin: var(--space-xl) 0 0; }
+  .about-awards__grid > div { padding-block-start: var(--space-lg); border-block-start: 1px solid var(--cta); }
+  .about-awards__grid dt { font: 400 2.2rem/1 var(--font-heading); color: var(--main-dark); }
+  .about-awards__grid dd { margin: var(--space-sm) 0 0; font-size: var(--font-size-sm); }
+  @media (max-width: 900px) { .about-pillars__grid { grid-template-columns: 1fr; } .about-awards__grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 767px) { .about-intro__grid, .about-awards__grid { grid-template-columns: 1fr; } }
+</style>

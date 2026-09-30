@@ -1,0 +1,19 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BrokerCard from "./BrokerCard.astro";
+
+export interface Props {
+  brokers: CollectionEntry<"brokers">[];
+}
+const { brokers } = Astro.props;
+---
+
+{brokers.length > 0 && (
+  <div class="broker-grid" data-reveal-stagger>
+    {brokers.map((b) => <div data-reveal><BrokerCard broker={b} /></div>)}
+  </div>
+)}
+
+<style>
+  .broker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 22rem)); gap: var(--space-2xl) var(--space-xl); }
+</style>

@@ -1,0 +1,113 @@
+---
+// Agent profile (the template's doctor detail page, renamed for this fork).
+// Emits the Person node (@id /agents/<slug>#person) that the homepage, Meet
+// the Team page and listings reference — never re-declare it elsewhere.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeaderBanner from "../../components/PageHeaderBanner.astro";
+import BookCall from "../../components/BookCall.astro";
+import { getAllBrokers } from "../../lib/data/brokers";
+import { stripHtml } from "../../lib/utils/stripHtml";
+
+export async function getStaticPaths() {
+  const brokers = await getAllBrokers();
+  return brokers.map((broker) => ({ params: { slug: broker.id }, props: { broker } }));
+}
+
+const { broker } = Astro.props;
+const d = broker.data;
+const pageUrl = new URL(`/agents/${broker.id}`, Astro.site).href;
+const isMarissa = broker.id === "marissa-lubera";
+const metaTitle = isMarissa ? "Marissa Lubera, Northeast Ohio Realtor" : `${d.name}, ${d.title || "Realtor"}`;
+const metaDescription = isMarissa
+  ? "Meet Marissa Lubera: Realtor with 6 years in resale and new construction, President's Club 2023-2025, serving Cuyahoga, Medina and Summit counties."
+  : d.bioShort
+    ? stripHtml(d.bioShort)
+    : undefined;
+
+const graph = [
+  {
+    "@type": "Person",
+    "@id": "#person",
+    name: d.name,
+    jobTitle: d.title,
+    url: pageUrl,
+    image: d.mainImage ? new URL(d.mainImage.src, Astro.site).href : undefined,
+    worksFor: { "@id": "#business" },
+    award: d.awards.map((a) => `${a.name} (${a.years})`),
+    knowsLanguage: d.languages,
+    knowsAbout: d.specialties,
+    description: d.bioShort ? stripHtml(d.bioShort) : undefined,
+  },
+];
+---
+
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  ogImage={d.mainImage}
+  ogImageAlt={d.imageAltText || d.name}
+  schemaGraph={graph}
+  webPage={{ "@type": "ProfilePage", mainEntity: { "@id": "#person" } }}
+  breadcrumb={d.name}
+>
+  <PageHeaderBanner heading={d.name} intro={d.title} image={d.secondaryImage || d.mainImage} imageAlt={d.imageAltText || d.name} imagePosition="50% 40%" />
+
+  <section class="profile">
+    <div class="container profile__grid">
+      <div class="profile__bio" data-reveal>
+        {d.bio && <div class="profile__rt" set:html={d.bio} />}
+      </div>
+      <aside class="profile__facts" data-reveal>
+        {d.yearsExperience && (
+          <div><h2 class="profile__label">Experience</h2><p>{d.yearsExperience} years in resale and new construction</p></div>
+        )}
+        {d.specialties.length > 0 && (
+          <div><h2 class="profile__label">Specialties</h2><ul>{d.specialties.map((s) => <li>{s}</li>)}</ul></div>
+        )}
+        {d.serviceAreas.length > 0 && (
+          <div><h2 class="profile__label">Areas served</h2><ul>{d.serviceAreas.map((s) => <li>{s}</li>)}</ul></div>
+        )}
+        {d.languages.length > 0 && (
+          <div><h2 class="profile__label">Languages</h2><p>{d.languages.join(", ")}</p></div>
+        )}
+        {d.licenseNumber && (
+          <div><h2 class="profile__label">License</h2><p>{d.licenseNumber}</p></div>
+        )}
+      </aside>
+    </div>
+  </section>
+
+  {d.awards.length > 0 && (
+    <section class="profile-awards">
+      <div class="container">
+        <h2 data-reveal>Recognition.</h2>
+        <dl class="profile-awards__grid" data-reveal>
+          {d.awards.map((a) => (
+            <div><dt>{a.name}</dt><dd>{a.years}{a.detail && <><br />{a.detail}</>}</dd></div>
+          ))}
+        </dl>
+      </div>
+    </section>
+  )}
+
+
+  <BookCall heading={`Book a call with ${d.shortName || d.name}.`} />
+</BaseLayout>
+
+<style>
+  .profile { padding-block: clamp(5rem, 10vw, 8rem); }
+  .profile__grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: clamp(2rem, 7vw, 7rem); align-items: start; }
+  .profile__rt :global(p) { margin: 0 0 var(--space-lg); max-width: 62ch; font-size: var(--font-size-md); }
+  .profile__rt :global(p:first-child) { font: 400 clamp(1.4rem, 2.2vw, 1.75rem)/1.45 var(--font-heading); color: var(--main-dark); }
+  .profile__facts { display: grid; gap: var(--space-lg); padding: var(--space-xl); background: var(--solid-bg); }
+  .profile__label { margin: 0 0 var(--space-xs); font: 600 var(--font-size-xs)/1 var(--font-body); letter-spacing: var(--letter-spacing-label); text-transform: uppercase; color: var(--text-muted); }
+  .profile__facts p, .profile__facts ul { margin: 0; }
+  .profile__facts ul { padding-inline-start: 1.1em; }
+  .profile-awards { padding-block: clamp(4rem, 8vw, 6rem); background: var(--solid-bg); }
+  .profile-awards__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-xl); margin: var(--space-xl) 0 0; }
+  .profile-awards__grid > div { padding-block-start: var(--space-lg); border-block-start: 1px solid var(--cta); }
+  .profile-awards__grid dt { font: 400 var(--font-size-xl)/1.25 var(--font-heading); color: var(--main-dark); }
+  .profile-awards__grid dd { margin: var(--space-xs) 0 0; font-size: var(--font-size-sm); color: var(--text-muted); }
+  @media (max-width: 900px) { .profile__grid { grid-template-columns: 1fr; } .profile-awards__grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 767px) { .profile-awards__grid { grid-template-columns: 1fr; } }
+</style>

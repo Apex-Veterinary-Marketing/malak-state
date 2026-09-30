@@ -1,0 +1,30 @@
+---
+// Agent card: portrait, name, title, link to /agents/<id>.
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+
+export interface Props {
+  broker: CollectionEntry<"brokers">;
+}
+const { broker } = Astro.props;
+const { name, title, mainImage, imageAltText } = broker.data;
+---
+
+<a class="broker-card" href={`/agents/${broker.id}`}>
+  {mainImage && (
+    <div class="broker-card__frame">
+      <Image src={mainImage} alt={imageAltText || name} class="broker-card__image" widths={[400, 700]} sizes="(max-width: 767px) 100vw, 30vw" />
+    </div>
+  )}
+  <h3 class="broker-card__name">{name}</h3>
+  {title && <p class="broker-card__title">{title}</p>}
+</a>
+
+<style>
+  .broker-card { display: block; text-decoration: none; color: inherit; }
+  .broker-card__frame { overflow: hidden; }
+  .broker-card__image { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%; transition: transform var(--motion-duration-image) var(--motion-ease-out); }
+  .broker-card:hover .broker-card__image { transform: scale(1.03); }
+  .broker-card__name { margin: var(--space-md) 0 0; font-size: var(--font-size-xl); }
+  .broker-card__title { margin: var(--space-2xs) 0 0; font-size: var(--font-size-sm); color: var(--text-muted); }
+</style>

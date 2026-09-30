@@ -16,11 +16,9 @@ import FeatureSplit from "../components/FeatureSplit.astro";
 import TestimonialSlider from "../components/TestimonialSlider.astro";
 import CtaBand from "../components/CtaBand.astro";
 import LocationSection from "../components/LocationSection.astro";
-import BeforeYourVisit from "../components/BeforeYourVisit.astro";
 import { getFeaturedServices } from "../lib/data/services";
 import { getSiteInfo } from "../lib/data/site";
 import { getAllTestimonials } from "../lib/data/testimonials";
-import { visitTips } from "../data/visit-tips";
 import bannerGeneric from "../assets/banner-generic.png";
 
 const site = await getSiteInfo();
@@ -59,12 +57,6 @@ const testimonials = await getAllTestimonials();
     <FeatureSplit heading="Why Choose Us" ctaText="Our Services" ctaHref="/services" reverse>
       <p>A short paragraph about the practice's approach to care goes here — replace with real client copy.</p>
     </FeatureSplit>
-  </div>
-
-  <div data-reveal>
-    <Section tone="soft">
-      <BeforeYourVisit tips={visitTips} />
-    </Section>
   </div>
 
   <div data-reveal>

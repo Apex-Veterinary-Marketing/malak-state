@@ -10,7 +10,7 @@
 // @id conventions (normalizeIds() turns them into absolute URLs):
 //   "#website" / "#business"   site entities → https://domain/#business
 //   "#service", "#faq", ...    page-scoped   → https://domain/services/x#service
-//   "/doctors/x#person"        another page's node → https://domain/doctors/x#person
+//   "/agents/x#person"         another page's node → https://domain/agents/x#person
 // Page-scoped URLs drop the trailing slash so a reference from another page
 // matches the node's own @id exactly (the homepage keeps its root slash).
 import { getSiteInfo } from "../data/site";

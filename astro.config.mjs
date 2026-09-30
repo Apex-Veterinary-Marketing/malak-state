@@ -59,6 +59,13 @@ const singleSitemap = {
 };
 
 export default defineConfig({
+  // Retired template routes (vet pages). The template's /doctors/* and /staff/* were never
+  // published for this client (their live site is Wix), so they get no redirect.
+  redirects: {
+    '/online-forms': '/contact-us',
+    '/appointment-request': '/schedule',
+    '/general-information-request': '/contact-us',
+  },
   site: siteUrl,
   // sitemap() lists every route; singleSitemap turns that into /sitemap.xml,
   // which robots.txt (src/pages/robots.txt.ts) points to.

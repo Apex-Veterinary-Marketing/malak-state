@@ -1,8 +1,10 @@
 import { defineCollection, reference, z } from "astro:content";
 import { glob } from "astro/loaders";
 
-const doctors = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx,json}", base: "./src/content/doctors" }),
+// Agents/brokers (renamed from the template's "doctors" for this real estate fork).
+// Public label is "Meet Marissa"; profile pages live at /agents/<id>.
+const brokers = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx,json}", base: "./src/content/brokers" }),
   schema: ({ image }) =>
     z.object({
       name: z.string(),
@@ -13,22 +15,15 @@ const doctors = defineCollection({
       secondaryImage: image().optional(),
       showOnHome: z.boolean().default(false),
       imageAltText: z.string().optional(),
+      title: z.string().optional(), // e.g. "Realtor"
+      licenseNumber: z.string().optional(),
+      yearsExperience: z.number().optional(),
+      specialties: z.array(z.string()).default([]),
+      languages: z.array(z.string()).default([]),
+      serviceAreas: z.array(z.string()).default([]),
+      awards: z.array(z.object({ name: z.string(), years: z.string(), detail: z.string().optional() })).default([]),
+      order: z.number().default(0),
     }),
-});
-
-const staff = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx,json}", base: "./src/content/staff" }),
-  schema: ({ image }) =>
-    z.object({
-      name: z.string(),
-      position: z.string().optional(),
-      image: image().optional(),
-      bio: z.string().optional(), // rich text
-      imageAltText: z.string().optional(),
-    }),
-  // NOTE: Staff's real Webflow schema is a strict subset of Doctors' — no
-  // bioShort, no secondaryImage, no showOnHome. Don't assume the two are
-  // identical; they aren't, in the live source (see Skeleton-Build-Spec.md §4).
 });
 
 const serviceCategories = defineCollection({
@@ -103,8 +98,8 @@ const blog = defineCollection({
       postSummary: z.string().optional(), // card excerpt
       postThumbnail: image().optional(), // "../../assets/blog/<file>"
       thumbnailAlt: z.string().optional(),
-      author: reference("doctors").optional(), // a doctors/ entry id, when a doctor wrote it
-      authorName: z.string().optional(), // byline when there's no doctor author
+      author: reference("brokers").optional(), // a brokers/ entry id (this fork renamed doctors -> brokers; see AGENTS.md "This fork")
+      authorName: z.string().optional(), // byline when there's no broker author
       category: z.array(reference("blogCategories")).default([]),
       readTime: z.string().optional(), // e.g. "5 min read"
       keyTakeaways: z.array(z.string()).default([]),
@@ -142,4 +137,64 @@ const socialLinks = defineCollection({
   }),
 });
 
-export const collections = { doctors, staff, serviceCategories, blogCategories, services, blog, socialLinks, testimonials };
+// Listings: hand-entered (or sample) properties. When IDX goes live (src/data/idx.ts) this
+// collection can stay as "featured listings" or be emptied.
+const listings = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/listings" }),
+  schema: ({ image }) =>
+    z.object({
+      address: z.string(),
+      city: z.string(),
+      state: z.string().default("OH"),
+      zip: z.string(),
+      status: z.enum(["active", "pending", "sold", "coming-soon"]).default("active"),
+      price: z.number(),
+      beds: z.number(),
+      baths: z.number(),
+      sqft: z.number(),
+      lotSize: z.string().optional(),
+      yearBuilt: z.number().optional(),
+      propertyType: z.enum(["single-family", "condo-townhome", "new-construction", "land"]),
+      mlsNumber: z.string().optional(),
+      highlights: z.array(z.string()).default([]),
+      images: z.array(z.object({ src: image(), alt: z.string() })).min(1),
+      listingAgent: reference("brokers"),
+      featured: z.boolean().default(false),
+      externalUrl: z.string().url().optional(),
+      metaTitle: z.string().optional(),
+      metaDescription: z.string().optional(),
+      sample: z.boolean().default(false), // placeholder entry — check:launch warns until removed
+    }),
+});
+
+// Gather & Ground events. Upcoming vs past is derived from startDate (lib/utils/events.ts).
+const events = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/events" }),
+  schema: ({ image }) =>
+    z.object({
+      name: z.string(),
+      startDate: z.coerce.date(),
+      endDate: z.coerce.date().optional(),
+      venueName: z.string().optional(),
+      venueAddress: z.string().optional(),
+      image: image().optional(),
+      imageAlt: z.string().optional(),
+      rsvpUrl: z.string().url().optional(),
+      status: z.enum(["scheduled", "cancelled", "postponed"]).default("scheduled"),
+    }),
+});
+
+// Photo gallery items, grouped into albums (Photo Gallery shows all; Gather & Ground its own album).
+const gallery = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "./src/content/gallery" }),
+  schema: ({ image }) =>
+    z.object({
+      image: image(),
+      alt: z.string(),
+      caption: z.string().optional(),
+      album: z.enum(["brand", "gather-and-ground", "properties"]),
+      order: z.number().default(0),
+    }),
+});
+
+export const collections = { brokers, serviceCategories, blogCategories, services, blog, socialLinks, testimonials, listings, events, gallery };

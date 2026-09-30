@@ -17,7 +17,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../../components/PageHeaderBanner.astro";
 import BlogGrid from "../../components/BlogGrid.astro";
 import { getAllPosts, getPostBySlug } from "../../lib/data/blog";
-import { getDoctorBySlug } from "../../lib/data/doctors";
+import { getBrokerBySlug } from "../../lib/data/brokers";
 
 export async function getStaticPaths() {
   const posts = await getAllPosts();
@@ -29,7 +29,7 @@ const heading = post.data.titleTag || post.data.name;
 
 const { Content } = await render(post);
 // author (a doctor) is optional; authorName is the plain byline otherwise.
-const author = post.data.author ? await getDoctorBySlug(post.data.author.id) : undefined;
+const author = post.data.author ? await getBrokerBySlug(post.data.author.id) : undefined;
 
 const allPosts = await getAllPosts();
 const morePosts = allPosts.filter((p) => p.id !== post.id).slice(0, 3);
@@ -47,7 +47,7 @@ const graph = [
     headline: heading,
     description: post.data.metaDescription || post.data.postSummary || undefined,
     datePublished: post.data.pubDate.toISOString(),
-    author: author ? { "@id": `/doctors/${author.id}#person` } : post.data.authorName ? { "@type": "Person", name: post.data.authorName } : { "@id": "#business" },
+    author: author ? { "@id": `/agents/${author.id}#person` } : post.data.authorName ? { "@type": "Person", name: post.data.authorName } : { "@id": "#business" },
     publisher: { "@id": "#business" },
   },
 ];
@@ -59,7 +59,7 @@ const graph = [
   <div class="blog-post-meta">
     {author ? (
       <span class="blog-post-meta__author">
-        Written by <a href={`/doctors/${author.id}`}>{author.data.shortName || author.data.name}</a>
+        Written by <a href={`/agents/${author.id}`}>{author.data.shortName || author.data.name}</a>
       </span>
     ) : post.data.authorName && (
       <span class="blog-post-meta__author">Written by {post.data.authorName}</span>

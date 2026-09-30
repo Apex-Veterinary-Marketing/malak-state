@@ -64,8 +64,8 @@ Text with a citation.<sup class="cite"><a href="#source-1">[1]</a></sup>
 | `postSummary` | no | text | Card excerpt on the listing page. |
 | `postThumbnail` | no (expected) | `"../../assets/blog/<file>"` | Must exist in `src/assets/blog/`. Upload the image first. |
 | `thumbnailAlt` | with an image | text | Describe the image. |
-| `author` | no | a `src/content/doctors/` id | Only when a doctor wrote it; links to their page. |
-| `authorName` | no | text | Plain byline when there's no doctor author. |
+| `author` | no | a `src/content/brokers/` id | Only when an agent wrote it; links to their `/agents/<id>` page. (This real estate fork renamed the template's `doctors` collection to `brokers`; the field name is unchanged.) |
+| `authorName` | no | text | Plain byline when there's no agent author. |
 | `category` | no | list of category ids | Ids must exist in `src/content/blog-categories/`. |
 | `readTime` | no | text, e.g. `"5 min read"` | |
 | `keyTakeaways` | no | list of text | Shown as a summary box where the design has one. |

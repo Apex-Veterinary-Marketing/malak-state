@@ -23,7 +23,7 @@ const BLOG = "src/content/blog";
 const errors = [], warnings = [];
 const ids = (dir) => (fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => /\.(md|mdx|json)$/.test(f)).map((f) => f.replace(/\.(md|mdx|json)$/, "")) : []);
 const categories = new Set(ids("src/content/blog-categories"));
-const doctors = new Set(ids("src/content/doctors"));
+const doctors = new Set(ids("src/content/brokers"));
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -81,7 +81,7 @@ for (const f of files) {
   } else warn("no postThumbnail — the post falls back to the site's default share image");
 
   for (const c of [].concat(d.category || [])) if (!categories.has(c)) err(`category "${c}" doesn't exist in src/content/blog-categories/ (have: ${[...categories].join(", ")})`);
-  if (d.author && !doctors.has(d.author)) err(`author "${d.author}" isn't a src/content/doctors/ id — use authorName for a plain byline`);
+  if (d.author && !doctors.has(d.author)) err(`author "${d.author}" isn't a src/content/brokers/ id — use authorName for a plain byline`);
   for (const [i, s] of [].concat(d.sources || []).entries()) {
     if (!s || !s.text || !/^https?:\/\//.test(s.url || "")) err(`sources[${i}] needs text and an http(s) url`);
   }

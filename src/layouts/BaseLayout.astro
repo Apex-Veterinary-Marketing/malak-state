@@ -29,8 +29,8 @@ import type { ImageMetadata } from "astro";
 // `?url` resolves to the real hashed build output path. Swapping the
 // typeface in styles/fonts.css? Update these two paths to match (or drop
 // the preload if the new choice doesn't warrant it) — see that file.
-import interLatin400 from "@fontsource/inter/files/inter-latin-400-normal.woff2?url";
-import interLatin700 from "@fontsource/inter/files/inter-latin-700-normal.woff2?url";
+import manropeLatin400 from "@fontsource/manrope/files/manrope-latin-400-normal.woff2?url";
+import playfairLatin400 from "@fontsource/playfair-display/files/playfair-display-latin-400-normal.woff2?url";
 
 export interface Props {
   title: string; // page-specific title segment (e.g. "Contact Us") unless titleTemplate="full"
@@ -131,8 +131,8 @@ const graph = normalizeIds(
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preload" href={interLatin400} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={interLatin700} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={manropeLatin400} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={playfairLatin400} as="font" type="font/woff2" crossorigin />
     <SeoHead
       title={finalTitle}
       description={finalDescription}
@@ -166,13 +166,13 @@ const graph = normalizeIds(
     <style is:global>
       :root { box-sizing: border-box; }
       *, *::before, *::after { box-sizing: inherit; }
-      body { margin: 0; font-family: var(--font-body); color: var(--text); line-height: 1.5; }
+      body { margin: 0; font-family: var(--font-body); color: var(--text); line-height: var(--line-height-body); }
       img { max-width: 100%; height: auto; display: block; }
       /* Base typography + focus — token-driven so re-skinning never touches components.
          :where() keeps specificity at zero so any component rule still wins. Sections on
          dark backgrounds (Hero, PageHeaderBanner, CtaBand) set color: inherit on their
          headings; a new dark section must do the same. */
-      :where(h1, h2, h3, h4, h5, h6) { color: var(--heading); font-family: var(--font-heading); }
+      :where(h1, h2, h3, h4, h5, h6) { color: var(--heading); font-family: var(--font-heading); font-weight: 400; line-height: 1.12; }
       :where(a) { color: var(--main); }
       :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
       /* No top padding here (2026-09-08) — the header is fixed+transparent

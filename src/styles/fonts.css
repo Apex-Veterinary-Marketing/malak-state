@@ -3,7 +3,8 @@
  * --font-heading, but nothing ever loaded a real typeface; every page fell
  * back to the browser's own system-ui.
  *
- * Currently Inter (SIL OFL 1.1, free for commercial use) — a REFERENCE
+ * Currently Playfair Display (headings, 400 + 400 italic) and Manrope (body,
+ * 400/500/600), both SIL OFL 1.1. Was Inter (SIL OFL 1.1) — a REFERENCE
  * choice, not a locked-in brand decision, same as tokens.css's palette:
  * swap it per client. Self-hosted via @fontsource (an npm package of the
  * real WOFF2 files) rather than a Google Fonts CDN `<link>` — no external
@@ -32,7 +33,8 @@
  *      those two import paths to the new package's equivalent files, or
  *      drop the preload if the new choice doesn't need it
  */
-@import "@fontsource/inter/400.css";
-@import "@fontsource/inter/500.css";
-@import "@fontsource/inter/600.css";
-@import "@fontsource/inter/700.css";
+@import "@fontsource/playfair-display/400.css";
+@import "@fontsource/playfair-display/400-italic.css";
+@import "@fontsource/manrope/400.css";
+@import "@fontsource/manrope/500.css";
+@import "@fontsource/manrope/600.css";

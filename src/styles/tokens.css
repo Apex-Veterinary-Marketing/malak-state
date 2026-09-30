@@ -45,28 +45,28 @@
   /* --- Neutrals & text --------------------------------------------------- */
   --white: #ffffff; /* page/card surface; text on dark */
   --text: #333333; /* body copy */
-  --text-muted: #606f87; /* captions, meta, placeholders — brand hue, always
+  --text-muted: #796d63; /* captions, meta, placeholders — brand hue, always
                       visibly lighter than --text, AA on every light bg */
   --light-grey: #d1d1d1; /* neutral borders/dividers */
 
   /* --- Backgrounds (very soft, brand-tinted) ----------------------------- */
-  --solid-bg: #f3f5f8; /* soft section/card/hover background (opaque) */
-  --base-bg: #e8ecf17a; /* same tint @48% — for layering over images/other bgs */
-  --alt-bg: #1f304bcc; /* dark brand tint @80% — dark section over an image/pattern
+  --solid-bg: #f6f5f4; /* soft section/card/hover background (opaque) */
+  --base-bg: #efedeb7a; /* same tint @48% — for layering over images/other bgs */
+  --alt-bg: #3b3530cc; /* dark brand tint @80% — dark section over an image/pattern
                           (white text stays AA even over a white page) */
 
   /* --- Brand ------------------------------------------------------------- */
-  --main: #16253c; /* primary brand; headings, links, primary buttons */
-  --main-dark: #070c13; /* darkest brand; footer bg, deep sections, hovers */
-  --main-light: #385f99; /* lighter brand; accents, focus ring, link hover */
-  --main-soft: #394b65; /* muted brand; subtle fills, borders on dark */
-  --cta: #008484; /* the action color: primary CTA buttons (white text is AA on it) */
-  --cta-hover: #00191a; /* CTA hover/pressed */
+  --main: #7c6e63; /* primary brand; headings, links, primary buttons */
+  --main-dark: #352f2b; /* darkest brand; footer bg, deep sections, hovers */
+  --main-light: #7c6e63; /* lighter brand; accents, focus ring, link hover */
+  --main-soft: #9d958f; /* muted brand; subtle fills, borders on dark */
+  --cta: #bfb6af; /* the action color: primary CTA buttons (white text is AA on it) */
+  --cta-hover: #d6d0cb; /* CTA hover/pressed */
 
   /* --- Translucent siblings & effects ------------------------------------ */
   --white-o85: #ffffffd9; /* white @85% — text on dark, glass panels */
-  --main-o50: #16253c80; /* --main @50% — image scrims, tinted overlays */
-  --main-soft-o50: #394b6580; /* --main-soft @50% */
+  --main-o50: #7c6e6380; /* --main @50% — image scrims, tinted overlays */
+  --main-soft-o50: #9d958f80; /* --main-soft @50% */
   --overlay-color: #00000080; /* black @50% — modal/hero scrim */
   --shadow: #0000001a; /* black @10% — the shadow COLOR (see --shadow-* below) */
 
@@ -78,7 +78,7 @@
    * ---------------------------------------------------------------------- */
   --heading: var(--main); /* h1-h6 color */
   --on-main: var(--white); /* text/icons on --main surfaces */
-  --on-cta: var(--white); /* text/icons on --cta buttons. The generator sets this
+  --on-cta: var(--main-dark); /* text/icons on --cta buttons. The generator sets this
                             to --main-dark instead when the brand accent is too
                             light for white text. */
   --focus-ring: var(--main-light); /* :focus-visible outline color */
@@ -107,19 +107,26 @@
   --space-2xl: 4rem;
 
   /* Type */
-  --font-body: "Inter", system-ui, sans-serif; /* loaded by styles/fonts.css — per-client: swap both, see that file */
-  --font-heading: var(--font-body);
+  --font-body: "Manrope", system-ui, sans-serif; /* loaded by styles/fonts.css — per-client: swap both, see that file */
+  --font-heading: "Playfair Display", Georgia, serif; /* display serif for h1-h6 (V2 design) */
+  --line-height-body: 1.75; /* body copy leading (V2's airy editorial rhythm) */
+  --letter-spacing-button: 0.08em; /* uppercase button labels */
+  --letter-spacing-label: 0.14em; /* small uppercase labels (menu meta, footer headings) */
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-md: 1.1rem;
   --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem; /* card/strip titles */
+  --font-size-2xl: 1.9rem; /* small section headings, quotes */
   --font-size-3xl: 2.25rem;
   --font-size-4xl: 2.75rem;
+  --font-size-5xl: 4.1rem; /* hero/page H1 display size (clamped in components) */
 
   /* Radius */
-  --radius-sm: 3px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
+  --radius-sm: 0; /* V2 design: square corners everywhere */
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-round: 50%; /* the one exception: circular review-platform icons */
 
   /* Shadows — all built from the Base --shadow color */
   --shadow-header: 0 1px 4px var(--shadow);
@@ -129,7 +136,7 @@
   --shadow-callbar: 0 -2px 8px var(--shadow); /* bar pinned to the bottom edge (shadow points up) */
 
   /* Containers */
-  --container-max: 75rem;
+  --container-max: 82.5rem; /* V2 container (1320px) */
   --container-max-narrow: 48rem;
 
   /*
@@ -137,7 +144,7 @@
    * (Breakpoints can't be variables inside @media; they are the literals
    * 900px (nav/callbar switch) and 767px (narrow) — see AGENTS.md.)
    */
-  --header-height: 6.5rem; /* fixed header incl. utility bar; heroes pad by this */
+  --header-height: 4.75rem; /* fixed V2 header (76px); page tops pad by this */
   --callbar-height: 5.5rem; /* mobile call bar; BaseLayout pads <main> by this */
   --logo-height: 2.5rem;
   --page-header-height: 16rem; /* PageHeaderBanner min-height */
@@ -153,11 +160,21 @@
   --motion-duration-fast: 150ms; /* small state changes: color, opacity */
   --motion-duration-base: 200ms; /* hovers, toggles (the V2.5 default) */
   --motion-duration-slow: 300ms; /* larger hovers, menus, modals */
-  --motion-duration-reveal: 600ms; /* scroll-reveal entrance */
+  --motion-duration-reveal: 900ms; /* scroll-reveal entrance (V2's slower, softer feel) */
+  --motion-duration-menu: 800ms; /* full-screen menu wipe */
+  --motion-duration-image: 1200ms; /* slow image zoom on hover / menu open */
   --motion-ease: cubic-bezier(0.4, 0, 0.2, 1); /* in-out; state changes */
   --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* decelerate; entrances */
   --motion-distance: 1.5rem; /* how far reveals travel */
   --motion-stagger: 80ms; /* delay step between staggered siblings */
+
+  /* Image scrims and text on dark — derived from --main-dark's hue (#352f2b family),
+     kept here so components never hold literal colors. Re-derive if the palette changes. */
+  --scrim-strong: #1f1b18e0; /* bottom of a photo under white text */
+  --scrim-mid: #1f1b1899; /* middle stop */
+  --scrim-clear: #1f1b1800; /* transparent end (same RGB so gradients stay warm) */
+  --on-dark-muted: #ddd8d4; /* body text on --main-dark sections (13:1+ on espresso) */
+  --hairline-on-dark: #ffffff26; /* dividers on --main-dark */
 
   /*
    * -------------------------------------------------------------------------

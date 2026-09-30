@@ -5,18 +5,18 @@
 // (blocked third-party frames, no JS, slow networks).
 import { getSiteInfo } from "../lib/data/site";
 import tokensRaw from "../styles/tokens.css?raw";
+import { tokenHex } from "../lib/utils/tokens";
 
 export interface Props {
   height?: string; // CSS length
 }
 const { height = "44rem" } = Astro.props;
 const site = await getSiteInfo();
-const hex = (name: string) => tokensRaw.match(new RegExp(`--${name}:\s*#([0-9a-fA-F]{6})`))?.[1];
 const params = new URLSearchParams({ hide_gdpr_banner: "1" });
-const main = hex("main"), text = hex("text");
+const main = tokenHex(tokensRaw, "main"), text = tokenHex(tokensRaw, "text"), white = tokenHex(tokensRaw, "white");
 if (main) params.set("primary_color", main);
 if (text) params.set("text_color", text);
-params.set("background_color", "ffffff");
+if (white) params.set("background_color", white);
 const src = site.calendlyUrl ? `${site.calendlyUrl}?${params}` : undefined;
 ---
 

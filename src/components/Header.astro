@@ -7,7 +7,8 @@
 // DOM contract (CSS, scripts and the a11y check rely on these):
 //   [data-header]         gets .is-scrolled via an IntersectionObserver sentinel
 //   [data-menu-toggle]    aria-expanded, aria-controls="site-menu"
-//   #site-menu            role=dialog, aria-modal; body.menu-open while open
+//   #site-menu            role=dialog (no aria-modal: its Close toggle lives in the header);
+//                         body.menu-open while open, and the page behind it is inert
 // The About slot (Photo Gallery, How'd We Do?) is kept in the secondary list —
 // How'd We Do? is the only way to open the reputation widget.
 import { Image } from "astro:assets";
@@ -57,7 +58,7 @@ const isCurrent = (href: string) => (href === "/" ? current === "/" : current ==
   </div>
 </header>
 
-<div class="menu" id="site-menu" role="dialog" aria-modal="true" aria-label="Site menu" data-menu hidden>
+<div class="menu" id="site-menu" role="dialog" aria-label="Site menu" data-menu hidden>
   <nav class="menu__nav" aria-label="Primary">
     <ul class="menu__links">
       {links.map((link, i) =>
@@ -184,7 +185,11 @@ const isCurrent = (href: string) => (href === "/" ? current === "/" : current ==
       );
     const isOpen = () => document.body.classList.contains("menu-open");
 
+    // Everything behind the overlay except the header (which holds the Close toggle).
+    const background = () => document.querySelectorAll<HTMLElement>("main, footer.footer, .callbar, .skip-link");
+
     const setOpen = (open: boolean, returnFocus = true) => {
+      background().forEach((el) => (el.inert = open));
       toggle.setAttribute("aria-expanded", String(open));
       if (label) label.textContent = open ? "Close" : "Menu";
       document.body.classList.toggle("menu-open", open);

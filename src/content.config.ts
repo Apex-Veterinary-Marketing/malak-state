@@ -1,5 +1,10 @@
 import { defineCollection, reference, z } from "astro:content";
 import { glob } from "astro/loaders";
+import { normalizeFrontmatterDate } from "./lib/utils/events";
+
+// Event dates are New York wall time unless a quoted value carries an offset
+// ("2026-10-15T18:00:00-04:00"). See lib/utils/events.ts.
+const eventDate = z.preprocess((v) => (v instanceof Date || typeof v === "string" ? normalizeFrontmatterDate(v) : v), z.date());
 
 // Agents/brokers (renamed from the template's "doctors" for this real estate fork).
 // Public label is "Meet Marissa"; profile pages live at /agents/<id>.
@@ -176,8 +181,8 @@ const events = defineCollection({
   schema: ({ image }) =>
     z.object({
       name: z.string(),
-      startDate: z.coerce.date(),
-      endDate: z.coerce.date().optional(),
+      startDate: eventDate,
+      endDate: eventDate.optional(),
       venueName: z.string().optional(),
       venueAddress: z.string().optional(),
       image: image().optional(),

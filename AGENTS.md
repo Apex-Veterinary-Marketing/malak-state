@@ -429,10 +429,10 @@ restyle components → `npm run verify` → `npm run check:launch`.
   `getBoundingClientRect`, don't recompute by hand** (a negative margin on a `justify-content:center`
   flex child moves it by half its value).
 - **Modal**: scroll/max-height lives on `.modal__body`, not `.modal__dialog`, but slotted content is
-  *inside* `.modal__body`, so its `overflow: auto` still clips anything that sticks out. `ReputationWidget`
-  therefore sets its own modal body to `overflow: visible` and scrolls an inner `.reputation-widget__content`.
-  Do the same for any modal with content that must overflow the card. The mascot's `top`/`left` are tuned
-  to the shipped 350×271 images (body edge on the dialog border, paws over it); re-tune if you swap them.
+  *inside* `.modal__body`, so its `overflow: auto` still clips anything that sticks out. A modal with content
+  that must overflow the card sets its own modal body to `overflow: visible` (via `:global(#id .modal__body)`)
+  and scrolls an inner wrapper instead. (This fork removed `ReputationWidget`'s peeking dog mascot, which was
+  the one component that needed it.)
 - **Fixed/glass header over light sections**: a translucent header that reads fine over the dark hero can
   wash out over white sections. Check the scrolled state over the lightest section on every page.
 - **Phone numbers and short codes must not wrap**: give them `white-space: nowrap`, and check contact cards

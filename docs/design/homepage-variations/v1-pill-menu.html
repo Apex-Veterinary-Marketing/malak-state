@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Malak Estate Group · V1 Pill Menu</title>
+<!-- Design exploration mockup only. Not wired to the Astro site. Photos are Unsplash stand-ins for the client's own. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<style>
+  /* Tier 1 tokens exactly as `npm run palette -- --main "#BFB6AF" --cta "#BFB6AF"` generated them */
+  :root {
+    --white: #ffffff; --text: #333333; --text-muted: #796d63; --light-grey: #d1d1d1;
+    --solid-bg: #f6f5f4; --main: #7c6e63; --main-dark: #352f2b; --main-soft: #9d958f;
+    --cta: #bfb6af; --cta-hover: #d6d0cb; --on-cta: #352f2b; --overlay-color: #00000080;
+    --font-heading: "Cormorant Garamond", Georgia, serif; --font-body: "Jost", system-ui, sans-serif;
+    --radius-pill: 999px; --radius-media: 2px;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --container: 1280px;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--white); color: var(--text); font: 400 1.0625rem/1.7 var(--font-body); -webkit-font-smoothing: antialiased; }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; }
+  h1, h2, h3 { font-family: var(--font-heading); font-weight: 400; color: var(--main-dark); margin: 0; line-height: 1.1; letter-spacing: -0.01em; }
+  h2 { font-size: clamp(2.25rem, 4vw, 3.5rem); }
+  h3 { font-size: 1.75rem; }
+  p { margin: 0; }
+  .wrap { max-width: var(--container); margin-inline: auto; padding-inline: clamp(1rem, 4vw, 3rem); }
+  .section { padding-block: clamp(5rem, 10vw, 9rem); }
+  .eyebrow { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.25rem; }
+  .lede { max-width: 58ch; color: var(--text); margin-top: 1.5rem; }
+
+  /* Buttons: all interactive = pill; all media = 2px (documented shape rule) */
+  .btn { display: inline-flex; align-items: center; gap: .5rem; padding: .95rem 1.75rem; border-radius: var(--radius-pill); font: 500 .95rem/1 var(--font-body); text-decoration: none; white-space: nowrap; transition: background-color .3s var(--ease), transform .3s var(--ease), color .3s var(--ease); }
+  .btn:active { transform: scale(.98); }
+  .btn--cta { background: var(--cta); color: var(--on-cta); }
+  .btn--cta:hover { background: var(--cta-hover); }
+  .btn--ghost-light { color: var(--white); box-shadow: inset 0 0 0 1px #ffffff99; }
+  .btn--ghost-light:hover { background: #ffffff1f; }
+  .btn--dark { background: var(--main-dark); color: var(--white); }
+  .btn--dark:hover { background: var(--main); }
+  .link { color: var(--main); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; font-weight: 500; }
+  .link:hover { color: var(--main-dark); }
+
+  /* ---------- Pill navigation ---------- */
+  .pill-nav { position: fixed; inset-block-start: 1.25rem; inset-inline: 0; z-index: 50; display: flex; justify-content: center; padding-inline: 1rem; pointer-events: none; }
+  .pill { pointer-events: auto; display: flex; align-items: center; gap: .25rem; padding: .4rem .4rem .4rem 1.4rem; border-radius: var(--radius-pill);
+    background: #ffffffc7; backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: inset 0 0 0 1px #ffffff80, 0 12px 40px #352f2b1f; transition: background-color .4s var(--ease), box-shadow .4s var(--ease); }
+  .is-scrolled .pill { background: #fffffff2; box-shadow: inset 0 0 0 1px var(--light-grey), 0 12px 40px #352f2b14; }
+  .pill__brand { font: 500 1.35rem/1 var(--font-heading); color: var(--main-dark); text-decoration: none; margin-right: 1rem; white-space: nowrap; }
+  .pill__links { display: flex; list-style: none; margin: 0; padding: 0; }
+  .pill__links a { display: block; padding: .7rem 1rem; border-radius: var(--radius-pill); font-size: .9rem; text-decoration: none; color: var(--text); transition: background-color .3s var(--ease); }
+  .pill__links a:hover { background: var(--solid-bg); }
+  .pill__toggle { display: none; }
+  @media (max-width: 900px) {
+    .pill { width: 100%; justify-content: space-between; flex-wrap: wrap; border-radius: 28px; padding: .4rem .4rem .4rem 1.2rem; }
+    .pill__links { display: none; order: 3; width: 100%; flex-direction: column; padding: .5rem 0 .75rem; }
+    .pill.is-open .pill__links { display: flex; }
+    .pill__links a { padding: .85rem .8rem; font-size: 1rem; }
+    .pill__cta { display: none; }
+    .pill__toggle { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 0; border-radius: var(--radius-pill); background: var(--cta); color: var(--on-cta); font-size: 1.25rem; cursor: pointer; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; min-height: 100dvh; display: flex; align-items: flex-end; color: var(--white); overflow: hidden; }
+  .hero__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); animation: settle 2.4s var(--ease) forwards; }
+  .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, #1f1b18e6 0%, #1f1b1899 40%, #1f1b1800 75%), linear-gradient(90deg, #1f1b1880 0%, #1f1b1800 60%); }
+  .hero__body { position: relative; z-index: 1; width: 100%; padding-block: 0 clamp(3rem, 8vw, 6rem); }
+  .hero h1 { color: var(--white); font-size: clamp(2.8rem, 5.6vw, 5rem); max-width: 17ch; line-height: 1.05; padding-bottom: .08em; }
+  .hero h1 em { font-style: italic; }
+  .hero p { max-width: 44ch; margin-top: 1.5rem; font-size: 1.125rem; color: #fffffff0; }
+  .hero__ctas { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2.25rem; }
+  @keyframes settle { to { transform: scale(1); } }
+
+  /* ---------- Intro split ---------- */
+  .intro { display: grid; grid-template-columns: 5fr 6fr; gap: clamp(2rem, 7vw, 7rem); align-items: center; }
+  .intro__media { position: relative; }
+  .intro__media img { aspect-ratio: 4/5; object-fit: cover; border-radius: var(--radius-media); width: 100%; }
+  .intro__media img + img { position: absolute; width: 46%; aspect-ratio: 1; right: -12%; bottom: -10%; box-shadow: 0 0 0 10px var(--white); }
+  .intro__sig { margin-top: 2.5rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+  .intro__name { font: italic 400 1.6rem/1 var(--font-heading); color: var(--main-dark); }
+  @media (max-width: 767px) { .intro { grid-template-columns: 1fr; } .intro__media img + img { display: none; } }
+
+  /* ---------- Paths (asymmetric trio) ---------- */
+  .paths__head { max-width: 40rem; margin-bottom: 3.5rem; }
+  .paths { display: grid; grid-template-columns: 1.35fr 1fr; grid-template-rows: auto auto; gap: 2.5rem 3rem; }
+  .path img { width: 100%; object-fit: cover; border-radius: var(--radius-media); transition: transform 1.2s var(--ease); }
+  .path__frame { overflow: hidden; border-radius: var(--radius-media); }
+  .path:hover img { transform: scale(1.03); }
+  .path--lg { grid-row: span 2; }
+  .path--lg img { aspect-ratio: 4/5; }
+  .path--sm img { aspect-ratio: 16/10; }
+  .path h3 { margin-top: 1.25rem; }
+  .path p { margin-top: .5rem; color: var(--text-muted); max-width: 44ch; }
+  a.path { text-decoration: none; color: inherit; display: block; }
+  @media (max-width: 767px) { .paths { grid-template-columns: 1fr; } .path--lg { grid-row: auto; } .path--lg img { aspect-ratio: 4/3; } }
+
+  /* ---------- Recognition (typographic row) ---------- */
+  .honors { background: var(--solid-bg); }
+  .honors__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-top: 3rem; }
+  .honor { border-top: 1px solid var(--cta); padding-top: 1.5rem; }
+  .honor__year { font: 400 2.5rem/1 var(--font-heading); color: var(--main-dark); }
+  .honor__label { margin-top: .75rem; font-size: .95rem; color: var(--text); }
+  @media (max-width: 900px) { .honors__grid { grid-template-columns: 1fr 1fr; gap: 2.5rem 2rem; } }
+
+  /* ---------- Builders (one deliberate espresso block) ---------- */
+  .builders { background: var(--main-dark); color: #ece9e6; }
+  .builders__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; }
+  .builders h2 { color: var(--white); }
+  .builders p { color: #ddd8d4; }
+  .builders img { width: 100%; aspect-ratio: 5/4; object-fit: cover; border-radius: var(--radius-media); }
+  .builders ul { list-style: none; padding: 0; margin: 2rem 0 2.5rem; display: grid; gap: .9rem; }
+  .builders li { display: flex; gap: .75rem; align-items: baseline; }
+  .builders li i { color: var(--cta); }
+  @media (max-width: 767px) { .builders__grid { grid-template-columns: 1fr; } }
+
+  /* ---------- Listings (scroll-snap rail) ---------- */
+  .listings__head { display: flex; justify-content: space-between; align-items: end; gap: 2rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+  .rail { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(300px, 32%); gap: 1.5rem; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 1rem; scrollbar-width: thin; }
+  .listing { scroll-snap-align: start; }
+  .listing img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: var(--radius-media); }
+  .listing__price { font: 500 1.6rem/1 var(--font-heading); color: var(--main-dark); margin-top: 1.1rem; }
+  .listing__meta { font-size: .9rem; color: var(--text-muted); margin-top: .4rem; }
+  @media (max-width: 767px) { .rail { grid-auto-columns: 85%; } }
+
+  /* ---------- Testimonial ---------- */
+  .quote { text-align: center; max-width: 52rem; margin-inline: auto; }
+  .quote blockquote { margin: 0; font: italic 400 clamp(1.75rem, 3.2vw, 2.6rem)/1.3 var(--font-heading); color: var(--main-dark); }
+  .quote figcaption { margin-top: 1.75rem; font-size: .9rem; color: var(--text-muted); }
+  .stars { color: var(--main); letter-spacing: .2em; margin-bottom: 1.5rem; }
+
+  /* ---------- Gather & Ground (bento, 3 cells) ---------- */
+  .gg { background: var(--solid-bg); }
+  .bento { display: grid; grid-template-columns: 1.1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 1rem; min-height: 560px; }
+  .bento__text { grid-row: span 2; background: var(--white); padding: clamp(2rem, 4vw, 3.25rem); display: flex; flex-direction: column; justify-content: space-between; border-radius: var(--radius-media); }
+  .bento__event { border-top: 1px solid var(--light-grey); padding-top: 1.5rem; margin-top: 2rem; }
+  .bento__event strong { display: block; font: 500 1.4rem/1.2 var(--font-heading); color: var(--main-dark); }
+  .bento img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-media); }
+  .bento__wide { grid-column: span 2; }
+  @media (max-width: 900px) { .bento { grid-template-columns: 1fr 1fr; min-height: 0; } .bento__text { grid-column: span 2; grid-row: auto; } .bento img { aspect-ratio: 4/3; } }
+  @media (max-width: 767px) { .bento { grid-template-columns: 1fr; } .bento__text, .bento__wide { grid-column: auto; } }
+
+  /* ---------- Closing CTA ---------- */
+  .close { text-align: center; }
+  .close h2 { max-width: 16ch; margin-inline: auto; }
+  .close .lede { margin-inline: auto; }
+  .close__actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 2.5rem; align-items: center; }
+  .phone { font: 500 1.05rem/1 var(--font-body); color: var(--main-dark); text-decoration: none; white-space: nowrap; display: inline-flex; gap: .5rem; align-items: center; }
+  .areas { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; margin-top: 3.5rem; list-style: none; padding: 0; }
+  .areas li { padding: .55rem 1.1rem; border-radius: var(--radius-pill); box-shadow: inset 0 0 0 1px var(--light-grey); font-size: .9rem; color: var(--text); }
+
+  /* ---------- Footer ---------- */
+  footer { background: var(--main-dark); color: #d8d3cf; padding-block: 4.5rem 2.5rem; font-size: .95rem; }
+  .foot { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.5rem; }
+  .foot__brand { font: 400 2rem/1.1 var(--font-heading); color: var(--white); }
+  .foot h4 { font: 500 .8rem/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: var(--white); margin: 0 0 1.1rem; }
+  .foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .55rem; }
+  .foot a { text-decoration: none; }
+  .foot a:hover { color: var(--white); }
+  .foot__legal { border-top: 1px solid #ffffff26; margin-top: 3.5rem; padding-top: 1.75rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-size: .85rem; color: #bdb5ae; }
+  @media (max-width: 900px) { .foot { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 767px) { .foot { grid-template-columns: 1fr; } }
+
+  /* ---------- Reveal (IntersectionObserver, never a scroll listener) ---------- */
+  .js [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+  .js [data-reveal].is-in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .js [data-reveal] { opacity: 1; transform: none; transition: none; }
+    .hero__img { animation: none; transform: none; }
+    html { scroll-behavior: auto; }
+  }
+  :focus-visible { outline: 2px solid var(--main); outline-offset: 3px; }
+</style>
+</head>
+<body>
+<div id="top-sentinel" style="position:absolute;top:80px;height:1px;width:1px"></div>
+
+<header class="pill-nav" id="nav">
+  <nav class="pill" aria-label="Primary">
+    <a class="pill__brand" href="#">The Malak Estate Group</a>
+    <button class="pill__toggle" aria-expanded="false" aria-controls="pill-links" aria-label="Open menu"><i class="ph ph-list"></i></button>
+    <ul class="pill__links" id="pill-links">
+      <li><a href="#about">Meet Marissa</a></li>
+      <li><a href="#paths">Services</a></li>
+      <li><a href="#builders">Builders</a></li>
+      <li><a href="#listings">Listings</a></li>
+      <li><a href="#gather">Gather &amp; Ground</a></li>
+    </ul>
+    <a class="btn btn--cta pill__cta" href="https://calendly.com/marissa-malakestates/30min" target="_blank" rel="noopener">Book a call</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <img class="hero__img" src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=2400&q=80" alt="White colonial home with a wraparound porch and a green lawn" fetchpriority="high">
+    <div class="wrap hero__body">
+      <h1>A calmer way to buy, sell, and <em>build.</em></h1>
+      <p>Honest guidance and a clear plan for every move across Greater Cleveland and Northeast Ohio.</p>
+      <div class="hero__ctas">
+        <a class="btn btn--cta" href="https://calendly.com/marissa-malakestates/30min" target="_blank" rel="noopener">Book a call</a>
+        <a class="btn btn--ghost-light" href="#paths">Explore services</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="wrap intro">
+      <div class="intro__media" data-reveal>
+        <img src="img/marissa-living-room.jpg" alt="Marissa Lubera smiling in a bright living room">
+        <img src="img/chair-topdown.jpg" alt="Laptop and phone resting on a taupe velvet chair" style="object-position:center">
+      </div>
+      <div data-reveal>
+        <h2>You'll always know where you stand.</h2>
+        <p class="lede">I take the time to understand your goals, communicate clearly, and advocate for your best interests from the first conversation through closing. You should feel confident, informed, and supported, never like just another transaction.</p>
+        <div class="intro__sig">
+          <span class="intro__name">Marissa Lubera, Realtor</span>
+          <a class="link" href="#">Meet Marissa</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="paths" style="padding-top:0">
+    <div class="wrap">
+      <div class="paths__head" data-reveal>
+        <h2>Whatever your next move looks like.</h2>
+        <p class="lede">Resale or new construction, first home or last one. Your plan is built around your timeline, not a template.</p>
+      </div>
+      <div class="paths">
+        <a class="path path--lg" href="#" data-reveal>
+          <div class="path__frame"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1400&q=80" alt="Open living space with a timber feature wall"></div>
+          <h3>Buying a home</h3>
+          <p>First-time buyers, relocation, and downsizing, with a strategy shaped around your budget and timeline.</p>
+        </a>
+        <a class="path path--sm" href="#" data-reveal>
+          <div class="path__frame"><img src="https://images.unsplash.com/photo-1449844908441-8829872d2607?w=1100&q=80" alt="Brick home in soft morning light"></div>
+          <h3>Selling your home</h3>
+          <p>Pricing, preparation, and marketing tailored to your home and your neighborhood.</p>
+        </a>
+        <a class="path path--sm" href="#" data-reveal>
+          <div class="path__frame"><img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1100&q=80" alt="Newly built modern home with timber cladding"></div>
+          <h3>New construction</h3>
+          <p>Years inside new-construction sales mean you'll know what to ask the builder, and when.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section honors">
+    <div class="wrap">
+      <p class="eyebrow" data-reveal>Recognition</p>
+      <h2 data-reveal>Trusted by clients and builders alike.</h2>
+      <div class="honors__grid" data-reveal>
+        <div class="honor"><div class="honor__year">2023-2025</div><p class="honor__label">President's Club, top consultant in revenue and units sold in her division</p></div>
+        <div class="honor"><div class="honor__year">2023-2025</div><p class="honor__label">Home Builder Award</p></div>
+        <div class="honor"><div class="honor__year">2023-2024</div><p class="honor__label">National KHAM Award</p></div>
+        <div class="honor"><div class="honor__year">2022</div><p class="honor__label">Rookie of the Year</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section builders" id="builders">
+    <div class="wrap builders__grid">
+      <div data-reveal>
+        <h2>Builders: your community deserves a sharper launch.</h2>
+        <p class="lede" style="color:#ddd8d4">New development is reshaping Greater Cleveland. Marissa pairs a new-construction sales background with a marketing-first approach, so your homes reach the buyers they were built for.</p>
+        <ul>
+          <li><i class="ph ph-check"></i><span>Positioning and pricing informed by years of builder-side sales</span></li>
+          <li><i class="ph ph-check"></i><span>Launch marketing for single homes and full communities</span></li>
+          <li><i class="ph ph-check"></i><span>Buyer guidance from first visit through closing</span></li>
+        </ul>
+        <a class="btn btn--cta" href="#">For builders &amp; developers</a>
+      </div>
+      <img data-reveal src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&q=80" alt="Modern new-construction home at dusk">
+    </div>
+  </section>
+
+  <section class="section" id="listings">
+    <div class="wrap">
+      <div class="listings__head" data-reveal>
+        <div>
+          <p class="eyebrow">Featured listings</p>
+          <h2>Homes worth a closer look.</h2>
+        </div>
+        <a class="link" href="#">View all listings</a>
+      </div>
+      <!-- Sample cards: fed by the listings collection until IDX is connected -->
+      <div class="rail" data-reveal>
+        <article class="listing"><img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=900&q=80" alt="Gabled home glowing at dusk"><div class="listing__price">$624,900</div><p class="listing__meta">4 bd, 3 ba, 2,860 sq ft<br>Medina, OH. Sample listing</p></article>
+        <article class="listing"><img src="https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=900&q=80" alt="Open-plan interior with a floating staircase"><div class="listing__price">$489,000</div><p class="listing__meta">3 bd, 2.5 ba, 2,140 sq ft<br>Strongsville, OH. Sample listing</p></article>
+        <article class="listing"><img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=80" alt="Primary bedroom with a tufted bed and tall windows"><div class="listing__price">$715,500</div><p class="listing__meta">5 bd, 4 ba, 3,420 sq ft<br>Hudson, OH. Sample listing</p></article>
+        <article class="listing"><img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=900&q=80" alt="Bathroom with a freestanding tub"><div class="listing__price">$399,900</div><p class="listing__meta">3 bd, 2 ba, 1,780 sq ft<br>Westlake, OH. Sample listing</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <figure class="wrap quote" data-reveal>
+      <div class="stars" aria-label="5 out of 5 stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+      <blockquote>“Marissa explained every step before it happened. We never felt rushed, and we never felt alone in it.”</blockquote>
+      <figcaption>Placeholder quote, to be replaced with a Google review</figcaption>
+    </figure>
+  </section>
+
+  <section class="section gg" id="gather">
+    <div class="wrap">
+      <div class="bento">
+        <div class="bento__text" data-reveal>
+          <div>
+            <p class="eyebrow">Gather &amp; Ground</p>
+            <h2>A monthly table for the neighborhood.</h2>
+            <p class="lede">Gather &amp; Ground is a community initiative Marissa co-sponsors, bringing neighbors together once a month to connect and give back.</p>
+          </div>
+          <div class="bento__event">
+            <span class="eyebrow" style="margin:0">Next gathering</span>
+            <strong>Date and venue coming soon</strong>
+            <a class="link" href="#" style="display:inline-block;margin-top:1rem">See upcoming events</a>
+          </div>
+        </div>
+        <img class="bento__wide" data-reveal src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1400&q=80" alt="Long community table set with flowers">
+        <img data-reveal src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80" alt="Glasses and flowers on a shared table">
+        <img data-reveal src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80" alt="Friends sitting together outdoors">
+      </div>
+    </div>
+  </section>
+
+  <section class="section close">
+    <div class="wrap" data-reveal>
+      <h2>Let's talk about your next move.</h2>
+      <p class="lede">A 30-minute call, no pressure. Bring your questions about buying, selling, or building.</p>
+      <div class="close__actions">
+        <a class="btn btn--dark" href="https://calendly.com/marissa-malakestates/30min" target="_blank" rel="noopener">Book a call</a>
+        <a class="phone" href="tel:+14404204549"><i class="ph ph-phone"></i>440.420.0580</a>
+      </div>
+      <ul class="areas" aria-label="Service areas">
+        <li>Cuyahoga County</li><li>Medina County</li><li>Summit County</li><li>Stark County</li><li>Lake County</li><li>Lorain County</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <div class="foot__brand">The Malak Estate Group</div>
+        <p style="margin-top:1rem;max-width:36ch">Honest guidance for buyers, sellers, and builders across Northeast Ohio. Brokered by Real of Ohio.</p>
+      </div>
+      <div><h4>Explore</h4><ul><li><a href="#">Meet Marissa</a></li><li><a href="#">Services</a></li><li><a href="#">Builders &amp; Developers</a></li><li><a href="#">Listings</a></li><li><a href="#">Gather &amp; Ground</a></li></ul></div>
+      <div><h4>Contact</h4><ul><li><a href="tel:+14404204549">440.420.0580</a></li><li><a href="mailto:marissa@malakestates.com">marissa@malakestates.com</a></li><li>Mon-Sun, 8am-8pm</li></ul></div>
+      <div><h4>Follow</h4><ul><li><a href="https://www.instagram.com/themalakestategroup">Instagram</a></li><li><a href="#">Facebook</a></li></ul></div>
+    </div>
+    <div class="foot__legal"><span>© 2026 The Malak Estate Group. Brokered by Real of Ohio.</span><span><a href="#">Privacy Policy</a></span></div>
+  </div>
+</footer>
+
+<script>
+  document.documentElement.classList.add("js");
+  const nav = document.getElementById("nav");
+  new IntersectionObserver(([e]) => nav.classList.toggle("is-scrolled", !e.isIntersecting)).observe(document.getElementById("top-sentinel"));
+  const pill = nav.querySelector(".pill"), toggle = nav.querySelector(".pill__toggle");
+  toggle.addEventListener("click", () => {
+    const open = pill.classList.toggle("is-open");
+    toggle.setAttribute("aria-expanded", open);
+    toggle.innerHTML = open ? '<i class="ph ph-x"></i>' : '<i class="ph ph-list"></i>';
+  });
+  nav.querySelectorAll(".pill__links a").forEach(a => a.addEventListener("click", () => { pill.classList.remove("is-open"); toggle.setAttribute("aria-expanded", false); toggle.innerHTML = '<i class="ph ph-list"></i>'; }));
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); } }), { threshold: 0.15 });
+  document.querySelectorAll("[data-reveal]").forEach(el => io.observe(el));
+  setTimeout(() => document.querySelectorAll("[data-reveal]").forEach(el => el.classList.add("is-in")), 4000);
+</script>
+</body>
+</html>

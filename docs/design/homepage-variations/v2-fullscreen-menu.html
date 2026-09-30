@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Malak Estate Group · V2 Full-Screen Menu</title>
+<!-- Design exploration mockup only. Not wired to the Astro site. Photos are Unsplash stand-ins for the client's own. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<style>
+  /* Tier 1 tokens as generated from #BFB6AF */
+  :root {
+    --white: #ffffff; --text: #333333; --text-muted: #796d63; --light-grey: #d1d1d1;
+    --solid-bg: #f6f5f4; --main: #7c6e63; --main-dark: #352f2b; --main-soft: #9d958f;
+    --cta: #bfb6af; --cta-hover: #d6d0cb; --on-cta: #352f2b;
+    --font-heading: "Playfair Display", Georgia, serif; --font-body: "Manrope", system-ui, sans-serif;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --container: 1320px; --header-h: 76px;
+  }
+  /* Shape rule: everything square (radius 0), buttons included */
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: var(--white); color: var(--text); font: 400 1.0625rem/1.75 var(--font-body); -webkit-font-smoothing: antialiased; }
+  body.menu-open { overflow: hidden; }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; }
+  h1, h2, h3 { font-family: var(--font-heading); font-weight: 400; color: var(--main-dark); margin: 0; line-height: 1.12; }
+  h2 { font-size: clamp(2.1rem, 3.6vw, 3.25rem); }
+  p { margin: 0; }
+  .wrap { max-width: var(--container); margin-inline: auto; padding-inline: clamp(1rem, 4vw, 3rem); }
+  .section { padding-block: clamp(5rem, 10vw, 9rem); }
+  .lede { max-width: 56ch; margin-top: 1.5rem; }
+  .muted { color: var(--text-muted); }
+  .btn { display: inline-flex; align-items: center; gap: .6rem; padding: 1.05rem 1.9rem; font: 600 .85rem/1 var(--font-body); letter-spacing: .08em; text-transform: uppercase; text-decoration: none; white-space: nowrap; transition: background-color .3s var(--ease), color .3s var(--ease); }
+  .btn:active { transform: translateY(1px); }
+  .btn--cta { background: var(--cta); color: var(--on-cta); }
+  .btn--cta:hover { background: var(--cta-hover); }
+  .btn--line { box-shadow: inset 0 0 0 1px var(--main-dark); color: var(--main-dark); }
+  .btn--line:hover { background: var(--main-dark); color: var(--white); }
+  .arrow-link { display: inline-flex; gap: .6rem; align-items: center; font-weight: 600; color: var(--main); text-decoration: none; }
+  .arrow-link i { transition: transform .4s var(--ease); }
+  .arrow-link:hover i { transform: translateX(4px); }
+
+  /* ---------- Header ---------- */
+  /* Solid from the start: the hero photo begins below the header, so the Menu/Book links never sit on the image */
+  .header { position: fixed; inset: 0 0 auto; height: var(--header-h); z-index: 60; display: flex; align-items: center; background: var(--solid-bg); transition: background-color .4s var(--ease), box-shadow .4s var(--ease); }
+  .header.is-scrolled { background: #fffffff5; box-shadow: 0 1px 0 var(--light-grey); }
+  .header .wrap { width: 100%; display: flex; align-items: center; justify-content: space-between; }
+  .brand { font: 400 1.3rem/1 var(--font-heading); color: var(--main-dark); text-decoration: none; white-space: nowrap; }
+  .brand em { font-style: italic; }
+  .header__right { display: flex; align-items: center; gap: 1.75rem; }
+  .header__book { font-weight: 600; font-size: .9rem; text-decoration: none; color: var(--main-dark); border-bottom: 1px solid var(--cta); padding-bottom: 2px; }
+  .menu-btn { display: inline-flex; align-items: center; gap: .8rem; border: 0; background: none; font: 600 .8rem/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: var(--main-dark); cursor: pointer; padding: .75rem 0; }
+  .menu-btn__lines { width: 28px; height: 10px; position: relative; }
+  .menu-btn__lines::before, .menu-btn__lines::after { content: ""; position: absolute; left: 0; right: 0; height: 1.5px; background: currentColor; transition: transform .5s var(--ease), top .5s var(--ease); }
+  .menu-btn__lines::before { top: 0; } .menu-btn__lines::after { top: 8px; }
+  .menu-open .menu-btn { color: var(--white); }
+  .menu-open .menu-btn__lines::before { top: 4px; transform: rotate(45deg); }
+  .menu-open .menu-btn__lines::after { top: 4px; transform: rotate(-45deg); }
+  .menu-open .brand, .menu-open .header__book { color: var(--white); }
+  .menu-open .header { background: var(--main-dark); box-shadow: none; }
+  @media (max-width: 600px) { .header__book { display: none; } }
+
+  /* ---------- Full-screen menu ---------- */
+  .overlay { position: fixed; inset: 0; z-index: 55; background: var(--main-dark); color: #e9e5e1; display: grid; grid-template-columns: 1.3fr 1fr; visibility: hidden; clip-path: inset(0 0 100% 0); transition: clip-path .8s var(--ease), visibility 0s .8s; }
+  .menu-open .overlay { visibility: visible; clip-path: inset(0 0 0 0); transition: clip-path .8s var(--ease); }
+  .overlay__nav { padding: calc(var(--header-h) + 3rem) clamp(1.5rem, 6vw, 6rem) 3rem; display: flex; flex-direction: column; justify-content: space-between; overflow-y: auto; }
+  .overlay__nav ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .35rem; }
+  .overlay__nav a.big { font: 400 clamp(2.1rem, 4.6vw, 3.9rem)/1.15 var(--font-heading); text-decoration: none; color: var(--white); display: inline-block; opacity: 0; transform: translateY(28px); transition: opacity .6s var(--ease), transform .6s var(--ease), color .3s; }
+  .overlay__nav a.big:hover { color: var(--cta); font-style: italic; }
+  .menu-open .overlay__nav a.big { opacity: 1; transform: none; transition-delay: calc(.25s + var(--i) * 60ms); }
+  .overlay__meta { display: flex; gap: 3rem; flex-wrap: wrap; margin-top: 3rem; font-size: .95rem; }
+  .overlay__meta h4 { margin: 0 0 .5rem; font: 600 .75rem/1 var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: var(--cta); }
+  .overlay__meta a { text-decoration: none; }
+  .overlay__img { position: relative; overflow: hidden; }
+  .overlay__img img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); transition: transform 1.4s var(--ease); }
+  .menu-open .overlay__img img { transform: scale(1); }
+  @media (max-width: 900px) { .overlay { grid-template-columns: 1fr; } .overlay__img { display: none; } }
+
+  /* ---------- Hero: split screen ---------- */
+  .hero { display: grid; grid-template-columns: 1fr 1fr; min-height: 100dvh; padding-top: var(--header-h); background: var(--solid-bg); }
+  .hero__text { padding: 3rem clamp(1.5rem, 5vw, 5rem) 4rem max(clamp(1rem, 4vw, 3rem), calc((100vw - var(--container)) / 2 + 3rem)); display: flex; flex-direction: column; justify-content: center; }
+  .hero h1 { font-size: clamp(2.6rem, 4.4vw, 4.1rem); max-width: 15ch; line-height: 1.1; padding-bottom: .1em; }
+  .hero h1 em { font-style: italic; color: var(--main); }
+  .hero p { margin-top: 1.75rem; max-width: 42ch; font-size: 1.125rem; }
+  .hero__ctas { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2.5rem; }
+  .hero__img { position: relative; overflow: hidden; }
+  .hero__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; min-height: 0; }
+    .hero__img { order: -1; height: 56vh; }
+    .hero__text { padding: 3rem clamp(1rem, 4vw, 3rem) 4rem; }
+  }
+
+  /* ---------- Manifesto ---------- */
+  .manifesto { text-align: center; }
+  .manifesto blockquote { margin: 0 auto; max-width: 30ch; font: 400 clamp(1.9rem, 3.6vw, 3rem)/1.3 var(--font-heading); color: var(--main-dark); }
+  .manifesto blockquote em { font-style: italic; color: var(--main); }
+  .manifesto p { margin-top: 2rem; font-size: .8rem; letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); }
+
+  /* ---------- Services: accordion image slider ---------- */
+  .svc__head { margin-bottom: 3rem; }
+  .strips { display: flex; gap: .75rem; height: 600px; }
+  .strip { position: relative; flex: 1; overflow: hidden; text-decoration: none; color: var(--white); transition: flex-grow .9s var(--ease); min-width: 0; }
+  .strip:hover, .strip:focus-visible, .strip.is-active { flex-grow: 3.2; }
+  .strip img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .strip::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, #1f1b18e0 0%, #1f1b1899 45%, #1f1b1800 80%); }
+  /* Every title starts on the same line (top-anchored), whatever the strip width or text length */
+  .strip__body { position: absolute; z-index: 1; left: 0; right: 0; top: 62%; padding: 0 1.75rem; }
+  .strip h3 { color: var(--white); font-size: 1.55rem; line-height: 1.2; }
+  .strip p { margin-top: .75rem; max-width: 36ch; color: #f1eeeb; opacity: 0; transform: translateY(10px); transition: opacity .5s var(--ease), transform .5s var(--ease); }
+  .strip:hover p, .strip:focus-visible p, .strip.is-active p { opacity: 1; transform: none; transition-delay: .25s; }
+  @media (max-width: 900px) {
+    .strips { flex-direction: column; height: auto; }
+    .strip { min-height: 340px; flex: none; }
+    .strip p { opacity: 1; transform: none; }
+    .strip__body { top: auto; bottom: 0; padding: 1.5rem; }
+  }
+
+  /* ---------- Meet Marissa ---------- */
+  .meet { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(2rem, 7vw, 7rem); align-items: start; }
+  .meet img { width: 100%; aspect-ratio: 4/5; object-fit: cover; }
+  .awards { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 2.5rem; margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid var(--light-grey); }
+  .award strong { display: block; font: 400 1.35rem/1.25 var(--font-heading); color: var(--main-dark); }
+  .award span { font-size: .9rem; color: var(--text-muted); }
+  @media (max-width: 767px) { .meet, .awards { grid-template-columns: 1fr; } }
+
+  /* ---------- Builders: full-bleed image with panel ---------- */
+  .builders { position: relative; min-height: 88vh; display: flex; align-items: flex-end; }
+  .builders > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .builders__panel { position: relative; background: var(--white); max-width: 560px; margin: 0 clamp(1rem, 5vw, 5rem) clamp(1rem, 5vw, 5rem) auto; padding: clamp(2rem, 4vw, 3.5rem); }
+  .builders__panel .btn { margin-top: 2rem; }
+  @media (max-width: 767px) { .builders { min-height: 0; display: block; } .builders > img { position: static; height: 50vh; } .builders__panel { margin: -3rem 1rem 0; } }
+
+  /* ---------- Listings: 1 large + 2 stacked ---------- */
+  .listings__head { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 3rem; }
+  .lgrid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; }
+  .lgrid__stack { display: grid; gap: 2rem; }
+  .card img { width: 100%; object-fit: cover; aspect-ratio: 3/2; }
+  .card--lg img { aspect-ratio: 5/4; }
+  .card__row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-top: 1rem; }
+  .card__price { font: 400 1.5rem/1 var(--font-heading); color: var(--main-dark); }
+  .card__meta { font-size: .9rem; color: var(--text-muted); }
+  @media (max-width: 767px) { .lgrid { grid-template-columns: 1fr; } }
+
+  /* ---------- Gather & Ground ---------- */
+  .gg { background: var(--solid-bg); }
+  .gg__grid { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto auto; gap: 1rem; }
+  .gg__text { grid-column: 1; grid-row: 1 / span 2; padding-right: 2rem; align-self: center; }
+  .gg__grid img { width: 100%; height: 100%; object-fit: cover; }
+  .gg__tall { grid-column: 2; grid-row: 1 / span 2; aspect-ratio: 3/4; }
+  .gg__a { grid-column: 3; aspect-ratio: 4/3; } .gg__b { grid-column: 3; aspect-ratio: 4/3; }
+  .event { margin-top: 2rem; padding: 1.5rem; background: var(--white); }
+  .event small { font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); }
+  .event strong { display: block; font: 400 1.3rem/1.3 var(--font-heading); color: var(--main-dark); margin-top: .35rem; }
+  @media (max-width: 900px) { .gg__grid { grid-template-columns: 1fr 1fr; } .gg__text { grid-column: 1 / -1; grid-row: auto; padding: 0 0 1rem; } .gg__tall { grid-column: 1; grid-row: auto; } .gg__a, .gg__b { grid-column: 2; } }
+  @media (max-width: 767px) { .gg__grid { grid-template-columns: 1fr; } .gg__tall, .gg__a, .gg__b { grid-column: auto; aspect-ratio: 4/3; } }
+
+  /* ---------- Testimonial ---------- */
+  .quote { display: grid; grid-template-columns: auto 1fr; gap: 2.5rem; max-width: 62rem; margin-inline: auto; }
+  .quote i { font-size: 3rem; color: var(--cta); }
+  .quote blockquote { margin: 0; font: italic 400 clamp(1.5rem, 2.6vw, 2.1rem)/1.4 var(--font-heading); color: var(--main-dark); }
+  .quote figcaption { margin-top: 1.5rem; font-size: .9rem; color: var(--text-muted); }
+  @media (max-width: 767px) { .quote { grid-template-columns: 1fr; gap: 1rem; } }
+
+  /* ---------- Booking with inline Calendly ---------- */
+  .book { background: var(--main-dark); color: #e3ded9; }
+  .book__grid { display: grid; grid-template-columns: 1fr 1.25fr; gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+  .book h2 { color: var(--white); }
+  .book ul { list-style: none; padding: 0; margin: 2.5rem 0 0; display: grid; gap: 1.25rem; }
+  .book li { display: flex; gap: 1rem; align-items: center; }
+  .book li i { font-size: 1.3rem; color: var(--cta); }
+  .book li a { text-decoration: none; white-space: nowrap; }
+  .calendly { background: var(--white); height: 700px; }
+  .calendly iframe { width: 100%; height: 100%; border: 0; }
+  .counties { margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid #ffffff26; font-size: .95rem; color: #cfc8c2; }
+  @media (max-width: 900px) { .book__grid { grid-template-columns: 1fr; } }
+
+  footer { background: var(--main-dark); color: #bdb5ae; border-top: 1px solid #ffffff1f; padding-block: 2.5rem; font-size: .85rem; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  footer a { text-decoration: none; }
+
+  .js [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+  .js [data-reveal].is-in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .js [data-reveal] { opacity: 1; transform: none; transition: none; }
+    .overlay, .menu-open .overlay, .overlay__nav a.big, .strip, .strip p, .overlay__img img { transition: none !important; }
+  }
+  :focus-visible { outline: 2px solid var(--main); outline-offset: 3px; }
+  .overlay :focus-visible { outline-color: var(--cta); }
+</style>
+</head>
+<body>
+<div id="top-sentinel" style="position:absolute;top:40px;height:1px;width:1px"></div>
+
+<header class="header" id="header">
+  <div class="wrap">
+    <a class="brand" href="#">The <em>Malak</em> Estate Group</a>
+    <div class="header__right">
+      <a class="header__book" href="#book">Book a call</a>
+      <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="overlay"><span class="menu-btn__label">Menu</span><span class="menu-btn__lines" aria-hidden="true"></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Site menu">
+  <div class="overlay__nav">
+    <ul>
+      <li><a class="big" style="--i:0" href="#">Home</a></li>
+      <li><a class="big" style="--i:1" href="#meet">Meet Marissa</a></li>
+      <li><a class="big" style="--i:2" href="#services">Services</a></li>
+      <li><a class="big" style="--i:3" href="#builders">Builders &amp; Developers</a></li>
+      <li><a class="big" style="--i:4" href="#listings">Listings</a></li>
+      <li><a class="big" style="--i:5" href="#gather">Gather &amp; Ground</a></li>
+      <li><a class="big" style="--i:6" href="#book">Contact</a></li>
+    </ul>
+    <div class="overlay__meta">
+      <div><h4>Call</h4><a href="tel:+14404204549">440.420.0580</a></div>
+      <div><h4>Email</h4><a href="mailto:marissa@malakestates.com">marissa@malakestates.com</a></div>
+      <div><h4>Follow</h4><a href="https://www.instagram.com/themalakestategroup">Instagram</a> &nbsp; <a href="#">Facebook</a></div>
+    </div>
+  </div>
+  <div class="overlay__img"><img src="img/marissa-living-room.jpg" alt="" style="object-position:50% 35%"></div>
+</div>
+
+<main>
+  <section class="hero">
+    <div class="hero__text">
+      <h1>Real estate, handled with <em>care.</em></h1>
+      <p>Personal strategy for buyers, sellers, and new construction across Northeast Ohio, from first conversation through closing.</p>
+      <div class="hero__ctas">
+        <a class="btn btn--cta" href="#book">Book a call</a>
+        <a class="btn btn--line" href="#listings">View listings</a>
+      </div>
+    </div>
+    <div class="hero__img"><img src="img/marissa-doorway-wide.jpg" alt="Marissa Lubera opening the double front doors of a home" style="object-position:50% 45%" fetchpriority="high"></div>
+  </section>
+
+  <section class="section manifesto">
+    <div class="wrap" data-reveal>
+      <blockquote>Honest guidance, clear communication, and an advocate who puts <em>your</em> interests first.</blockquote>
+      <p>Our mission</p>
+    </div>
+  </section>
+
+  <section class="section" id="services" style="padding-top:0">
+    <div class="wrap">
+      <div class="svc__head" data-reveal>
+        <h2>Every kind of move, one steady guide.</h2>
+      </div>
+      <div class="strips" data-reveal>
+        <a class="strip is-active" href="#"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1400&q=80" alt=""><div class="strip__body"><h3>Buying</h3><p>A strategy shaped around your budget, timeline, and the neighborhoods that fit your life.</p></div></a>
+        <a class="strip" href="#"><img src="https://images.unsplash.com/photo-1449844908441-8829872d2607?w=1400&q=80" alt=""><div class="strip__body"><h3>Selling</h3><p>Pricing, preparation, and marketing tailored to your home and your street.</p></div></a>
+        <a class="strip" href="#"><img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1400&q=80" alt=""><div class="strip__body"><h3>New construction</h3><p>Builder-side experience on your side of the table, from lot selection to final walkthrough.</p></div></a>
+        <a class="strip" href="#"><img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1400&q=80" alt=""><div class="strip__body"><h3>Relocation &amp; downsizing</h3><p>Moving to Northeast Ohio or into your next chapter, with every detail handled.</p></div></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="meet" style="padding-top:0">
+    <div class="wrap meet">
+
+      <img data-reveal src="img/marissa-seated-black.jpg" alt="Marissa Lubera seated in a velvet chair, wearing a black suit" style="object-position:50% 30%">
+      <div data-reveal>
+        <h2>Meet Marissa Lubera.</h2>
+        <p class="lede">With six years across resale and new construction, Marissa brings a well-rounded perspective to every move. What sets her apart is how invested she is in the people she serves: you'll feel informed, supported, and genuinely cared for.</p>
+        <div class="awards">
+          <div class="award"><strong>President's Club</strong><span>2023-2025, top consultant in revenue and units sold</span></div>
+          <div class="award"><strong>Home Builder Award</strong><span>2023-2025</span></div>
+          <div class="award"><strong>National KHAM Award</strong><span>2023-2024</span></div>
+          <div class="award"><strong>Rookie of the Year</strong><span>2022</span></div>
+        </div>
+        <a class="arrow-link" href="#" style="margin-top:2.5rem">More about Marissa <i class="ph ph-arrow-right"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="builders" id="builders">
+    <img src="https://images.unsplash.com/photo-1523217582562-09d0def993a6?w=2400&q=80" alt="Newly completed contemporary home">
+    <div class="builders__panel" data-reveal>
+      <h2>For builders and developers.</h2>
+      <p class="lede">Greater Cleveland is building. Marissa's new-construction sales background and marketing-first approach help communities reach the buyers they were designed for.</p>
+      <a class="btn btn--cta" href="#">Partner with Marissa</a>
+    </div>
+  </section>
+
+  <section class="section" id="listings">
+    <div class="wrap">
+      <div class="listings__head" data-reveal>
+        <h2>Featured homes.</h2>
+        <a class="arrow-link" href="#">All listings <i class="ph ph-arrow-right"></i></a>
+      </div>
+      <!-- Sample cards: listings collection now, IDX feed later -->
+      <div class="lgrid">
+        <article class="card card--lg" data-reveal><img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1400&q=80" alt="Gabled home glowing at dusk"><div class="card__row"><span class="card__price">$624,900</span><span class="card__meta">Medina, OH</span></div><p class="card__meta">4 bd, 3 ba, 2,860 sq ft. Sample listing</p></article>
+        <div class="lgrid__stack">
+          <article class="card" data-reveal><img src="https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=900&q=80" alt="Open-plan interior with floating stairs"><div class="card__row"><span class="card__price">$489,000</span><span class="card__meta">Strongsville, OH</span></div></article>
+          <article class="card" data-reveal><img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=900&q=80" alt="Primary bedroom with tall windows"><div class="card__row"><span class="card__price">$715,500</span><span class="card__meta">Hudson, OH</span></div></article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <figure class="quote wrap" data-reveal>
+      <i class="ph ph-quotes"></i>
+      <div>
+        <blockquote>“She knew the new-build process inside and out, and still made our resale search feel just as personal.”</blockquote>
+        <figcaption>Placeholder quote, to be replaced with a Google review</figcaption>
+      </div>
+    </figure>
+  </section>
+
+  <section class="section gg" id="gather">
+    <div class="wrap gg__grid">
+      <div class="gg__text" data-reveal>
+        <h2>Gather &amp; Ground.</h2>
+        <p class="lede">A monthly community initiative Marissa co-sponsors, bringing neighbors around one table to connect and give back.</p>
+        <div class="event"><small>Next gathering</small><strong>Date and venue coming soon</strong></div>
+        <a class="arrow-link" href="#" style="margin-top:1.75rem">Events and past photos <i class="ph ph-arrow-right"></i></a>
+      </div>
+      <img class="gg__tall" data-reveal src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=900&q=80" alt="Long table set for a community dinner">
+      <img class="gg__a" data-reveal src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80" alt="Flowers and glassware on a shared table">
+      <img class="gg__b" data-reveal src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80" alt="Friends sitting together outdoors">
+    </div>
+  </section>
+
+  <section class="section book" id="book">
+    <div class="wrap book__grid">
+      <div data-reveal>
+        <h2>Book a 30-minute call.</h2>
+        <p class="lede">Pick a time that suits you. We'll talk through your goals, your timeline, and the next right step.</p>
+        <ul>
+          <li><i class="ph ph-phone"></i><a href="tel:+14404204549">440.420.0580</a></li>
+          <li><i class="ph ph-envelope-simple"></i><a href="mailto:marissa@malakestates.com">marissa@malakestates.com</a></li>
+          <li><i class="ph ph-clock"></i><span>Mon-Sun, 8am-8pm. Evenings by appointment.</span></li>
+        </ul>
+        <p class="counties">Serving Cuyahoga, Medina, Summit, Stark, Lake, and Lorain counties.</p>
+      </div>
+      <div class="calendly" data-reveal>
+        <iframe src="https://calendly.com/marissa-malakestates/30min?hide_gdpr_banner=1&background_color=ffffff&text_color=333333&primary_color=7c6e63" title="Schedule a call with Marissa Lubera" loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 The Malak Estate Group. Brokered by Real of Ohio.</span><span><a href="#">Privacy Policy</a></span></div>
+</footer>
+
+<script>
+  document.documentElement.classList.add("js");
+  const header = document.getElementById("header");
+  new IntersectionObserver(([e]) => header.classList.toggle("is-scrolled", !e.isIntersecting)).observe(document.getElementById("top-sentinel"));
+
+  const btn = document.getElementById("menu-btn"), overlay = document.getElementById("overlay"), label = btn.querySelector(".menu-btn__label");
+  const setMenu = (open) => {
+    document.body.classList.toggle("menu-open", open);
+    btn.setAttribute("aria-expanded", open);
+    label.textContent = open ? "Close" : "Menu";
+    if (open) overlay.querySelector("a").focus({ preventScroll: true }); else btn.focus({ preventScroll: true });
+  };
+  btn.addEventListener("click", () => setMenu(!document.body.classList.contains("menu-open")));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && document.body.classList.contains("menu-open")) setMenu(false); });
+  overlay.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setMenu(false)));
+
+  document.querySelectorAll(".strip").forEach(s => {
+    const activate = () => document.querySelectorAll(".strip").forEach(o => o.classList.toggle("is-active", o === s));
+    s.addEventListener("mouseenter", activate); s.addEventListener("focus", activate);
+  });
+
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); } }), { threshold: 0.15 });
+  document.querySelectorAll("[data-reveal]").forEach(el => io.observe(el));
+  setTimeout(() => document.querySelectorAll("[data-reveal]").forEach(el => el.classList.add("is-in")), 4000);
+</script>
+</body>
+</html>

@@ -8,15 +8,13 @@
 // Skeleton-Build-Spec.md §6.
 //
 // Visually cloned 2026-09-15 against the user's real reference
-// screenshots (reference1/2/3.png) of the live V2.5 build: the peeking
-// mascot photo (swaps neutral/happy/sad with the stage — real assets,
-// public/images/reputation/), the colored paw-shaped Like/Dislike icons
-// (paw-like.svg/paw-dislike.svg — already colored in the source file, no
-// CSS tinting needed), and the circular platform-icon treatment on the
-// review links (stays on the icon font per the earlier icon-font
-// decision, not the original's raster platform logos). Modal.astro's
-// dialog overflow was split (see that file) so this mascot can overflow
-// past the card's top edge instead of being clipped.
+// screenshots (reference1/2/3.png) of the live V2.5 build: the colored
+// paw-shaped Like/Dislike icons (paw-like.svg/paw-dislike.svg — already
+// colored in the source file, no CSS tinting needed), and the circular
+// platform-icon treatment on the review links (stays on the icon font per
+// the earlier icon-font decision, not the original's raster platform
+// logos). The peeking dog mascot photo was removed for this client
+// (real estate, 2026-09-30).
 import Modal from "./Modal.astro";
 import GravityFormEmbed from "./GravityFormEmbed.astro";
 import { getSiteInfo } from "../lib/data/site";
@@ -34,11 +32,6 @@ const reviewLinks = (
 
 <Modal id="reputation-widget">
   <div class="reputation-widget" data-reputation-widget>
-    <img class="reputation-widget__mascot" data-rm-mascot="neutral" src="/images/reputation/mascot-neutral.png" alt="" />
-    <img class="reputation-widget__mascot" data-rm-mascot="happy" src="/images/reputation/mascot-happy.png" alt="" hidden />
-    <img class="reputation-widget__mascot" data-rm-mascot="sad" src="/images/reputation/mascot-sad.png" alt="" hidden />
-
-    <div class="reputation-widget__content">
     <div class="reputation-widget__stage" data-rm-stage="prompt">
       <h2 class="reputation-widget__heading">Tell us how we are doing?</h2>
       <div class="reputation-widget__paws">
@@ -79,38 +72,11 @@ const reviewLinks = (
       <p class="reputation-widget__tagline">Please tell us what we can improve. We love to hear from our clients. Please let us know if there are any areas that you think we could improve upon.</p>
       <GravityFormEmbed formId="reputation-feedback" context="reputation" />
     </div>
-    </div>
   </div>
 </Modal>
 
 <style>
-  /* The mascot peeks over the dialog's top edge with its
-     paws draping over the border. The modal body
-     normally scrolls (overflow: auto), which clipped the mascot — for this
-     modal the body is left unclipped and scrolling moves to
-     .reputation-widget__content, which wraps only the stages.
-     Geometry: the mascot images are 350×271 with the dog's flat body edge at
-     86% of the height, so at 9rem wide (≈6.97rem tall) that edge sits 6rem
-     below the image top. The modal body pads 1.5rem, so top: -7.5rem puts
-     the edge exactly on the dialog border and the paws hang over it. */
-  :global(#reputation-widget .modal__body) { overflow: visible; max-height: none; }
-  .reputation-widget {
-    position: relative;
-    padding-block-start: var(--space-lg); /* clears the paws below the border */
-    text-align: center;
-  }
-  .reputation-widget__content { max-height: calc(85vh - 6rem); overflow-y: auto; }
-  .reputation-widget__mascot {
-    position: absolute;
-    inset-block-start: -7.5rem;
-    inset-inline-start: -1.25rem;
-    inline-size: 9rem;
-    block-size: auto;
-    z-index: 2;
-    pointer-events: none;
-    animation: motion-pop var(--motion-duration-slow) var(--motion-ease-out) both;
-  }
-  .reputation-widget__mascot[hidden] { display: none; }
+  .reputation-widget { text-align: center; }
   .reputation-widget__heading { margin-block-start: 0; text-transform: uppercase; font-size: 1.4rem; }
   .reputation-widget__tagline { color: var(--text-muted); }
 
@@ -142,12 +108,9 @@ const reviewLinks = (
 </style>
 
 <script>
-  function showStage(widget: Element, stage: string, mascot: string) {
+  function showStage(widget: Element, stage: string) {
     widget.querySelectorAll("[data-rm-stage]").forEach((el) => {
       if (el instanceof HTMLElement) el.hidden = el.getAttribute("data-rm-stage") !== stage;
-    });
-    widget.querySelectorAll("[data-rm-mascot]").forEach((el) => {
-      if (el instanceof HTMLElement) el.hidden = el.getAttribute("data-rm-mascot") !== mascot;
     });
   }
 
@@ -157,7 +120,7 @@ const reviewLinks = (
     const reopener = e.target.closest('[data-modal-target="reputation-widget"]');
     if (reopener) {
       const widget = document.querySelector("[data-reputation-widget]");
-      if (widget) showStage(widget, "prompt", "neutral");
+      if (widget) showStage(widget, "prompt");
       return;
     }
 
@@ -166,7 +129,7 @@ const reviewLinks = (
     const widget = actionBtn.closest("[data-reputation-widget]");
     if (!widget) return;
     const action = actionBtn.getAttribute("data-rm-action");
-    if (action === "like") showStage(widget, "positive", "happy");
-    else showStage(widget, "negative", "sad");
+    if (action === "like") showStage(widget, "positive");
+    else showStage(widget, "negative");
   });
 </script>

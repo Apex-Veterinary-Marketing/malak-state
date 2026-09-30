@@ -22,8 +22,7 @@ const { id } = Astro.props;
   .modal { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; }
   .modal__overlay { position: absolute; inset: 0; background: var(--overlay-color); backdrop-filter: blur(4px); animation: motion-fade-in var(--motion-duration-slow) var(--motion-ease); }
   /* Dialog itself stays unclipped (no overflow/max-height here) so decorative
-     content slotted in — e.g. ReputationWidget's peeking mascot image — can
-     overflow past the card's edge. The scroll/size constraint that used to
+     content slotted in can overflow past the card's edge. The scroll/size constraint that used to
      live here moves to .modal__body, which wraps only the actual slotted
      content, so this is visually identical for every other modal consumer. */
   .modal__dialog { position: relative; z-index: 1; background: var(--white); max-width: min(90vw, 40rem); border-radius: var(--radius-md); animation: motion-pop var(--motion-duration-slow) var(--motion-ease-out); }

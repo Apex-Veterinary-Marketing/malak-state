@@ -7,6 +7,8 @@ import PageHeaderBanner from "../components/PageHeaderBanner.astro";
 import CalendlyEmbed from "../components/CalendlyEmbed.astro";
 import { getSiteInfo } from "../lib/data/site";
 import { phoneHref } from "../lib/utils/phone";
+import { Image } from "astro:assets";
+import asideImage from "../assets/brand/marissa-typing.jpg";
 
 const site = await getSiteInfo();
 ---
@@ -23,6 +25,7 @@ const site = await getSiteInfo();
     <div class="container schedule__grid">
       <div class="schedule__embed"><CalendlyEmbed height="47.5rem" /></div>
       <aside class="schedule__aside">
+        <Image src={asideImage} alt="Marissa Lubera typing on a laptop in a velvet armchair" class="schedule__image" widths={[480, 800]} sizes="(max-width: 900px) 100vw, 30vw" />
         <h2 class="schedule__title">What we'll cover</h2>
         <ul class="schedule__list">
           <li>Your goals and your timeline</li>
@@ -42,6 +45,7 @@ const site = await getSiteInfo();
   .schedule__grid { display: grid; grid-template-columns: 2fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
   .schedule__embed { border: 1px solid var(--light-grey); }
   .schedule__aside { padding: var(--space-xl); background: var(--solid-bg); }
+  .schedule__image { width: calc(100% + 2 * var(--space-xl)); max-width: none; margin: calc(var(--space-xl) * -1) calc(var(--space-xl) * -1) var(--space-xl); aspect-ratio: 3 / 2; object-fit: cover; }
   .schedule__title { font-size: var(--font-size-xl); margin: 0 0 var(--space-md); }
   .schedule__title + .schedule__phone { display: inline-block; }
   .schedule__list { margin: 0 0 var(--space-xl); padding-inline-start: 1.1em; display: grid; gap: var(--space-xs); }

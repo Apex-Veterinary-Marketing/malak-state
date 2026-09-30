@@ -12,7 +12,7 @@ contentBlocks:
     body: |
       <h2>Your first home, explained step by step</h2>
       <p>Buying your first home comes with a lot of new words and a lot of decisions. My job is to make it manageable. We'll go through each step before it happens, so you always know what's next and why it matters, whether you're buying in Cuyahoga, Medina, Summit or the surrounding counties.</p>
-  - image: "../../assets/placeholders/interior-stairs.jpg"
+  - image: "../../assets/brand/detail-laptop-topdown.jpg"
     body: |
       <h2>What to expect</h2>
       <p>First, we connect you with a lender for pre-approval and look at programs you may qualify for. Then we define what you need in a home and where, and start touring. When you're ready to offer, I explain every term in plain language and help you write an offer that is competitive and still protects you.</p>

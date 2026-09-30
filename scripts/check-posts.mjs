@@ -48,7 +48,8 @@ if (blogStart < 0) {
 }
 
 // ---- 2. Posts ----
-const files = fs.existsSync(BLOG) ? fs.readdirSync(BLOG) : [];
+// Dotfiles (e.g. .gitkeep, which keeps the folder in git while there are no posts) are ignored.
+const files = fs.existsSync(BLOG) ? fs.readdirSync(BLOG).filter((f) => !f.startsWith(".")) : [];
 for (const f of files) {
   const file = `${BLOG}/${f}`;
   if (fs.statSync(file).isDirectory()) { errors.push(`${file}: sub-folders aren't allowed — posts sit directly in ${BLOG}/`); continue; }

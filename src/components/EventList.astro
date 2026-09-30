@@ -1,0 +1,49 @@
+---
+// Gather & Ground events: date block, name, venue, time, RSVP. Shows
+// `emptyText` when there are no events.
+import type { CollectionEntry } from "astro:content";
+
+export interface Props {
+  events: CollectionEntry<"events">[];
+  emptyText?: string;
+}
+const { events, emptyText } = Astro.props;
+const tz = { timeZone: "America/New_York" } as const;
+const month = (d: Date) => d.toLocaleDateString("en-US", { month: "short", ...tz });
+const day = (d: Date) => d.toLocaleDateString("en-US", { day: "numeric", ...tz });
+const time = (d: Date) => d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", ...tz });
+const STATUS = { scheduled: "", postponed: "Postponed", cancelled: "Cancelled" } as const;
+---
+
+{events.length > 0 ? (
+  <ul class="events" data-reveal-stagger>
+    {events.map((e) => (
+      <li class="event" data-reveal>
+        <div class="event__date" aria-hidden="true"><span class="event__day">{day(e.data.startDate)}</span><span class="event__month">{month(e.data.startDate)}</span></div>
+        <div class="event__info">
+          <h3 class="event__name">{e.data.name}{STATUS[e.data.status] && <span class="event__status">{STATUS[e.data.status]}</span>}</h3>
+          <p class="event__meta">
+            <time datetime={e.data.startDate.toISOString()}>{e.data.startDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", ...tz })}, {time(e.data.startDate)}</time>
+            {e.data.venueName && <>. {e.data.venueName}</>}
+          </p>
+        </div>
+        {e.data.rsvpUrl && <a class="btn btn--line event__rsvp" href={e.data.rsvpUrl} target="_blank" rel="noopener">RSVP</a>}
+      </li>
+    ))}
+  </ul>
+) : (
+  emptyText && <p class="events__empty">{emptyText}</p>
+)}
+
+<style>
+  .events { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-sm); }
+  .event { display: grid; grid-template-columns: 4.5rem 1fr auto; gap: var(--space-lg); align-items: center; padding: var(--space-md); background: var(--white); }
+  .event__date { display: flex; flex-direction: column; align-items: center; padding-block: var(--space-xs); background: var(--solid-bg); line-height: 1.1; }
+  .event__day { font: 400 var(--font-size-2xl)/1 var(--font-heading); color: var(--main-dark); }
+  .event__month { font-size: var(--font-size-xs); letter-spacing: var(--letter-spacing-label); text-transform: uppercase; color: var(--text-muted); }
+  .event__name { margin: 0; font-size: var(--font-size-xl); }
+  .event__status { margin-inline-start: var(--space-sm); font: 600 var(--font-size-xs)/1 var(--font-body); letter-spacing: var(--letter-spacing-button); text-transform: uppercase; color: var(--color-warning); }
+  .event__meta { margin: var(--space-2xs) 0 0; font-size: var(--font-size-sm); color: var(--text-muted); }
+  .events__empty { margin: 0; padding: var(--space-lg); background: var(--white); }
+  @media (max-width: 767px) { .event { grid-template-columns: 4rem 1fr; } .event__rsvp { grid-column: 1 / -1; justify-content: center; } }
+</style>

@@ -1,0 +1,94 @@
+---
+// Masonry photo grid (CSS columns). Each photo is a button that opens the
+// shared Modal as a lightbox (id per grid); arrow keys move between photos,
+// Esc/overlay close (Modal's own handling). Renders nothing when empty.
+import { Image, getImage } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import Modal from "./Modal.astro";
+
+export interface Props {
+  items: CollectionEntry<"gallery">[];
+  id?: string; // lightbox modal id (unique per page)
+}
+const { items, id = "gallery-lightbox" } = Astro.props;
+const photos = await Promise.all(
+  items.map(async (g) => ({
+    entry: g,
+    full: (await getImage({ src: g.data.image, width: 1800 })).src,
+  }))
+);
+---
+
+{photos.length > 0 && (
+  <>
+    <ul class="gallery" data-gallery={id}>
+      {photos.map(({ entry, full }, i) => (
+        <li class="gallery__item" data-album={entry.data.album} data-reveal>
+          <button type="button" class="gallery__button" data-modal-target={id} data-gallery-index={i} data-full={full} data-alt={entry.data.alt} data-caption={entry.data.caption || ""}>
+            <Image src={entry.data.image} alt={entry.data.alt} class="gallery__image" widths={[400, 700]} sizes="(max-width: 767px) 100vw, 33vw" />
+          </button>
+          {entry.data.caption && <p class="gallery__caption">{entry.data.caption}</p>}
+        </li>
+      ))}
+    </ul>
+    <Modal id={id}>
+      <figure class="lightbox" data-lightbox={id}>
+        <img class="lightbox__image" alt="" data-lightbox-img />
+        <figcaption class="lightbox__caption" data-lightbox-caption></figcaption>
+        <div class="lightbox__nav">
+          <button type="button" class="lightbox__btn" data-lightbox-prev aria-label="Previous photo">&larr;</button>
+          <button type="button" class="lightbox__btn" data-lightbox-next aria-label="Next photo">&rarr;</button>
+        </div>
+      </figure>
+    </Modal>
+  </>
+)}
+
+<style>
+  .gallery { list-style: none; margin: 0; padding: 0; columns: 3 18rem; column-gap: var(--space-md); }
+  .gallery__item { break-inside: avoid; margin-block-end: var(--space-md); }
+  .gallery__item[hidden] { display: none; }
+  .gallery__button { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; overflow: hidden; }
+  .gallery__image { width: 100%; height: auto; transition: transform var(--motion-duration-image) var(--motion-ease-out); }
+  .gallery__button:hover .gallery__image { transform: scale(1.03); }
+  .gallery__caption { margin: var(--space-xs) 0 0; font-size: var(--font-size-sm); color: var(--text-muted); }
+  :global([id$="lightbox"] .modal__dialog) { max-width: min(92vw, 70rem); }
+  .lightbox { margin: 0; }
+  .lightbox__image { display: block; width: 100%; max-height: 75vh; object-fit: contain; background: var(--solid-bg); }
+  .lightbox__caption { margin-block-start: var(--space-sm); font-size: var(--font-size-sm); color: var(--text-muted); min-height: 1em; }
+  .lightbox__nav { display: flex; justify-content: flex-end; gap: var(--space-xs); margin-block-start: var(--space-sm); }
+  .lightbox__btn { width: 3rem; height: 3rem; border: 1px solid var(--light-grey); background: var(--white); color: var(--main-dark); cursor: pointer; font-size: var(--font-size-lg); }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-gallery]").forEach((grid) => {
+    const id = grid.dataset.gallery!;
+    const box = document.querySelector<HTMLElement>(`[data-lightbox="${id}"]`);
+    const modal = document.getElementById(id);
+    if (!box || !modal) return;
+    const img = box.querySelector<HTMLImageElement>("[data-lightbox-img]")!;
+    const cap = box.querySelector<HTMLElement>("[data-lightbox-caption]")!;
+    const buttons = () => [...grid.querySelectorAll<HTMLButtonElement>(".gallery__button")].filter((b) => !b.closest("[hidden]"));
+    let current = 0;
+    const show = (i: number) => {
+      const list = buttons();
+      if (!list.length) return;
+      current = (i + list.length) % list.length;
+      const b = list[current];
+      img.src = b.dataset.full || "";
+      img.alt = b.dataset.alt || "";
+      cap.textContent = b.dataset.caption || b.dataset.alt || "";
+    };
+    grid.addEventListener("click", (e) => {
+      const b = (e.target as Element).closest<HTMLButtonElement>(".gallery__button");
+      if (b) show(buttons().indexOf(b));
+    });
+    box.querySelector("[data-lightbox-prev]")?.addEventListener("click", () => show(current - 1));
+    box.querySelector("[data-lightbox-next]")?.addEventListener("click", () => show(current + 1));
+    document.addEventListener("keydown", (e) => {
+      if (modal.hidden) return;
+      if (e.key === "ArrowLeft") show(current - 1);
+      if (e.key === "ArrowRight") show(current + 1);
+    });
+  });
+</script>

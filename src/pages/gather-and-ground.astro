@@ -1,0 +1,100 @@
+---
+// Gather & Ground (client's direct request): what it is, upcoming events,
+// photos from past events. Event nodes are emitted only for upcoming events.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeaderBanner from "../components/PageHeaderBanner.astro";
+import EventList from "../components/EventList.astro";
+import GalleryGrid from "../components/GalleryGrid.astro";
+import BookCall from "../components/BookCall.astro";
+import { getEventsSplit } from "../lib/data/events";
+import { getGallery } from "../lib/data/gallery";
+import { getAllSocialLinks } from "../lib/data/socialLinks";
+import headerImage from "../assets/placeholders/community-table.jpg";
+
+const { upcoming, past } = await getEventsSplit();
+const photos = await getGallery("gather-and-ground");
+const instagram = (await getAllSocialLinks()).find((s) => s.data.icon === "instagram")?.data.link;
+const STATUS_URL = { scheduled: "EventScheduled", cancelled: "EventCancelled", postponed: "EventPostponed" } as const;
+
+const graph: Record<string, any>[] = upcoming.map((e) => ({
+  "@type": "Event",
+  "@id": `#event-${e.id}`,
+  name: e.data.name,
+  startDate: e.data.startDate.toISOString(),
+  endDate: e.data.endDate?.toISOString(),
+  eventStatus: `https://schema.org/${STATUS_URL[e.data.status]}`,
+  eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+  location: { "@type": "Place", name: e.data.venueName || "Greater Cleveland", address: e.data.venueAddress || "Northeast Ohio" },
+  organizer: { "@id": "#business" },
+  image: e.data.image ? new URL(e.data.image.src, Astro.site).href : undefined,
+}));
+if (photos.length) {
+  graph.push({
+    "@type": "ImageGallery",
+    "@id": "#gallery",
+    name: "Gather & Ground past gatherings",
+    associatedMedia: photos.map((p) => ({ "@type": "ImageObject", contentUrl: new URL(p.data.image.src, Astro.site).href, caption: p.data.caption || p.data.alt })),
+  });
+}
+---
+
+<BaseLayout
+  title="Gather & Ground Community Events"
+  description="Gather & Ground is a monthly community gathering Marissa co-sponsors in Greater Cleveland. See upcoming events and photos from past gatherings."
+  schemaGraph={graph}
+  webPage={{ "@type": "CollectionPage" }}
+  breadcrumb="Gather & Ground"
+>
+  <PageHeaderBanner
+    heading="Gather & *Ground*"
+    intro="A monthly community gathering Marissa co-sponsors, bringing Greater Cleveland neighbors around one table to connect and give back."
+    image={headerImage}
+    imageAlt="Long table set with flowers for a community dinner"
+  />
+
+  <section class="gg-about">
+    <div class="container gg-about__grid" data-reveal>
+      <h2>What Gather &amp; Ground is.</h2>
+      <div>
+        <p class="lede">Gather &amp; Ground is a monthly community initiative sponsored by The Malak Estate Group together with a fellow local business. Each month, neighbors come together around one table to meet, share a meal or an activity, and support the community we call home.</p>
+        <p>Real estate is about more than houses. It's about the people and places that make a neighborhood feel like home, and Gather &amp; Ground is one way we give back to them.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="gg-events">
+    <div class="container">
+      <h2 data-reveal>Upcoming gatherings.</h2>
+      <div class="gg-events__list">
+        <EventList events={upcoming} emptyText="The next gathering is announced monthly. Follow @themalakestategroup on Instagram for dates." />
+        {upcoming.length === 0 && instagram && <p class="gg-events__follow"><a href={instagram} target="_blank" rel="noopener noreferrer">Follow on Instagram</a></p>}
+      </div>
+    </div>
+  </section>
+
+  {(past.length > 0 || photos.length > 0) && (
+    <section class="gg-past">
+      <div class="container">
+        <h2 data-reveal>Past gatherings.</h2>
+        {past.length > 0 && <div class="gg-past__list"><EventList events={past.slice(0, 6)} /></div>}
+        {photos.length > 0 && <div class="gg-past__photos"><GalleryGrid items={photos} id="gg-lightbox" /></div>}
+      </div>
+    </section>
+  )}
+
+  <BookCall />
+</BaseLayout>
+
+<style>
+  .gg-about { padding-block: clamp(5rem, 10vw, 8rem); }
+  .gg-about__grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(2rem, 6vw, 5rem); }
+  .gg-about__grid p:not(.lede) { max-width: 60ch; margin-block-start: var(--space-lg); }
+  .gg-about__grid .lede { margin-block-start: 0; }
+  .gg-events { padding-block: clamp(4rem, 8vw, 6rem); background: var(--solid-bg); }
+  .gg-events__list { margin-block-start: var(--space-xl); max-width: 52rem; }
+  .gg-events__follow { margin: var(--space-md) 0 0; }
+  .gg-events__follow a { color: var(--main); font-weight: 600; }
+  .gg-past { padding-block: clamp(5rem, 10vw, 8rem); }
+  .gg-past__list, .gg-past__photos { margin-block-start: var(--space-xl); }
+  @media (max-width: 900px) { .gg-about__grid { grid-template-columns: 1fr; } }
+</style>

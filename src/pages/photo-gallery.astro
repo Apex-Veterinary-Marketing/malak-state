@@ -1,19 +1,68 @@
 ---
-// Placeholder — no dedicated gallery/images collection exists in
-// Skeleton's content model yet (out of scope per Skeleton-Build-Spec.md
-// §13). Real client photos get added per-build.
+// Photo gallery: every album, with album tabs (a tab only renders when its
+// album has photos) and a lightbox. ImageGallery schema lists every photo.
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../components/PageHeaderBanner.astro";
-import bannerGeneric from "../assets/banner-generic.png";
+import GalleryGrid from "../components/GalleryGrid.astro";
+import BookCall from "../components/BookCall.astro";
+import { getGallery } from "../lib/data/gallery";
+import headerImage from "../assets/brand/marissa-seated-wide.jpg";
+
+const photos = await getGallery();
+const ALBUMS = { brand: "Brand", "gather-and-ground": "Gather & Ground", properties: "Properties" } as const;
+const albums = (Object.keys(ALBUMS) as (keyof typeof ALBUMS)[]).filter((a) => photos.some((p) => p.data.album === a));
+const graph = photos.length
+  ? [
+      {
+        "@type": "ImageGallery",
+        "@id": "#gallery",
+        name: "The Malak Estate Group photo gallery",
+        associatedMedia: photos.map((p) => ({ "@type": "ImageObject", contentUrl: new URL(p.data.image.src, Astro.site).href, caption: p.data.caption || p.data.alt })),
+      },
+    ]
+  : [];
 ---
 
-<BaseLayout title="Photo Gallery" description="A look inside our practice.">
-  <PageHeaderBanner heading="Photo Gallery" image={bannerGeneric} />
-  <div class="page-section">
-    <p>Gallery images go here — replace with real client photos per build.</p>
-  </div>
+<BaseLayout
+  title="Photo Gallery"
+  description="Photos from The Malak Estate Group: homes, client moments, and Gather & Ground community events across Greater Cleveland."
+  schemaGraph={graph}
+  webPage={{ "@type": "CollectionPage", ...(photos.length ? { mainEntity: { "@id": "#gallery" } } : {}) }}
+>
+  <PageHeaderBanner heading="Photo *gallery*" intro="Homes, client moments and community gatherings across Greater Cleveland." image={headerImage} imageAlt="Marissa Lubera seated in a white-paneled studio" imagePosition="50% 55%" />
+
+  <section class="pg">
+    <div class="container">
+      {albums.length > 1 && (
+        <div class="pg__tabs" role="group" aria-label="Filter by album" data-album-tabs>
+          <button type="button" class="pg__tab" aria-pressed="true" data-album="all">All</button>
+          {albums.map((a) => <button type="button" class="pg__tab" aria-pressed="false" data-album={a}>{ALBUMS[a]}</button>)}
+        </div>
+      )}
+      {photos.length > 0 ? <GalleryGrid items={photos} /> : <p class="pg__empty">Photos are coming soon.</p>}
+    </div>
+  </section>
+
+  <BookCall />
 </BaseLayout>
 
 <style>
-  .page-section { max-width: var(--container-max); margin-inline: auto; padding: var(--space-xl) var(--space-md); }
+  .pg { padding-block: clamp(4rem, 8vw, 6rem) clamp(5rem, 10vw, 8rem); }
+  .pg__tabs { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-block-end: var(--space-xl); }
+  .pg__tab { padding: var(--space-xs) var(--space-md); border: 1px solid var(--light-grey); background: var(--white); color: var(--main-dark); font: 600 var(--font-size-xs)/1 var(--font-body); letter-spacing: var(--letter-spacing-button); text-transform: uppercase; cursor: pointer; }
+  .pg__tab[aria-pressed="true"] { background: var(--main-dark); border-color: var(--main-dark); color: var(--white); }
+  .pg__empty { color: var(--text-muted); }
 </style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-album-tabs]").forEach((bar) => {
+    const items = [...document.querySelectorAll<HTMLElement>(".gallery__item")];
+    bar.querySelectorAll<HTMLButtonElement>("[data-album]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const a = btn.dataset.album;
+        bar.querySelectorAll("[data-album]").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+        items.forEach((i) => (i.hidden = a !== "all" && i.dataset.album !== a));
+      });
+    });
+  });
+</script>

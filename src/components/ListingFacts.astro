@@ -1,0 +1,34 @@
+---
+// Big-number facts row for a listing: price, beds, baths, sq ft, year built.
+import { formatPrice } from "../lib/utils/format";
+
+export interface Props {
+  price: number;
+  beds: number;
+  baths: number;
+  sqft: number;
+  yearBuilt?: number;
+  lotSize?: string;
+  propertyType: "single-family" | "condo-townhome" | "new-construction" | "land";
+}
+const { price, beds, baths, sqft, yearBuilt, lotSize, propertyType } = Astro.props;
+const n = new Intl.NumberFormat("en-US");
+const facts = [
+  { label: "Price", value: formatPrice(price) },
+  ...(propertyType === "land" ? [] : [{ label: "Beds", value: String(beds) }, { label: "Baths", value: String(baths) }, { label: "Sq ft", value: n.format(sqft) }]),
+  ...(lotSize ? [{ label: "Lot", value: lotSize }] : []),
+  ...(yearBuilt ? [{ label: "Built", value: String(yearBuilt) }] : []),
+];
+---
+
+<dl class="facts">
+  {facts.map((f) => (
+    <div class="facts__item"><dt>{f.label}</dt><dd>{f.value}</dd></div>
+  ))}
+</dl>
+
+<style>
+  .facts { display: flex; flex-wrap: wrap; gap: var(--space-lg) clamp(1.5rem, 4vw, 3rem); margin: 0; padding-block: var(--space-lg); border-block: 1px solid var(--light-grey); }
+  .facts__item dt { font-size: var(--font-size-xs); font-weight: 600; letter-spacing: var(--letter-spacing-label); text-transform: uppercase; color: var(--text-muted); }
+  .facts__item dd { margin: var(--space-2xs) 0 0; font: 400 clamp(1.4rem, 2.4vw, var(--font-size-2xl))/1.1 var(--font-heading); color: var(--main-dark); white-space: nowrap; }
+</style>

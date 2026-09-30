@@ -1,0 +1,114 @@
+---
+// Listing detail: gallery, address, facts row, highlights, description,
+// showing request, listing agent. Schema: RealEstateListing whose provider is
+// the agent's Person node on /agents/<id> (never re-declared here).
+import { Image, getImage } from "astro:assets";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ListingFacts from "../../components/ListingFacts.astro";
+import BrokerCard from "../../components/BrokerCard.astro";
+import BookCall from "../../components/BookCall.astro";
+import { getAllListings } from "../../lib/data/listings";
+import { getBrokerBySlug } from "../../lib/data/brokers";
+import { getSiteInfo } from "../../lib/data/site";
+import { listingTitle, listingFacts, formatPrice } from "../../lib/utils/format";
+import { listingSchema } from "../../lib/schema/listing";
+import { render } from "astro:content";
+
+export async function getStaticPaths() {
+  const listings = await getAllListings();
+  return listings.map((listing) => ({ params: { slug: listing.id }, props: { listing } }));
+}
+
+const { listing } = Astro.props;
+const d = listing.data;
+const site = await getSiteInfo();
+const agent = await getBrokerBySlug(d.listingAgent.id);
+const { Content } = await render(listing);
+const title = listingTitle(d);
+const TYPE = { "single-family": "home", "new-construction": "new-construction home", "condo-townhome": "condo", land: "lot" } as const;
+const STATUS = { active: "For sale", "coming-soon": "Coming soon", pending: "Pending", sold: "Sold" } as const;
+
+const autoDesc = (() => {
+  const lead = d.propertyType === "land" ? `${d.lotSize || "Land"} in ${d.city}, OH.` : `${listingFacts(d)} ${TYPE[d.propertyType]} in ${d.city}, OH.`;
+  const full = `${lead} Listed by Marissa Lubera, The Malak Estate Group.`;
+  return full.length <= 160 ? full : lead;
+})();
+const pageUrl = new URL(`/listings/${listing.id}`, Astro.site).href;
+const imageUrls = await Promise.all(d.images.map(async (i) => ({ src: new URL((await getImage({ src: i.src, width: 1600 })).src, Astro.site).href, alt: i.alt })));
+const graph = [listingSchema({ ...d, images: imageUrls }, pageUrl, `/agents/${d.listingAgent.id}#person`)];
+const [hero, ...more] = d.images;
+---
+
+<BaseLayout
+  title={d.metaTitle || title}
+  description={d.metaDescription || autoDesc}
+  ogImage={hero.src}
+  ogImageAlt={hero.alt}
+  schemaGraph={graph}
+  webPage={{ mainEntity: { "@id": "#listing" } }}
+  breadcrumb={d.address}
+>
+  <section class="listing-hero">
+    <div class="container">
+      <Image src={hero.src} alt={hero.alt} class="listing-hero__image" loading="eager" fetchpriority="high" widths={[640, 1200, 1800]} sizes="100vw" />
+      {more.length > 0 && (
+        <div class="listing-hero__thumbs">
+          {more.map((img) => <Image src={img.src} alt={img.alt} class="listing-hero__thumb" widths={[400, 800]} sizes="(max-width: 767px) 50vw, 25vw" />)}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="listing">
+    <div class="container listing__grid">
+      <div class="listing__main">
+        <p class="eyebrow">{STATUS[d.status]}{d.mlsNumber && `, MLS #${d.mlsNumber}`}</p>
+        <h1 class="listing__title">{d.address}</h1>
+        <p class="listing__city">{d.city}, {d.state} {d.zip}</p>
+        <ListingFacts price={d.price} beds={d.beds} baths={d.baths} sqft={d.sqft} yearBuilt={d.yearBuilt} lotSize={d.lotSize} propertyType={d.propertyType} />
+        {d.highlights.length > 0 && (
+          <ul class="listing__highlights">{d.highlights.map((h) => <li>{h}</li>)}</ul>
+        )}
+        <div class="listing__body"><Content /></div>
+        {d.sample && <p class="listing__sample">Sample listing shown for layout. Real listings coming soon.</p>}
+      </div>
+      <aside class="listing__aside">
+        <p class="listing__price">{formatPrice(d.price)}</p>
+        <a class="btn btn--cta listing__btn" href={`${site.bookingUrl}?listing=${listing.id}`}>Schedule a showing</a>
+        {d.externalUrl && <a class="btn btn--line listing__btn" href={d.externalUrl} target="_blank" rel="noopener">View on MLS</a>}
+        {agent && (
+          <div class="listing__agent">
+            <p class="eyebrow">Listing agent</p>
+            <BrokerCard broker={agent} />
+          </div>
+        )}
+      </aside>
+    </div>
+  </section>
+
+  <BookCall heading="Want to see this home?" intro="Book a call to set up a showing or talk through an offer." />
+</BaseLayout>
+
+<style>
+  .listing-hero { padding-block-start: calc(var(--header-height) + var(--space-lg)); }
+  .listing-hero__image { width: 100%; aspect-ratio: 16 / 8; object-fit: cover; }
+  .listing-hero__thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: var(--space-sm); margin-block-start: var(--space-sm); }
+  .listing-hero__thumb { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+  .listing { padding-block: clamp(3rem, 6vw, 5rem) clamp(5rem, 10vw, 8rem); }
+  .listing__grid { display: grid; grid-template-columns: 1.7fr 1fr; gap: clamp(2rem, 6vw, 5rem); align-items: start; }
+  .listing__main { min-width: 0; }
+  .listing__title { font-size: clamp(2rem, 3.6vw, 3rem); overflow-wrap: anywhere; }
+  .listing__city { margin: var(--space-xs) 0 var(--space-lg); color: var(--text-muted); }
+  .listing__highlights { margin: var(--space-xl) 0 0; padding-inline-start: 1.1em; display: grid; gap: var(--space-xs); }
+  .listing__body { margin-block-start: var(--space-xl); max-width: 64ch; }
+  .listing__sample { margin-block-start: var(--space-lg); font-style: italic; color: var(--text-muted); }
+  .listing__aside { position: sticky; inset-block-start: calc(var(--header-height) + var(--space-lg)); display: grid; gap: var(--space-md); padding: var(--space-xl); background: var(--solid-bg); }
+  .listing__price { margin: 0; font: 400 var(--font-size-2xl)/1 var(--font-heading); color: var(--main-dark); }
+  .listing__btn { justify-content: center; }
+  .listing__agent { margin-block-start: var(--space-lg); }
+  @media (max-width: 900px) {
+    .listing__grid { grid-template-columns: 1fr; }
+    .listing__aside { position: static; }
+    .listing-hero__image { aspect-ratio: 4 / 3; }
+  }
+</style>

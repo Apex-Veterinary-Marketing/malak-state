@@ -1,0 +1,86 @@
+---
+// Listings: IDX search slot (src/data/idx.ts, renders nothing until enabled),
+// then the hand-entered listings collection with client-side status filters,
+// or an empty state when there are none.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeaderBanner from "../../components/PageHeaderBanner.astro";
+import IdxEmbed from "../../components/IdxEmbed.astro";
+import ListingGrid from "../../components/ListingGrid.astro";
+import BookCall from "../../components/BookCall.astro";
+import { getAllListings } from "../../lib/data/listings";
+import { getSiteInfo } from "../../lib/data/site";
+import { listingTitle } from "../../lib/utils/format";
+import headerImage from "../../assets/placeholders/house-gable-dusk.jpg";
+
+const site = await getSiteInfo();
+const listings = await getAllListings();
+const STATUS_LABELS = { active: "Active", "coming-soon": "Coming soon", pending: "Pending", sold: "Sold" } as const;
+const statuses = [...new Set(listings.map((l) => l.data.status))];
+const graph = listings.length
+  ? [
+      {
+        "@type": "ItemList",
+        "@id": "#listings",
+        itemListElement: listings.map((l, i) => ({ "@type": "ListItem", position: i + 1, name: listingTitle(l.data), url: new URL(`/listings/${l.id}`, Astro.site).href })),
+      },
+    ]
+  : [];
+---
+
+<BaseLayout
+  title="Homes for Sale in Northeast Ohio"
+  description="Featured homes for sale across Greater Cleveland from The Malak Estate Group. Schedule a showing or book a call with Marissa Lubera."
+  schemaGraph={graph}
+  webPage={{ "@type": "CollectionPage", ...(listings.length ? { mainEntity: { "@id": "#listings" } } : {}) }}
+  breadcrumb="Listings"
+>
+  <PageHeaderBanner heading="Featured *listings*" intro="Homes Marissa is proud to represent across Greater Cleveland." image={headerImage} imageAlt="Gabled home with warm lights at dusk" />
+
+  <section class="listings">
+    <div class="container">
+      <IdxEmbed name="search" />
+
+      {listings.length > 0 ? (
+        <>
+          {statuses.length > 1 && (
+            <div class="listings__filters" role="group" aria-label="Filter by status" data-listing-filters>
+              <button type="button" class="listings__chip" aria-pressed="true" data-filter="all">All</button>
+              {statuses.map((s) => <button type="button" class="listings__chip" aria-pressed="false" data-filter={s}>{STATUS_LABELS[s]}</button>)}
+            </div>
+          )}
+          <ListingGrid listings={listings} layout="grid" />
+        </>
+      ) : (
+        <div class="listings__empty" data-reveal>
+          <h2>New listings are on the way.</h2>
+          <p class="lede">Book a call and Marissa will send you homes that match what you're looking for, including ones that haven't hit the market yet.</p>
+          <a class="btn btn--cta" href={site.bookingUrl}>{site.bookingLabel}</a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <BookCall />
+</BaseLayout>
+
+<style>
+  .listings { padding-block: clamp(4rem, 8vw, 6rem) clamp(5rem, 10vw, 8rem); }
+  .listings__filters { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-block-end: var(--space-xl); }
+  .listings__chip { padding: var(--space-xs) var(--space-md); border: 1px solid var(--light-grey); background: var(--white); color: var(--main-dark); font: 600 var(--font-size-xs)/1 var(--font-body); letter-spacing: var(--letter-spacing-button); text-transform: uppercase; cursor: pointer; }
+  .listings__chip[aria-pressed="true"] { background: var(--main-dark); border-color: var(--main-dark); color: var(--white); }
+  .listings__empty { max-width: 40rem; padding: clamp(2rem, 5vw, 4rem); background: var(--solid-bg); }
+  .listings__empty .btn { margin-block-start: var(--space-xl); }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-listing-filters]").forEach((bar) => {
+    const cards = [...document.querySelectorAll<HTMLElement>("[data-listing-status]")];
+    bar.querySelectorAll<HTMLButtonElement>("[data-filter]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const f = btn.dataset.filter;
+        bar.querySelectorAll("[data-filter]").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+        cards.forEach((c) => (c.hidden = f !== "all" && c.dataset.listingStatus !== f));
+      });
+    });
+  });
+</script>

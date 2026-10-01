@@ -47,7 +47,7 @@ export const siteFaqs: SiteFaq[] = [
   {
     group: "Working with Marissa",
     question: "What areas do you serve?",
-    answer: "<p>Cuyahoga, Medina, Summit, Stark, Lake and Lorain counties across Greater Cleveland and Northeast Ohio.</p>",
+    answer: "<p>Cuyahoga, Medina, Summit, Stark, Lake and Lorain counties across Greater Cleveland and Northeast Ohio, including Cleveland neighborhoods like Ohio City, Tremont, Detroit Shoreway, Gordon Square, Battery Park and Downtown.</p>",
   },
   {
     group: "Working with Marissa",

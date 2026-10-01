@@ -1,9 +1,9 @@
 ---
 name: "Marissa Lubera"
 shortName: "Marissa"
-title: "Realtor"
+title: "REALTOR®"
 yearsExperience: 6
-specialties: ["New construction", "First-time home buyers", "Relocation", "Senior downsizing", "Luxury homes", "Military and VA buyers"]
+specialties: ["New construction", "First-time home buyers", "Investment properties", "Relocation", "Senior downsizing", "Luxury homes", "Military and VA buyers"]
 languages: ["English"]
 serviceAreas: ["Cuyahoga County", "Medina County", "Summit County", "Stark County", "Lake County", "Lorain County"]
 awards:
@@ -16,9 +16,11 @@ secondaryImage: "../../assets/brand/marissa-doorway.jpg"
 imageAltText: "Marissa Lubera, Realtor, seated in a velvet armchair"
 showOnHome: true
 order: 0
-bioShort: "Realtor with six years across resale and new construction, serving buyers, sellers and builders across Greater Cleveland and Northeast Ohio."
+bioShort: "REALTOR® and real estate investor who spent years full-time with a national builder, guiding buyers, sellers, investors and builders across Greater Cleveland."
 bio: |
-  <p>I help buyers, sellers and builders across Greater Cleveland move with confidence. For six years I've worked on both sides of the new-construction table and in traditional resale, from Cuyahoga and Medina counties to Summit, Stark, Lake and Lorain.</p>
-  <p>Clients choose me because I provide honest, knowledgeable guidance while making the process feel personal and manageable. I take the time to understand each client's goals, communicate clearly, and advocate for their best interests from start to finish.</p>
-  <p>My experience across both resale and new construction allows me to offer a well-rounded perspective, but what truly sets me apart is how invested I am in the people I serve. I want every client to feel confident, informed, and genuinely supported, not like just another transaction.</p>
+  <p>I created The Malak Estate Group to provide a real estate experience rooted in clarity, preparation, and thoughtful strategy.</p>
+  <p>Before stepping into general real estate, I worked full-time for a national builder, where I was responsible for managing listings, guiding buyers through complex timelines, and ensuring each home was positioned and marketed thoughtfully. That experience shaped the way I approach real estate today. I learned how pricing, presentation, financing, and communication all work together to influence outcomes.</p>
+  <p>What I value most is helping clients understand what's truly possible. Many buyers and sellers assume certain options are out of reach simply because they haven't been shown otherwise. I take the time to break down numbers, explain scenarios, and walk through choices so clients feel empowered rather than overwhelmed.</p>
+  <p>I'm also a real estate investor myself, so I look at every decision with the long term in mind. I work with buyers, sellers, investors and builders across Cuyahoga, Medina, Summit, Stark, Lake and Lorain counties.</p>
+  <p>Real estate doesn't have to feel confusing or intimidating. With the right guidance, it can feel clear and achievable.</p>
 ---

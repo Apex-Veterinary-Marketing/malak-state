@@ -8,23 +8,25 @@ import PageHeaderBanner from "../components/PageHeaderBanner.astro";
 import BrokerGrid from "../components/BrokerGrid.astro";
 import BookCall from "../components/BookCall.astro";
 import { getAllBrokers } from "../lib/data/brokers";
+import { getAllTestimonials } from "../lib/data/testimonials";
 import headerImage from "../assets/brand/marissa-seated.jpg";
 import storyImage from "../assets/brand/marissa-laptop-living-room.jpg";
 
 const brokers = await getAllBrokers();
+const reviews = await getAllTestimonials();
 const lead = brokers[0];
 const values = ["Honesty", "Integrity", "Trust", "Exceptional service", "Client-first advocacy", "Clear communication", "Genuine relationships"];
 ---
 
 <BaseLayout
   title="About The Malak Estate Group"
-  description="A relationship-first real estate team in Greater Cleveland. Our mission, values, and the recognition behind every client we serve."
+  description="A Cleveland real estate team rooted in clarity, preparation and thoughtful strategy. Meet REALTOR® Marissa Lubera and read what clients say."
   webPage={{ "@type": "AboutPage", ...(lead ? { mainEntity: { "@id": `/agents/${lead.id}#person` } } : {}) }}
   breadcrumb="Meet Marissa"
 >
   <PageHeaderBanner
     heading="The *people* behind The Malak Estate Group"
-    intro="A relationship-first real estate team in Greater Cleveland, led by Realtor Marissa Lubera."
+    intro="Created by REALTOR® Marissa Lubera to provide a real estate experience rooted in clarity, preparation, and thoughtful strategy."
     image={headerImage}
     imageAlt="Marissa Lubera smiling in a velvet armchair"
     imagePosition="50% 35%"
@@ -33,8 +35,8 @@ const values = ["Honesty", "Integrity", "Trust", "Exceptional service", "Client-
   <section class="about-intro">
     <div class="container about-intro__grid">
       <div data-reveal>
-        <h2>What makes us different.</h2>
-        <p class="lede">What makes The Malak Estate Group unique is our personalized, relationship-first approach. We combine honest guidance, clear communication, strong market knowledge, and thoughtful strategy to help every client move with confidence.</p>
+        <h2>Real estate, made clear and achievable.</h2>
+        <p class="lede">Real estate doesn't have to feel confusing or intimidating. What makes The Malak Estate Group unique is our personalized, relationship-first approach. We combine honest guidance, clear communication, strong market knowledge, and thoughtful strategy to help every client move with confidence.</p>
         <p>Rather than offering a one-size-fits-all experience, we take the time to understand each client's goals and tailor our approach to their specific situation, whether they're buying, selling, relocating, investing, or exploring new construction. Our clients choose us because they feel informed, supported, and genuinely cared for from the first conversation through closing and beyond.</p>
       </div>
       <Image src={storyImage} alt="Marissa Lubera working from a sunlit living room" class="about-intro__image" data-reveal widths={[480, 800]} sizes="(max-width: 767px) 100vw, 40vw" />
@@ -80,6 +82,23 @@ const values = ["Honesty", "Integrity", "Trust", "Exceptional service", "Client-
     </section>
   )}
 
+  {reviews.length > 0 && (
+    <section class="about-reviews" id="reviews">
+      <div class="container">
+        <h2 data-reveal>Kind words from my clients.</h2>
+        <p class="lede" data-reveal>Real stories. Real experiences. Real results.</p>
+        <div class="about-reviews__grid" data-reveal-stagger>
+          {reviews.map((r) => (
+            <figure class="about-review" data-reveal>
+              <blockquote>&ldquo;{r.data.testimonial}&rdquo;</blockquote>
+              <figcaption>{r.data.name}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
   <BookCall />
 </BaseLayout>
 
@@ -101,6 +120,11 @@ const values = ["Honesty", "Integrity", "Trust", "Exceptional service", "Client-
   .about-awards__grid > div { padding-block-start: var(--space-lg); border-block-start: 1px solid var(--cta); }
   .about-awards__grid dt { font: 400 2.2rem/1 var(--font-heading); color: var(--main-dark); }
   .about-awards__grid dd { margin: var(--space-sm) 0 0; font-size: var(--font-size-sm); }
+  .about-reviews { padding-block: clamp(5rem, 10vw, 8rem); background: var(--solid-bg); }
+  .about-reviews__grid { columns: 2 22rem; column-gap: var(--space-xl); margin-block-start: var(--space-xl); }
+  .about-review { break-inside: avoid; margin: 0 0 var(--space-xl); padding: var(--space-xl); background: var(--white); }
+  .about-review blockquote { margin: 0; font: italic 400 var(--font-size-lg)/1.5 var(--font-heading); color: var(--main-dark); }
+  .about-review figcaption { margin-block-start: var(--space-md); font-size: var(--font-size-xs); font-weight: 600; letter-spacing: var(--letter-spacing-label); text-transform: uppercase; color: var(--text-muted); }
   @media (max-width: 900px) { .about-pillars__grid { grid-template-columns: 1fr; } .about-awards__grid { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 767px) { .about-intro__grid, .about-awards__grid { grid-template-columns: 1fr; } }
 </style>

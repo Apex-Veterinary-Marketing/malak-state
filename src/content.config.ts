@@ -83,7 +83,8 @@ const services = defineCollection({
         )
         .default([]),
       manualSchema: z.string().optional(),
-      audience: z.string().optional(), // schema.org Audience.audienceType on the Service node, e.g. "Home buyers"
+      audience: z.string().optional(),
+      headline: z.string().optional(), // display H1 (supports *italic*); falls back to customName/name, which stay the SEO name // schema.org Audience.audienceType on the Service node, e.g. "Home buyers"
     }),
 });
 

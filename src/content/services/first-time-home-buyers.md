@@ -11,7 +11,7 @@ contentBlocks:
   - image: "../../assets/placeholders/house-brick.jpg"
     body: |
       <h2>Your first home, explained step by step</h2>
-      <p>Buying your first home comes with a lot of new words and a lot of decisions. My job is to make it manageable. We'll go through each step before it happens, so you always know what's next and why it matters, whether you're buying in Cuyahoga, Medina, Summit or the surrounding counties.</p>
+      <p>Buying your first home comes with a lot of new words and a lot of decisions. Real estate doesn't have to feel confusing or intimidating. With the right guidance, it can feel clear and achievable. We'll go through each step before it happens, so you always know what's next and why it matters, whether you're buying in Cuyahoga, Medina, Summit or the surrounding counties.</p>
   - image: "../../assets/brand/detail-laptop-topdown.jpg"
     body: |
       <h2>What to expect</h2>

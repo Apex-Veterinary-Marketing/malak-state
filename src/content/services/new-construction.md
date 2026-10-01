@@ -4,7 +4,7 @@ customName: "Buying New Construction in Northeast Ohio"
 pageHeaderImage: "../../assets/placeholders/house-new-build.jpg"
 serviceCategory: ["specialties"]
 featured: true
-featuredText: "Builder-side sales experience on your side of the table, from lot selection to final walkthrough."
+featuredText: "Years inside a national builder's sales office, now on your side of the table from lot selection to final walkthrough."
 audience: "New construction home buyers"
 metaTitle: "New Construction Homes in Northeast Ohio"
 metaDescription: "Buying a new build? Marissa's builder-side sales experience helps you with lots, plans, upgrades and contracts across Greater Cleveland."
@@ -12,7 +12,7 @@ contentBlocks:
   - image: "../../assets/placeholders/house-modern-dusk.jpg"
     body: |
       <h2>New construction, with an insider on your side</h2>
-      <p>Most of my career has been spent in new-construction sales, and that experience now works for you. The builder's sales team represents the builder. When you bring your own agent, you have someone whose job is your interests: the lot, the plan, the upgrades and the contract terms.</p>
+      <p>Before stepping into general real estate, I worked full-time for a national builder, managing listings and guiding buyers through complex timelines. That experience now works for you. The builder's sales team represents the builder. When you bring your own agent, you have someone whose job is your interests: the lot, the plan, the upgrades and the contract terms.</p>
   - image: "../../assets/placeholders/interior-stairs.jpg"
     body: |
       <h2>What to expect</h2>

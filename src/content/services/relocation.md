@@ -12,7 +12,7 @@ contentBlocks:
   - image: "../../assets/placeholders/community-friends.jpg"
     body: |
       <h2>Moving to Greater Cleveland, without the guesswork</h2>
-      <p>Relocating means choosing a home in a place you may only know from a map. Greater Cleveland and Northeast Ohio cover lake towns, historic inner-ring suburbs, rural acreage and fast-growing new-construction communities across Cuyahoga, Medina, Summit, Stark, Lake and Lorain counties. I help you narrow that down to the places that fit your commute, your routines and your budget.</p>
+      <p>Relocating means choosing a home in a place you may only know from a map. Greater Cleveland and Northeast Ohio cover lake towns, historic inner-ring suburbs, rural acreage and fast-growing new-construction communities across Cuyahoga, Medina, Summit, Stark, Lake and Lorain counties. I help you narrow that down to the places that fit your commute, your routines and your budget, whether that's a walkable Cleveland neighborhood like Ohio City, Tremont, Detroit Shoreway, Gordon Square, Battery Park or Downtown, or a quieter suburb.</p>
   - image: "../../assets/brand/detail-laptop-phone-held.jpg"
     body: |
       <h2>What to expect</h2>

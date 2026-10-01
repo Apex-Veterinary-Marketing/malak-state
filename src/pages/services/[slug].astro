@@ -84,7 +84,7 @@ const ctaBlock = blocks.find((b) => b.style === "cta");
   webPage={{ mainEntity: { "@id": "#service" } }}
   breadcrumb={heading}
 >
-  <PageHeaderBanner heading={heading} intro={service.data.featuredText} image={service.data.pageHeaderImage}>
+  <PageHeaderBanner heading={service.data.headline || heading} intro={service.data.featuredText} image={service.data.pageHeaderImage}>
     <div class="service-hero__cta"><a class="btn btn--cta" href={site.bookingUrl}>{site.bookingLabel}</a></div>
   </PageHeaderBanner>
 

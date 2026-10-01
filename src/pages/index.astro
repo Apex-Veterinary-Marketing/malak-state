@@ -32,9 +32,9 @@ const listings = await getFeaturedListings(3);
 const testimonials = await getAllTestimonials();
 
 const strips = [
-  { title: "Buying", text: "A strategy shaped around your budget, timeline, and the neighborhoods that fit your life.", href: "/services/buying-a-home", image: buyingImage },
-  { title: "Selling", text: "Pricing, preparation, and marketing tailored to your home and your street.", href: "/services/selling-your-home", image: sellingImage },
-  { title: "New construction", text: "Builder-side experience on your side of the table, from lot selection to final walkthrough.", href: "/services/new-construction", image: newBuildImage },
+  { title: "Buying", text: "A clear plan for buying with confidence, shaped around your budget, timeline, and the neighborhoods that fit your life.", href: "/services/buying-a-home", image: buyingImage },
+  { title: "Selling", text: "Selling with strategy, not guesswork: pricing, presentation, and preparation tailored to your home.", href: "/services/selling-your-home", image: sellingImage },
+  { title: "New construction", text: "Years inside a national builder's sales office, now on your side of the table from lot selection to final walkthrough.", href: "/services/new-construction", image: newBuildImage },
   { title: "Relocation & downsizing", text: "Moving to Northeast Ohio or into your next chapter, with every detail handled.", href: "/services/relocation", image: relocationImage },
 ];
 
@@ -50,16 +50,16 @@ const about = [{ "@id": "#business" }, ...(broker ? [{ "@id": `/agents/${broker.
 ---
 
 <BaseLayout
-  title="Northeast Ohio Realtor | The Malak Estate Group"
+  title="Cleveland Realtor | The Malak Estate Group"
   titleTemplate="full"
-  description="Buy, sell, or build in Greater Cleveland with Realtor Marissa Lubera. Honest guidance, clear communication, and new construction expertise."
+  description="Buying or selling a home is a major decision. Marissa Lubera, REALTOR®, guides you with clarity, honesty, and a plan that aligns with your goals."
   schemaGraph={graph}
   webPage={{ about }}
   breadcrumb={false}
 >
   <HomeHero
-    heading="Real estate, handled with *care.*"
-    intro="Personal strategy for buyers, sellers, and new construction across Northeast Ohio, from first conversation through closing."
+    heading="Cleveland real estate, guided with *intention.*"
+    intro="Buying or selling a home is a major decision. My role is to guide you through it with clarity, honesty, and a plan that aligns with your goals."
     image={heroImage}
     imageAlt="Marissa Lubera opening the double front doors of a home"
     primary={{ text: site.bookingLabel || "Book a call", href: site.bookingUrl || "/schedule" }}
@@ -73,13 +73,13 @@ const about = [{ "@id": "#business" }, ...(broker ? [{ "@id": `/agents/${broker.
   {broker && (
     <MeetBroker
       broker={broker}
-      intro="With six years across resale and new construction, Marissa brings a well-rounded perspective to every move. What sets her apart is how invested she is in the people she serves: you'll feel informed, supported, and genuinely cared for."
+      intro="Before stepping into general real estate, Marissa worked full-time for a national builder, managing listings and guiding buyers through complex timelines. Today she helps clients understand what's truly possible, so every move feels informed and manageable."
     />
   )}
 
   <BuildersFeature
     heading="For builders and developers."
-    text="Greater Cleveland is building. Marissa's new-construction sales background and marketing-first approach help communities reach the buyers they were designed for."
+    text="Greater Cleveland is building. Marissa spent years making sure each new home was positioned and marketed thoughtfully for a national builder, and she brings that same care to your community."
     image={buildersImage}
     imageAlt="Newly completed white contemporary home"
     cta={{ text: "Partner with Marissa", href: "/builders-developers" }}

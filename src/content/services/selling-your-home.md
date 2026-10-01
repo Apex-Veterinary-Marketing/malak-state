@@ -4,15 +4,17 @@ customName: "Selling Your Home in Greater Cleveland"
 pageHeaderImage: "../../assets/placeholders/house-brick.jpg"
 serviceCategory: ["selling"]
 featured: true
-featuredText: "Pricing, preparation and marketing tailored to your home, with an agent who explains every step."
+headline: "Selling with *strategy*, not guesswork"
+featuredText: "Pricing, presentation and preparation working together, so your home is positioned and marketed thoughtfully."
 audience: "Home sellers"
 metaTitle: "Sell Your Home in Greater Cleveland"
 metaDescription: "Pricing, preparation and marketing tailored to your home. Sell in Northeast Ohio with an agent who explains every step."
 contentBlocks:
   - image: "../../assets/placeholders/interior-warm.jpg"
     body: |
-      <h2>Your home deserves a strategy, not a sign in the yard</h2>
-      <p>Selling well in Greater Cleveland comes down to three things: the right price, a home that shows at its best, and marketing that reaches the buyers most likely to pay for what makes your home special. I build each of those around your home and your street, not a template.</p>
+      <h2>Strategy, not guesswork</h2>
+      <p>Years of managing listings for a national builder taught me how pricing, presentation, financing, and communication all work together to influence outcomes. I bring that same approach to your home: the right price, a home that shows at its best, and marketing that reaches the buyers most likely to value it.</p>
+      <p>Every recommendation comes with the reasoning behind it, so you always understand your options and can decide with confidence.</p>
   - image: "../../assets/placeholders/house-colonial.jpg"
     body: |
       <h2>What to expect</h2>
@@ -24,8 +26,8 @@ contentBlocks:
       <p>First-time sellers, families moving up or out of the area, owners downsizing after many years, and anyone buying and selling at the same time. If you're selling to buy new construction, I can help you line up both timelines so you're not caught between homes.</p>
   - style: "cta"
     body: |
-      <h2>Curious what your home could sell for?</h2>
-      <p>Book a free 30-minute call and we'll talk through timing, pricing and your next move.</p>
+      <h2>Have questions or thinking about selling?</h2>
+      <p>Schedule a complimentary selling consultation. We'll talk through timing, pricing and your next move.</p>
 faqs:
   - question: "What do I have to disclose when selling a home in Ohio?"
     answer: "<p>For most homes with one to four units, you'll complete Ohio's Residential Property Disclosure Form and give it to the buyer before they sign the purchase contract. It asks about what you actually know: water supply, sewer, roof, basement, systems and other material conditions. Source: <a href=\"https://com.ohio.gov/divisions-and-programs/real-estate-and-professional-licensing/salespersons-and-brokers/transaction-forms-and-disclosures/residential-property-disclosure-form\" rel=\"noopener\">Ohio Department of Commerce, Residential Property Disclosure Form</a>.</p>"

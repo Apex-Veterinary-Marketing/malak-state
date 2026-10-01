@@ -8,12 +8,12 @@ import GalleryGrid from "../components/GalleryGrid.astro";
 import BookCall from "../components/BookCall.astro";
 import { getEventsSplit } from "../lib/data/events";
 import { getGallery } from "../lib/data/gallery";
-import { getAllSocialLinks } from "../lib/data/socialLinks";
-import headerImage from "../assets/placeholders/community-table.jpg";
+import headerImage from "../assets/placeholders/community-friends.jpg";
 
 const { upcoming, past } = await getEventsSplit();
 const photos = await getGallery("gather-and-ground");
-const instagram = (await getAllSocialLinks()).find((s) => s.data.icon === "instagram")?.data.link;
+// Gather & Ground has its own Instagram, separate from the brokerage account.
+const GG_INSTAGRAM = "https://www.instagram.com/gatherandgroundcle/";
 const STATUS_URL = { scheduled: "EventScheduled", cancelled: "EventCancelled", postponed: "EventPostponed" } as const;
 
 const graph: Record<string, any>[] = upcoming.map((e) => ({
@@ -40,24 +40,29 @@ if (photos.length) {
 
 <BaseLayout
   title="Gather & Ground Community Events"
-  description="Gather & Ground is a monthly community gathering Marissa co-sponsors in Greater Cleveland. See upcoming events and photos from past gatherings."
+  description="Gather & Ground is a monthly, movement-based community experience in Cleveland centered around health, wellness and connection. See upcoming events."
   schemaGraph={graph}
   webPage={{ "@type": "CollectionPage" }}
   breadcrumb="Gather & Ground"
 >
   <PageHeaderBanner
     heading="Gather & *Ground*"
-    intro="A monthly community gathering Marissa co-sponsors, bringing Greater Cleveland neighbors around one table to connect and give back."
+    intro="A monthly community experience built around movement and connection."
     image={headerImage}
-    imageAlt="Long table set with flowers for a community dinner"
+    imageAlt="Friends sitting together outdoors"
   />
 
   <section class="gg-about">
     <div class="container gg-about__grid" data-reveal>
-      <h2>What Gather &amp; Ground is.</h2>
+      <h2>What is Gather &amp; Ground?</h2>
       <div>
-        <p class="lede">Gather &amp; Ground is a monthly community initiative sponsored by The Malak Estate Group together with a fellow local business. Each month, neighbors come together around one table to meet, share a meal or an activity, and support the community we call home.</p>
-        <p>Real estate is about more than houses. It's about the people and places that make a neighborhood feel like home, and Gather &amp; Ground is one way we give back to them.</p>
+        <p class="lede">In a world that keeps us constantly connected online, genuine human connection can feel harder to find in real life.</p>
+        <p>Through conversations with friends and people in our own circle, one theme kept coming up. It's surprisingly difficult to meet new people and build real friendships in day-to-day life. Not from a dating perspective. Simply from a human one.</p>
+        <p>Between busy schedules, working from home, and spending more time on our phones than ever before, organic opportunities to connect don't happen the way they used to.</p>
+        <p>Gather &amp; Ground was created to make that easier. Gather &amp; Ground is a monthly, movement-based community experience centered around health, wellness, and connection.</p>
+        <p>Each month, we gather locally to move our bodies, spend time outside when possible, and create space for conversation and presence. The format may change, including Pilates, pickleball, bike rides, or other wellness-focused gatherings, but the intention remains the same.</p>
+        <p class="gg-about__closing">To slow down. To connect. To ground ourselves in something real.</p>
+        <p>Just movement, community, and something to look forward to.</p>
       </div>
     </div>
   </section>
@@ -66,8 +71,8 @@ if (photos.length) {
     <div class="container">
       <h2 data-reveal>Upcoming gatherings.</h2>
       <div class="gg-events__list">
-        <EventList events={upcoming} emptyText="The next gathering is announced monthly. Follow @themalakestategroup on Instagram for dates." />
-        {upcoming.length === 0 && instagram && <p class="gg-events__follow"><a href={instagram} target="_blank" rel="noopener noreferrer">Follow on Instagram</a></p>}
+        <EventList events={upcoming} emptyText="Stay connected and follow along for upcoming events on Instagram, @GatherandGroundCLE." />
+        <p class="gg-events__follow"><a href={GG_INSTAGRAM} target="_blank" rel="noopener noreferrer">Follow @GatherandGroundCLE</a></p>
       </div>
     </div>
   </section>
@@ -89,6 +94,7 @@ if (photos.length) {
   .gg-about { padding-block: clamp(5rem, 10vw, 8rem); }
   .gg-about__grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(2rem, 6vw, 5rem); }
   .gg-about__grid p:not(.lede) { max-width: 60ch; margin-block-start: var(--space-lg); }
+  .gg-about__closing { font: italic 400 var(--font-size-xl)/1.4 var(--font-heading); color: var(--main-dark); }
   .gg-about__grid .lede { margin-block-start: 0; }
   .gg-events { padding-block: clamp(4rem, 8vw, 6rem); background: var(--solid-bg); }
   .gg-events__list { margin-block-start: var(--space-xl); max-width: 52rem; }

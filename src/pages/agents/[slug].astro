@@ -19,7 +19,7 @@ const pageUrl = new URL(`/agents/${broker.id}`, Astro.site).href;
 const isMarissa = broker.id === "marissa-lubera";
 const metaTitle = isMarissa ? "Marissa Lubera, Northeast Ohio Realtor" : `${d.name}, ${d.title || "Realtor"}`;
 const metaDescription = isMarissa
-  ? "Meet Marissa Lubera: Realtor with 6 years in resale and new construction, President's Club 2023-2025, serving Cuyahoga, Medina and Summit counties."
+  ? "Meet Marissa Lubera, REALTOR®: years with a national builder, President's Club 2023-2025, guiding Cleveland buyers, sellers and investors with clarity."
   : d.bioShort
     ? stripHtml(d.bioShort)
     : undefined;

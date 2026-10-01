@@ -4,16 +4,17 @@ customName: "Buying a Home in Greater Cleveland"
 pageHeaderImage: "../../assets/placeholders/interior-living.jpg"
 serviceCategory: ["buying"]
 featured: true
-featuredText: "A clear, personal plan for buying in Cuyahoga, Medina and Summit counties, from pre-approval to closing day."
+headline: "A clear plan for buying with *confidence*"
+featuredText: "From first conversations to closing day, a plan that keeps buying informed and manageable at every step."
 audience: "Home buyers"
 metaTitle: "Buy a Home in Greater Cleveland"
 metaDescription: "A clear, personal plan for buying a home in Cuyahoga, Medina and Summit counties, from pre-approval to closing day."
 contentBlocks:
   - image: "../../assets/placeholders/house-colonial.jpg"
     body: |
-      <h2>A plan built around your life, not a listing feed</h2>
-      <p>Buying a home in Greater Cleveland means choosing between very different places: a walkable street in Lakewood, a quiet cul-de-sac in Medina, acreage in Summit County, or a brand-new build in a growing community. Before we tour anything, I take the time to understand your budget, your timeline and how you actually want to live.</p>
-      <p>That conversation shapes everything after it: which neighborhoods to focus on, which homes are worth your Saturday, and when to move quickly.</p>
+      <h2>A plan built around your goals</h2>
+      <p>Buying a home is a major decision. My role is to guide you through it with clarity, honesty, and a plan that aligns with your goals. Greater Cleveland offers very different ways to live, from walkable neighborhoods like Ohio City, Tremont and Gordon Square to quiet suburbs in Medina and Summit counties, historic homes and new construction.</p>
+      <p>Many buyers assume certain options are out of reach simply because they haven't been shown otherwise. I take the time to break down numbers, explain scenarios, and walk through choices so you feel empowered rather than overwhelmed.</p>
   - image: "../../assets/placeholders/interior-warm.jpg"
     body: |
       <h2>What to expect when we work together</h2>
@@ -25,8 +26,8 @@ contentBlocks:
       <p>First-time buyers, move-up buyers, families relocating to Northeast Ohio, and anyone weighing resale against new construction. Because I've worked on both sides of the new-construction table, I can help you compare a resale home and a new build honestly, including the costs that don't show up in the list price.</p>
   - style: "cta"
     body: |
-      <h2>Ready to start your search?</h2>
-      <p>Book a free 30-minute call. We'll talk through your goals, your budget and the neighborhoods worth a look.</p>
+      <h2>Have questions or thinking about buying?</h2>
+      <p>Whether you're making a move now or simply exploring your options, book a free 30-minute call and we'll map out what's next.</p>
 faqs:
   - question: "Do I need to sign an agreement with a buyer's agent?"
     answer: "<p>Yes, before touring homes. Since August 17, 2024, agents who use the MLS must have a written agreement with a buyer before a tour, whether in person or live virtual. The agreement spells out what the agent will be paid and how, and commissions are fully negotiable. Source: <a href=\"https://www.nar.realtor/the-facts/written-buyer-agreements-101\" rel=\"noopener\">National Association of Realtors, Written Buyer Agreements 101</a>.</p>"
@@ -37,5 +38,5 @@ faqs:
   - question: "What disclosures will I get from the seller in Ohio?"
     answer: "<p>For most homes with one to four units, Ohio sellers must give you the state's Residential Property Disclosure Form before you sign the purchase contract. It covers what the seller knows about the water supply, sewer, roof, basement, systems and more. It isn't a warranty or a substitute for an inspection. Source: <a href=\"https://com.ohio.gov/divisions-and-programs/real-estate-and-professional-licensing/salespersons-and-brokers/transaction-forms-and-disclosures/residential-property-disclosure-form\" rel=\"noopener\">Ohio Department of Commerce, Residential Property Disclosure Form</a>.</p>"
   - question: "Which areas do you cover?"
-    answer: "<p>I work with buyers across Cuyahoga, Medina, Summit, Stark, Lake and Lorain counties. If you're not sure where to focus, that's a great first conversation: <a href=\"/schedule\">book a call</a>.</p>"
+    answer: "<p>I work with buyers across Cuyahoga, Medina, Summit, Stark, Lake and Lorain counties, including Cleveland neighborhoods like Ohio City, Tremont, Detroit Shoreway, Gordon Square, Battery Park and Downtown. If you're not sure where to focus, that's a great first conversation: <a href=\"/schedule\">book a call</a>.</p>"
 ---

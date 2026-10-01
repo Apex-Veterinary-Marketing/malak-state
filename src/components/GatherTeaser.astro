@@ -17,9 +17,9 @@ const photos =
   album.length >= 3
     ? album.slice(0, 3).map((g) => ({ src: g.data.image, alt: g.data.alt }))
     : [
-        { src: tablePh, alt: "Long table set for a community dinner" },
-        { src: flowersPh, alt: "Flowers and glassware on a shared table" },
         { src: friendsPh, alt: "Friends sitting together outdoors" },
+        { src: tablePh, alt: "Long table set for a community gathering" },
+        { src: flowersPh, alt: "Flowers and glassware on a shared table" },
       ];
 const fmt = (d: Date) => d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", timeZone: "America/New_York" });
 ---
@@ -28,7 +28,7 @@ const fmt = (d: Date) => d.toLocaleDateString("en-US", { weekday: "long", month:
   <div class="container gg__grid">
     <div class="gg__text" data-reveal>
       <h2>Gather &amp; Ground.</h2>
-      <p class="lede">A monthly community gathering Marissa co-sponsors, bringing neighbors around one table to connect and give back.</p>
+      <p class="lede">A monthly, movement-based community experience centered around health, wellness, and connection. To slow down. To connect. To ground ourselves in something real.</p>
       <div class="gg__event">
         <p class="eyebrow">Next gathering</p>
         <p class="gg__event-name">{next ? `${next.data.name}, ${fmt(next.data.startDate)}` : "Announced monthly"}</p>

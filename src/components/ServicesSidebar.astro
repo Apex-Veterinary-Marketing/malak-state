@@ -10,8 +10,12 @@
 // "dropdowns by service category" instruction, heading "Other Services".
 // Respects the services schema's showOnSidebarMenu flag (defined since the
 // schema's creation, never actually consumed until this component).
+// Sticky on desktop (pinned just below the fixed header) with a small "book a
+// call" card under the links; a normal block below 900px.
 import { getAllServiceCategories } from "../lib/data/serviceCategories";
 import { getServicesByCategory } from "../lib/data/services";
+import { getSiteInfo } from "../lib/data/site";
+import { phoneHref } from "../lib/utils/phone";
 
 export interface Props {
   // Pre-opens this category's group and skips rendering that link (the
@@ -20,6 +24,7 @@ export interface Props {
   activeServiceId?: string;
 }
 const { activeCategoryId, activeServiceId } = Astro.props;
+const site = await getSiteInfo();
 
 const categories = await getAllServiceCategories();
 const groups = (
@@ -34,7 +39,8 @@ const groups = (
 ).filter((group) => group.services.length > 0);
 ---
 
-<nav class="services-sidebar" aria-label="Other services">
+<aside class="services-sidebar">
+<nav class="services-sidebar__nav" aria-label="Other services">
   <h2 class="services-sidebar__heading">Other services</h2>
   {groups.map((group) => (
     <details class="services-sidebar__group" open={group.category.id === activeCategoryId}>
@@ -48,9 +54,35 @@ const groups = (
   ))}
   <a class="services-sidebar__all-link" href="/services">All services &rarr;</a>
 </nav>
+{site.bookingUrl && (
+  <div class="services-sidebar__cta">
+    <h2 class="services-sidebar__cta-title">Not sure where to start?</h2>
+    <p class="services-sidebar__cta-text">Book a free 30-minute call with Marissa. No pressure, just a clear next step.</p>
+    <a class="btn btn--cta services-sidebar__cta-btn" href={site.bookingUrl}>{site.bookingLabel}</a>
+    {site.phoneNumber && <a class="services-sidebar__cta-phone" href={phoneHref(site)}>or call {site.phoneNumber}</a>}
+  </div>
+)}
+</aside>
 
 <style>
-  .services-sidebar { flex: 0 0 16rem; }
+  .services-sidebar {
+    flex: 0 0 18rem;
+    align-self: flex-start;
+    position: sticky;
+    inset-block-start: calc(var(--header-height) + var(--space-lg));
+    /* never taller than the space under the header; scrolls internally on short screens */
+    max-block-size: calc(100vh - var(--header-height) - var(--space-lg) * 2);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+  .services-sidebar__cta { padding: var(--space-lg); background: var(--main-dark); color: var(--on-dark-muted); }
+  .services-sidebar__cta-title { margin: 0; font-size: var(--font-size-xl); color: var(--white); }
+  .services-sidebar__cta-text { margin: var(--space-xs) 0 var(--space-md); font-size: var(--font-size-sm); }
+  .services-sidebar__cta-btn { inline-size: 100%; justify-content: center; }
+  .services-sidebar__cta-phone { display: block; margin-block-start: var(--space-sm); text-align: center; font-size: var(--font-size-sm); color: var(--white); text-decoration: none; white-space: nowrap; }
+  .services-sidebar__cta-phone:hover { color: var(--cta); }
   .services-sidebar__heading { margin: 0 0 var(--space-md); font: 600 var(--font-size-xs) / 1 var(--font-body); text-transform: uppercase; letter-spacing: var(--letter-spacing-label); color: var(--text-muted); }
   .services-sidebar__group { border-block-start: 1px solid var(--light-grey); padding-block: var(--space-xs); }
   .services-sidebar__group-title { cursor: pointer; font: 400 var(--font-size-lg) / 1.3 var(--font-heading); color: var(--main-dark); padding-block: var(--space-xs); }
@@ -60,7 +92,7 @@ const groups = (
   .services-sidebar__all-link { display: inline-block; margin-block-start: var(--space-sm); font-weight: 600; color: var(--main); text-decoration: none; }
   .services-sidebar__all-link:hover { text-decoration: underline; }
 
-  @media (max-width: 767px) {
-    .services-sidebar { flex-basis: 100%; }
+  @media (max-width: 900px) {
+    .services-sidebar { flex-basis: 100%; position: static; max-block-size: none; overflow: visible; }
   }
 </style>

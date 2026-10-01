@@ -14,5 +14,17 @@
     "directory": "./dist",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
-  }
+  },
+  // Final domain: the apex themalakestategroup.com is canonical (site.ts url);
+  // www 301s to it through a Cloudflare Redirect Rule (docs/launch/cloudflare-rules.md).
+  // Both hosts attach as custom domains on the first `wrangler deploy`, which
+  // needs the themalakestategroup.com zone active in this Cloudflare account
+  // (registrar is Wix, so the nameservers move to Cloudflare first).
+  // DON'T deploy with these routes until launch day: attaching the custom
+  // domains moves the live site off Wix. Path redirects from the old Wix URLs
+  // ship as dist/_redirects (generated in astro.config.mjs).
+  "routes": [
+    { "pattern": "themalakestategroup.com", "custom_domain": true },
+    { "pattern": "www.themalakestategroup.com", "custom_domain": true }
+  ]
 }

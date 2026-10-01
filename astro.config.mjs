@@ -58,14 +58,36 @@ const singleSitemap = {
   },
 };
 
-export default defineConfig({
-  // Retired template routes (vet pages). The template's /doctors/* and /staff/* were never
-  // published for this client (their live site is Wix), so they get no redirect.
-  redirects: {
+// Real 301s. Astro's static `redirects` only emit HTML meta-refresh pages, which search
+// engines treat as weaker than a 301. Cloudflare Workers static assets read a `_redirects`
+// file and answer with true 301s before any page is served, so this writes one from the
+// same `redirects` map below (one source of truth). Each rule is written with and without
+// a trailing slash, and points at the final trailing-slash URL so there's a single hop.
+/** @type {import('astro').AstroIntegration} */
+const cloudflareRedirects = {
+  name: 'cloudflare-redirects',
+  hooks: {
+    'astro:build:done': ({ dir, logger }) => {
+      const out = fileURLToPath(dir);
+      const withSlash = (/** @type {string} */ p) => (p === '/' || p.endsWith('/') ? p : `${p}/`);
+      const lines = Object.entries(REDIRECTS).flatMap(([from, to]) => [
+        `${from} ${withSlash(to)} 301`,
+        `${withSlash(from)} ${withSlash(to)} 301`,
+      ]);
+      fs.writeFileSync(path.join(out, '_redirects'), lines.join('\n') + '\n');
+      logger.info(`_redirects written (${Object.keys(REDIRECTS).length} 301 rules)`);
+    },
+  },
+};
+
+// Retired template routes (vet pages). The template's /doctors/* and /staff/* were never
+// published for this client (their live site is Wix), so they get no redirect.
+const REDIRECTS = {
     '/online-forms': '/contact-us',
     '/appointment-request': '/schedule',
     '/general-information-request': '/contact-us',
-    // The client's previous Wix site (client-docs/current-site-copy/_inventory.md)
+    // The client's previous Wix site (client-docs/current-site-copy/_inventory.md,
+    // docs/launch/redirect-map.csv). /about kept its URL, so it needs no rule.
     '/meet-the-team': '/about', // this site's own earlier URL for the About page
     '/buy': '/services/buying-a-home',
     '/sell': '/services/selling-your-home',
@@ -75,9 +97,14 @@ export default defineConfig({
     '/book-online': '/schedule',
     '/gatherandground': '/gather-and-ground',
     '/copy-of-home': '/',
-  },
+};
+
+export default defineConfig({
+  // Meta-refresh fallback pages (dev server, any host without _redirects support).
+  redirects: REDIRECTS,
   site: siteUrl,
   // sitemap() lists every route; singleSitemap turns that into /sitemap.xml,
-  // which robots.txt (src/pages/robots.txt.ts) points to.
-  integrations: [sitemap(), singleSitemap],
+  // which robots.txt (src/pages/robots.txt.ts) points to. cloudflareRedirects
+  // writes dist/_redirects (real 301s on Cloudflare).
+  integrations: [sitemap(), singleSitemap, cloudflareRedirects],
 });

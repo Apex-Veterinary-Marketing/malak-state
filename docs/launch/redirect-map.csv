@@ -1,0 +1,12 @@
+old_url,new_url,confidence,notes
+https://www.themalakestategroup.com/,https://themalakestategroup.com/,✅ Exact,"Homepage"
+https://www.themalakestategroup.com/about,https://themalakestategroup.com/about/,✅ Exact,"Same path; About page with her bio and reviews"
+https://www.themalakestategroup.com/buy,https://themalakestategroup.com/services/buying-a-home/,🟡 Suggested,"Buy page (her H1 ""A clear plan for buying with confidence"") became the Buying a Home service page"
+https://www.themalakestategroup.com/sell,https://themalakestategroup.com/services/selling-your-home/,🟡 Suggested,"Sell page (""Selling with strategy, not guesswork"") became the Selling Your Home service page"
+https://www.themalakestategroup.com/investment,https://themalakestategroup.com/services/investment-properties/,🟡 Suggested,"Investment page copy became the Investment Properties service page"
+https://www.themalakestategroup.com/reviews,https://themalakestategroup.com/about/,🟡 Suggested,"All 6 reviews now live on the About page (Kind words from my clients)"
+https://www.themalakestategroup.com/contact,https://themalakestategroup.com/contact-us/,🟡 Suggested,"Slug match: contact -> contact-us"
+https://www.themalakestategroup.com/book-online,https://themalakestategroup.com/schedule/,🟡 Suggested,"Wix booking page -> Calendly scheduler page"
+https://www.themalakestategroup.com/gatherandground,https://themalakestategroup.com/gather-and-ground/,🟡 Suggested,"Slug match: gatherandground -> gather-and-ground"
+https://www.themalakestategroup.com/copy-of-home,https://themalakestategroup.com/,🔴 Flagged,"Wix draft duplicate of the homepage; no equivalent page, mapped to homepage"
+https://www.themalakestategroup.com/accessibility-statement,https://themalakestategroup.com/accessibility-statement/,✅ Exact,"Same path; statement adapted from hers"

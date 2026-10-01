@@ -105,6 +105,6 @@ export const siteInfo: SiteInfo = {
   footerAbout:
     "Cleveland real estate, guided with intention. Clarity, honesty, and a plan that aligns with your goals, for buyers, sellers, investors and builders.",
   // googleReviewsLink: requested from client (Google Business Profile review URL)
-  url: "https://www.themalakestategroup.com",
+  url: "https://themalakestategroup.com", // apex is canonical; www 301s here (Cloudflare Redirect Rule, see wrangler.jsonc)
   // logoColor / logoWhite: requested from client — Header/Footer render a text wordmark until then
 };

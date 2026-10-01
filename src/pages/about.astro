@@ -7,6 +7,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../components/PageHeaderBanner.astro";
 import BrokerGrid from "../components/BrokerGrid.astro";
 import BookCall from "../components/BookCall.astro";
+import ArrowLink from "../components/ArrowLink.astro";
 import { getAllBrokers } from "../lib/data/brokers";
 import { getAllTestimonials } from "../lib/data/testimonials";
 import headerImage from "../assets/brand/marissa-seated.jpg";
@@ -60,10 +61,25 @@ const values = ["Honesty", "Integrity", "Trust", "Exceptional service", "Client-
     </div>
   </section>
 
-  {brokers.length > 0 && (
+  {brokers.length === 1 && lead.data.mainImage ? (
+    <section class="about-team">
+      <div class="container about-bio">
+        <Image src={lead.data.mainImage} alt={lead.data.imageAltText || lead.data.name} class="about-bio__image" data-reveal widths={[480, 800, 1100]} sizes="(max-width: 900px) 100vw, 40vw" />
+        <div class="about-bio__text" data-reveal>
+          <h2>Meet {lead.data.name}.</h2>
+          <p class="about-bio__title">{lead.data.title}</p>
+          <p class="lede">I created The Malak Estate Group to provide a real estate experience rooted in clarity, preparation, and thoughtful strategy.</p>
+          <p>Before stepping into general real estate, I worked full-time for a national builder, where I was responsible for managing listings, guiding buyers through complex timelines, and ensuring each home was positioned and marketed thoughtfully. That experience shaped the way I approach real estate today. I learned how pricing, presentation, financing, and communication all work together to influence outcomes.</p>
+          <p>What I value most is helping clients understand what’s truly possible. Many buyers and sellers assume certain options are out of reach simply because they haven’t been shown otherwise. I take the time to break down numbers, explain scenarios, and walk through choices so clients feel empowered rather than overwhelmed.</p>
+          <p class="about-bio__closing">Real estate doesn’t have to feel confusing or intimidating. With the right guidance, it can feel clear and achievable.</p>
+          <ArrowLink href={`/agents/${lead.id}`} text={`More about ${lead.data.shortName || lead.data.name}`} />
+        </div>
+      </div>
+    </section>
+  ) : brokers.length > 0 && (
     <section class="about-team">
       <div class="container">
-        <h2 data-reveal>{brokers.length === 1 ? `Meet ${lead.data.name}.` : "Our agents."}</h2>
+        <h2 data-reveal>Our agents.</h2>
         <div class="about-team__grid"><BrokerGrid brokers={brokers} /></div>
       </div>
     </section>
@@ -115,6 +131,12 @@ const values = ["Honesty", "Integrity", "Trust", "Exceptional service", "Client-
   .about-pillars__values li { padding: var(--space-xs) var(--space-md); background: var(--white); font-size: var(--font-size-sm); }
   .about-team { padding-block: clamp(5rem, 10vw, 8rem); }
   .about-team__grid { margin-block-start: var(--space-xl); }
+  .about-bio { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(2rem, 7vw, 6rem); align-items: start; }
+  .about-bio__image { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%; position: sticky; inset-block-start: calc(var(--header-height) + var(--space-lg)); }
+  .about-bio__title { margin: var(--space-xs) 0 0; font-size: var(--font-size-xs); font-weight: 600; letter-spacing: var(--letter-spacing-label); text-transform: uppercase; color: var(--text-muted); }
+  .about-bio__text p:not(.lede):not(.about-bio__title) { max-width: 60ch; margin-block: var(--space-lg) 0; }
+  .about-bio__text .about-bio__closing { font: italic 400 var(--font-size-xl)/1.45 var(--font-heading); color: var(--main-dark); margin-block-end: var(--space-xl); }
+  @media (max-width: 900px) { .about-bio { grid-template-columns: 1fr; } .about-bio__image { position: static; } }
   .about-awards { padding-block: 0 clamp(5rem, 10vw, 8rem); }
   .about-awards__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-xl); margin: var(--space-xl) 0 0; }
   .about-awards__grid > div { padding-block-start: var(--space-lg); border-block-start: 1px solid var(--cta); }

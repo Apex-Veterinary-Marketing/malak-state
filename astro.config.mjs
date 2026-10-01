@@ -66,11 +66,11 @@ export default defineConfig({
     '/appointment-request': '/schedule',
     '/general-information-request': '/contact-us',
     // The client's previous Wix site (client-docs/current-site-copy/_inventory.md)
-    '/about': '/meet-the-team',
+    '/meet-the-team': '/about', // this site's own earlier URL for the About page
     '/buy': '/services/buying-a-home',
     '/sell': '/services/selling-your-home',
     '/investment': '/services/investment-properties',
-    '/reviews': '/meet-the-team',
+    '/reviews': '/about',
     '/contact': '/contact-us',
     '/book-online': '/schedule',
     '/gatherandground': '/gather-and-ground',

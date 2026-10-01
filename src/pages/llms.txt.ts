@@ -35,7 +35,7 @@ export const GET: APIRoute = async ({ site }) => {
 
   lines.push("## Pages");
   lines.push(`- [Home](${url("/")})`);
-  lines.push(`- [Meet the Team](${url("/meet-the-team")})`);
+  lines.push(`- [About Marissa Lubera](${url("/about")})`);
   lines.push(`- [Services](${url("/services")})`);
   lines.push(`- [FAQ](${url("/faq")})`);
   lines.push(`- [Contact](${url("/contact-us")})`);

@@ -92,7 +92,7 @@ const SEGMENTS: Record<string, { name: string; href?: string }> = {
   "services-categories": { name: "Services", href: "/services" },
   [BLOG_BASE.slice(1)]: { name: "Blog" },
   "blog-categories": { name: "Blog", href: BLOG_BASE },
-  agents: { name: "Meet Marissa", href: "/meet-the-team" },
+  agents: { name: "Meet Marissa", href: "/about" },
   listings: { name: "Listings" },
 };
 

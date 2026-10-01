@@ -1,11 +1,13 @@
 ---
-// "Book a 30-minute call" (V2): espresso section with contact details on the
-// left and the inline Calendly scheduler on the right. Used at the bottom of
-// most pages; the homepage marks it data-home="book".
+// "Book a 30-minute call" band (V2 espresso section) at the bottom of most
+// pages. It links to /schedule, where the Calendly scheduler lives on its own
+// page; the scheduler is never embedded here. The homepage marks it
+// data-home="book".
+import { Image } from "astro:assets";
 import { getSiteInfo } from "../lib/data/site";
 import { phoneHref } from "../lib/utils/phone";
 import { countiesSentence } from "../lib/utils/areas";
-import CalendlyEmbed from "./CalendlyEmbed.astro";
+import portrait from "../assets/brand/marissa-living-room.jpg";
 
 export interface Props {
   heading?: string;
@@ -26,26 +28,32 @@ const counties = countiesSentence(site.serviceAreaOfCoverage);
     <div data-reveal>
       <h2 class="book__heading">{heading}</h2>
       <p class="lede">{intro}</p>
+      <div class="book__actions">
+        {site.bookingUrl && <a class="btn btn--cta" href={site.bookingUrl}>{site.bookingLabel}</a>}
+        {site.phoneNumber && <a class="book__phone" href={phoneHref(site)}>or call {site.phoneNumber}</a>}
+      </div>
       <ul class="book__list">
-        {site.phoneNumber && <li><i class="icon-call" aria-hidden="true"></i><a class="book__phone" href={phoneHref(site)}>{site.phoneNumber}</a></li>}
         {site.email && <li><i class="icon-mail" aria-hidden="true"></i><a href={`mailto:${site.email}`}>{site.email}</a></li>}
         <li><i class="icon-hours" aria-hidden="true"></i><span>Mon to Sun, 8am to 8pm. Evenings by appointment.</span></li>
       </ul>
       {counties && <p class="book__counties">Serving {counties}.</p>}
     </div>
-    <div data-reveal><CalendlyEmbed /></div>
+    <Image src={portrait} alt="Marissa Lubera, REALTOR®, smiling in a bright living room" class="book__image" data-reveal widths={[480, 800]} sizes="(max-width: 900px) 100vw, 40vw" />
   </div>
 </section>
 
 <style>
-  .book { background: var(--main-dark); color: var(--on-dark-muted); padding-block: clamp(5rem, 10vw, 9rem); }
-  .book__grid { display: grid; grid-template-columns: 1fr 1.25fr; gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+  .book { background: var(--main-dark); color: var(--on-dark-muted); padding-block: clamp(5rem, 10vw, 8rem); }
+  .book__grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; }
   .book__heading { color: var(--white); }
-  .book__list { list-style: none; margin: 2.5rem 0 0; padding: 0; display: grid; gap: var(--space-lg); }
+  .book__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-lg); margin-block-start: var(--space-xl); }
+  .book__phone { color: var(--white); text-decoration: none; white-space: nowrap; }
+  .book__phone:hover { color: var(--cta); }
+  .book__list { list-style: none; margin: var(--space-xl) 0 0; padding: 0; display: grid; gap: var(--space-md); }
   .book__list li { display: flex; gap: var(--space-md); align-items: center; }
   .book__list i { font-size: 1.3rem; color: var(--cta); }
   .book__list a { color: var(--white); text-decoration: none; }
-  .book__phone { white-space: nowrap; }
-  .book__counties { margin: 2.5rem 0 0; padding-block-start: var(--space-xl); border-block-start: 1px solid var(--hairline-on-dark); font-size: var(--font-size-sm); }
-  @media (max-width: 900px) { .book__grid { grid-template-columns: 1fr; } }
+  .book__counties { margin: var(--space-xl) 0 0; padding-block-start: var(--space-lg); border-block-start: 1px solid var(--hairline-on-dark); font-size: var(--font-size-sm); }
+  .book__image { width: 100%; max-width: 30rem; justify-self: end; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 35%; }
+  @media (max-width: 900px) { .book__grid { grid-template-columns: 1fr; } .book__image { justify-self: start; aspect-ratio: 4 / 3; } }
 </style>

@@ -1,0 +1,68 @@
+---
+// Accessibility statement, adapted from the client's statement on her
+// previous site (client-docs/current-site-copy/accessibility-statement.md).
+// Her version was a template with unfilled placeholders; those are filled
+// here with what this site actually does. It states a target (WCAG 2.1 AA),
+// not a certified conformance claim.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeaderBanner from "../components/PageHeaderBanner.astro";
+import { getSiteInfo } from "../lib/data/site";
+import { phoneHref } from "../lib/utils/phone";
+
+const site = await getSiteInfo();
+const lastUpdated = "October 1, 2026";
+---
+
+<BaseLayout
+  title="Accessibility Statement"
+  description="The Malak Estate Group is committed to an accessible, inclusive website. Read our approach and how to reach us if anything gets in your way."
+  breadcrumb="Accessibility Statement"
+>
+  <PageHeaderBanner eyebrow="Legal" heading="Accessibility *statement*" intro="Real estate, guided with intention, for everyone." />
+  <section class="legal">
+    <div class="legal__body">
+      <p class="legal__effective">Last updated {lastUpdated}</p>
+      <p>The mission of The Malak Estate Group is to provide accessible and inclusive real estate services to all individuals. We are dedicated to ensuring that our website is easily navigable and usable for people with disabilities, in accordance with the requirements of local laws and regulations.</p>
+
+      <h2>Accessibility commitment</h2>
+      <p>At The Malak Estate Group, we are committed to making our website accessible to everyone, including people with disabilities. We strive to ensure that all individuals have a clear and comfortable browsing experience on our site.</p>
+
+      <h2>Our approach to web accessibility</h2>
+      <p>Web accessibility is about creating an inclusive online environment that allows all users, including those with disabilities, to perceive, understand, navigate, and interact with the web. We prioritize features and technologies that provide an equal level of access and usability for everyone.</p>
+
+      <h2>Steps taken for web accessibility</h2>
+      <p>We aim to follow the Web Content Accessibility Guidelines (WCAG) 2.1 at Level AA. Our site is designed to work with assistive technologies, such as screen readers and keyboard navigation. In our efforts, we have:</p>
+      <ul>
+        <li>Used clear headings, landmarks and page structure so content can be navigated by screen readers.</li>
+        <li>Added text alternatives to meaningful images.</li>
+        <li>Checked text and button colors against WCAG AA contrast requirements.</li>
+        <li>Made menus, forms and dialogs usable with a keyboard, with visible focus indicators.</li>
+        <li>Respected the "reduce motion" setting on your device, so animations are turned off when you ask for that.</li>
+        <li>Provided an accessibility menu (the icon in the corner of each page) to adjust text size, contrast and other display settings.</li>
+      </ul>
+
+      <h2>Statement of partial compliance for third-party content</h2>
+      <p>Certain pages on our site contain third-party content that is beyond our immediate control, such as the online scheduler, embedded forms and property listing tools. We declare partial compliance for that content, and we are actively working with those providers to resolve any associated accessibility issues.</p>
+
+      <h2>Meeting in person</h2>
+      <p>If you'd like to meet in person, we will gladly arrange a time and place that suits your accessibility needs. Just let us know what works best for you when you reach out.</p>
+
+      <h2>Contact us for accessibility</h2>
+      <p>If you encounter any accessibility barriers on our website or need further assistance, please reach out:</p>
+      <address class="legal__contact">
+        <strong>Marissa Lubera, REALTOR®</strong><br />
+        Phone: <a href={phoneHref(site)}>{site.phoneNumber}</a><br />
+        Email: <a href={`mailto:${site.email}`}>{site.email}</a>
+      </address>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .legal { max-inline-size: var(--container-max-narrow); margin-inline: auto; padding: clamp(4rem, 8vw, 6rem) var(--space-md); }
+  .legal :global(h2) { font-size: var(--font-size-2xl); margin-block: var(--space-xl) var(--space-sm); }
+  .legal ul { padding-inline-start: 1.2em; display: grid; gap: var(--space-xs); }
+  .legal__effective { color: var(--text-muted); }
+  .legal__contact { padding: var(--space-lg); background: var(--solid-bg); border-inline-start: 2px solid var(--cta); font-style: normal; line-height: 1.8; }
+  .legal__contact a { color: var(--main); }
+</style>

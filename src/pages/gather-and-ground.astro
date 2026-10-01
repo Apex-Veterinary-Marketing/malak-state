@@ -8,7 +8,9 @@ import GalleryGrid from "../components/GalleryGrid.astro";
 import BookCall from "../components/BookCall.astro";
 import { getEventsSplit } from "../lib/data/events";
 import { getGallery } from "../lib/data/gallery";
-import headerImage from "../assets/placeholders/community-friends.jpg";
+import { Image } from "astro:assets";
+import headerImage from "../assets/gather-and-ground/lawn-group.jpg";
+import ggLogo from "../assets/gather-and-ground/gather-and-ground-logo.png";
 
 const { upcoming, past } = await getEventsSplit();
 const photos = await getGallery("gather-and-ground");
@@ -49,12 +51,15 @@ if (photos.length) {
     heading="Gather & *Ground*"
     intro="A monthly community experience built around movement and connection."
     image={headerImage}
-    imageAlt="Friends sitting together outdoors"
+    imageAlt="Gather and Ground group photo on a city lawn"
   />
 
   <section class="gg-about">
     <div class="container gg-about__grid" data-reveal>
-      <h2>What is Gather &amp; Ground?</h2>
+      <div>
+        <Image src={ggLogo} alt="Gather and Ground: movement, wellness, connection" class="gg-about__logo" widths={[320, 640]} sizes="20rem" />
+        <h2>What is Gather &amp; Ground?</h2>
+      </div>
       <div>
         <p class="lede">In a world that keeps us constantly connected online, genuine human connection can feel harder to find in real life.</p>
         <p>Through conversations with friends and people in our own circle, one theme kept coming up. It's surprisingly difficult to meet new people and build real friendships in day-to-day life. Not from a dating perspective. Simply from a human one.</p>
@@ -94,6 +99,7 @@ if (photos.length) {
   .gg-about { padding-block: clamp(5rem, 10vw, 8rem); }
   .gg-about__grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(2rem, 6vw, 5rem); }
   .gg-about__grid p:not(.lede) { max-width: 60ch; margin-block-start: var(--space-lg); }
+  .gg-about__logo { width: min(100%, 20rem); height: auto; margin-block-end: var(--space-lg); }
   .gg-about__closing { font: italic 400 var(--font-size-xl)/1.4 var(--font-heading); color: var(--main-dark); }
   .gg-about__grid .lede { margin-block-start: 0; }
   .gg-events { padding-block: clamp(4rem, 8vw, 6rem); background: var(--solid-bg); }

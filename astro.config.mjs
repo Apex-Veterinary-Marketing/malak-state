@@ -75,7 +75,6 @@ export default defineConfig({
     '/book-online': '/schedule',
     '/gatherandground': '/gather-and-ground',
     '/copy-of-home': '/',
-    '/accessibility-statement': '/',
   },
   site: siteUrl,
   // sitemap() lists every route; singleSitemap turns that into /sitemap.xml,

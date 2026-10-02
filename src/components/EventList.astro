@@ -1,7 +1,15 @@
 ---
-// Gather & Ground events: date block, name, venue, time, RSVP. Shows
+// Gather & Ground events: flyer, date block, name, venue, time, RSVP. Shows
 // `emptyText` when there are no events.
+//
+// An event with an `image` (its flyer) shows a thumbnail cropped to the flyer's
+// photo; the thumbnail and "View flyer" open the whole flyer in a Modal, since
+// its text is unreadable at thumbnail size. The modals sit after the list, not
+// inside the cards: data-reveal animates the cards with transforms, which would
+// trap a position:fixed overlay inside the card.
+import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
+import Modal from "./Modal.astro";
 
 export interface Props {
   events: CollectionEntry<"events">[];
@@ -19,24 +27,39 @@ const when = (d: Date) => {
   return t === "12:00 AM" ? date : `${date}, ${t}`;
 };
 const STATUS = { scheduled: "", postponed: "Postponed", cancelled: "Cancelled" } as const;
+const flyerId = (e: CollectionEntry<"events">) => `event-flyer-${e.id.replace(/[^a-z0-9-]/gi, "-")}`;
+const withFlyer = events.filter((e) => e.data.image);
 ---
 
 {events.length > 0 ? (
-  <ul class="events" data-reveal-stagger>
-    {events.map((e) => (
-      <li class="event" data-reveal>
-        <div class="event__date" aria-hidden="true"><span class="event__day">{day(e.data.startDate)}</span><span class="event__month">{month(e.data.startDate)}</span></div>
-        <div class="event__info">
-          <h3 class="event__name">{e.data.name}{STATUS[e.data.status] && <span class="event__status">{STATUS[e.data.status]}</span>}</h3>
-          <p class="event__meta">
-            <time datetime={e.data.startDate.toISOString()}>{when(e.data.startDate)}</time>
-            {e.data.venueName && <>. {e.data.venueName}</>}
-          </p>
-        </div>
-        {e.data.rsvpUrl && <a class="btn btn--line event__rsvp" href={e.data.rsvpUrl} target="_blank" rel="noopener">RSVP</a>}
-      </li>
+  <>
+    <ul class="events" data-reveal-stagger>
+      {events.map((e) => (
+        <li class:list={["event", e.data.image && "event--flyer"]} data-reveal>
+          {e.data.image && (
+            <button type="button" class="event__flyer" data-modal-target={flyerId(e)} aria-label={`View the flyer for ${e.data.name}`}>
+              <Image src={e.data.image} alt="" class="event__flyer-image" widths={[240, 480, 800]} sizes="(max-width: 767px) 100vw, 7rem" />
+            </button>
+          )}
+          <div class="event__date" aria-hidden="true"><span class="event__day">{day(e.data.startDate)}</span><span class="event__month">{month(e.data.startDate)}</span></div>
+          <div class="event__info">
+            <h3 class="event__name">{e.data.name}{STATUS[e.data.status] && <span class="event__status">{STATUS[e.data.status]}</span>}</h3>
+            <p class="event__meta">
+              <time datetime={e.data.startDate.toISOString()}>{when(e.data.startDate)}</time>
+              {e.data.venueName && <>. {e.data.venueName}</>}
+            </p>
+            {e.data.image && <button type="button" class="event__flyer-link" data-modal-target={flyerId(e)}>View flyer<span aria-hidden="true">&rarr;</span></button>}
+          </div>
+          {e.data.rsvpUrl && <a class="btn btn--line event__rsvp" href={e.data.rsvpUrl} target="_blank" rel="noopener">RSVP</a>}
+        </li>
+      ))}
+    </ul>
+    {withFlyer.map((e) => (
+      <Modal id={flyerId(e)}>
+        <Image src={e.data.image!} alt={e.data.imageAlt || `Flyer for ${e.data.name}`} class="event-flyer" widths={[600, 900, 1133]} sizes="(max-width: 767px) 90vw, 36rem" />
+      </Modal>
     ))}
-  </ul>
+  </>
 ) : (
   emptyText && <p class="events__empty">{emptyText}</p>
 )}
@@ -44,12 +67,25 @@ const STATUS = { scheduled: "", postponed: "Postponed", cancelled: "Cancelled" }
 <style>
   .events { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-sm); }
   .event { display: grid; grid-template-columns: 4.5rem 1fr auto; gap: var(--space-lg); align-items: center; padding: var(--space-md); background: var(--white); }
+  .event--flyer { grid-template-columns: 7rem 4.5rem 1fr auto; }
+  .event__flyer { display: block; padding: 0; border: 0; background: none; cursor: zoom-in; overflow: hidden; }
+  /* Flyers are tall: the thumbnail shows the photo at the top; the modal shows the whole flyer. */
+  .event__flyer-image { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 0; transition: transform var(--motion-duration-image) var(--motion-ease-out); }
+  .event__flyer:hover .event__flyer-image { transform: scale(1.04); }
   .event__date { display: flex; flex-direction: column; align-items: center; padding-block: var(--space-xs); background: var(--solid-bg); line-height: 1.1; }
   .event__day { font: 400 var(--font-size-2xl)/1 var(--font-heading); color: var(--main-dark); }
   .event__month { font-size: var(--font-size-xs); letter-spacing: var(--letter-spacing-label); text-transform: uppercase; color: var(--text-muted); }
   .event__name { margin: 0; font-size: var(--font-size-xl); }
   .event__status { margin-inline-start: var(--space-sm); font: 600 var(--font-size-xs)/1 var(--font-body); letter-spacing: var(--letter-spacing-button); text-transform: uppercase; color: var(--color-warning); }
   .event__meta { margin: var(--space-2xs) 0 0; font-size: var(--font-size-sm); color: var(--text-muted); }
+  .event__flyer-link { display: inline-flex; gap: var(--space-xs); margin-block-start: var(--space-xs); padding: 0; border: 0; background: none; font: 600 var(--font-size-sm)/1.4 var(--font-body); color: var(--main); cursor: pointer; }
+  .event__flyer-link:hover { color: var(--main-dark); }
   .events__empty { margin: 0; padding: var(--space-lg); background: var(--white); }
-  @media (max-width: 767px) { .event { grid-template-columns: 4rem 1fr; } .event__rsvp { grid-column: 1 / -1; justify-content: center; } }
+  .event-flyer { display: block; width: 100%; max-height: 78vh; object-fit: contain; }
+  @media (max-width: 767px) {
+    .event, .event--flyer { grid-template-columns: 4rem 1fr; }
+    .event__flyer { grid-column: 1 / -1; }
+    .event__flyer-image { aspect-ratio: 3 / 2; }
+    .event__rsvp { grid-column: 1 / -1; justify-content: center; }
+  }
 </style>

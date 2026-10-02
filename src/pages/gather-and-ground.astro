@@ -87,7 +87,7 @@ if (photos.length) {
       <div class="container">
         <h2 data-reveal>Past gatherings.</h2>
         {past.length > 0 && <div class="gg-past__list"><EventList events={past.slice(0, 6)} /></div>}
-        {photos.length > 0 && <div class="gg-past__photos"><GalleryGrid items={photos} id="gg-lightbox" /></div>}
+        {photos.length > 0 && <div class="gg-past__photos"><GalleryGrid items={photos} id="gg-lightbox" layout="cards" /></div>}
       </div>
     </section>
   )}

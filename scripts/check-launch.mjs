@@ -80,6 +80,8 @@ for (const [id, file] of used) {
 const wrangler = read("wrangler.jsonc");
 if (!wrangler) errors.push(`wrangler.jsonc is missing — Cloudflare would deploy its "Hello World" stub.`);
 else if (/"name":\s*"skeleton"/.test(wrangler)) errors.push(`wrangler.jsonc "name" is still "skeleton" — set it to the client's Worker name.`);
+// Malak (2026-10-02): the custom-domain routes are commented out for the workers.dev preview.
+if (wrangler && !/^\s*"routes"\s*:/m.test(wrangler)) errors.push(`wrangler.jsonc has no active "routes" — uncomment the custom domains (see the PRE-LAUNCH note in wrangler.jsonc) before launch.`);
 
 // 5. Content — FAQs per service, leftover placeholder copy, legal pages.
 const servicesDir = "src/content/services";

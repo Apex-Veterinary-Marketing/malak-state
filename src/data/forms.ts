@@ -54,4 +54,8 @@ export const gravityFormEmbeds: Record<string, string> = {
   // Contact (GF form 666): /contact-us and the site-wide contact modal.
   contact: `<iframe src="https://onboarding.apexveterinarymarketing.com/gfembed/?f=666" width="100%" height="500" frameBorder="0" class="gfiframe" title="Contact form"></iframe>
 <script src="https://onboarding.apexveterinarymarketing.com/wp-content/plugins/gravity-forms-iframe-master/assets/scripts/gfembed.min.js" type="text/javascript"></script>`,
+
+  // How'd We Do? negative-feedback form (GF form 667): ReputationWidget's "Could be better" step.
+  "reputation-feedback": `<iframe src="https://onboarding.apexveterinarymarketing.com/gfembed/?f=667" width="100%" height="500" frameBorder="0" class="gfiframe" title="How'd we do? feedback form"></iframe>
+<script src="https://onboarding.apexveterinarymarketing.com/wp-content/plugins/gravity-forms-iframe-master/assets/scripts/gfembed.min.js" type="text/javascript"></script>`,
 };

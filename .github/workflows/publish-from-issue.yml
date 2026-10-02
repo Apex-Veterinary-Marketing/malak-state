@@ -1,7 +1,8 @@
 # Publishes a blog post from a GitHub issue (docs/BLOG-POST-CONTRACT.md → Publishing flow).
 # The content automation opens an issue (a ```json block of post fields, then "## Body"
 # and the Markdown); scripts/publish-from-issue.mjs validates it, writes the post and its
-# image, runs check:posts + astro build, commits to main and reports back on the issue.
+# image, runs check:posts + the site's own build (npm run build), commits to main and
+# reports back on the issue.
 # Cloudflare deploys the push. Edit a failed issue to retry.
 #
 # SHARED FILE: byte-identical in every Skeleton site. Change it in the template

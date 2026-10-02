@@ -184,9 +184,9 @@ test("YAML strings survive quotes, colons, #, leading dashes, yes/no, backslashe
   assert.deepEqual(d.keyTakeaways, ["null", "a: b"]);
 });
 
-test("postUrl joins siteInfo.url, BLOG_BASE and the slug", () => {
-  assert.equal(postUrl("https://example.com", "/blog", "a-post"), "https://example.com/blog/a-post");
-  assert.equal(postUrl("https://example.com/", "/resources/", "a-post"), "https://example.com/resources/a-post");
+test("postUrl joins siteInfo.url, BLOG_BASE and the slug, with the canonical trailing slash", () => {
+  assert.equal(postUrl("https://example.com", "/blog", "a-post"), "https://example.com/blog/a-post/");
+  assert.equal(postUrl("https://example.com/", "/resources/", "a-post"), "https://example.com/resources/a-post/");
 });
 
 test("readSiteUrl / readBlogBase read the site's own config files", () => {

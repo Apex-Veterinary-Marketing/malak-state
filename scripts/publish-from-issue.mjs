@@ -12,7 +12,7 @@
  *   1. parse the issue          2. validate the fields     3. refuse a duplicate slug
  *   4. clean the body           5. download + resize the image to src/assets/blog/<slug>.jpg
  *   6. write src/content/blog/<slug>.md
- *   7. npm run check:posts + astro build
+ *   7. npm run check:posts + npm run build
  *   8. commit both files to main and push (rebase + retry if main moved)
  *   9. comment the live URL, label `published`, close   /   10. on failure: comment, `publish-failed`
  *
@@ -196,9 +196,10 @@ export function renderPost(post, body) {
   return `${buildFrontMatter(post)}\n${body}`;
 }
 
-/** siteInfo.url + BLOG_BASE + /<slug>. */
+/** siteInfo.url + BLOG_BASE + /<slug>/ — with the trailing slash, the canonical form (the
+ *  sitemap and <link rel="canonical"> use it; Cloudflare redirects the bare form to it). */
 export function postUrl(siteUrl, blogBase, slug) {
-  return [String(siteUrl).replace(/\/+$/, ""), String(blogBase).replace(/^\/+|\/+$/g, ""), slug].filter(Boolean).join("/");
+  return [String(siteUrl).replace(/\/+$/, ""), String(blogBase).replace(/^\/+|\/+$/g, ""), slug].filter(Boolean).join("/") + "/";
 }
 
 /** Exact, case-insensitive match against a comma-separated list (BLOG_PUBLISHERS). */
@@ -350,7 +351,8 @@ function run(cmd, args) {
 const tail = (output) => output.trimEnd().split("\n").slice(-LOG_LINES).join("\n");
 
 function buildSite() {
-  for (const [cmd, args, what] of [["npm", ["run", "check:posts"], "npm run check:posts"], ["npx", ["astro", "build"], "astro build"]]) {
+  // The site's own build script (what Cloudflare runs), not a bare `astro build`.
+  for (const [cmd, args, what] of [["npm", ["run", "check:posts"], "npm run check:posts"], ["npm", ["run", "build"], "npm run build"]]) {
     const r = run(cmd, args);
     if (!r.ok) return { error: `${what} failed (see the output below).`, log: tail(r.output) };
   }

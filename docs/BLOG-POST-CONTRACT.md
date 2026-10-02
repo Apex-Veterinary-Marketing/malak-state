@@ -152,13 +152,13 @@ contract for sites whose existing posts already have categories.)
   links. A leading `# Title` line is dropped and any other `#` heading becomes `##`.
 - `image_url`: `https`, a host listed in the org variable `BLOG_IMAGE_HOSTS`, an image, at most
   15 MB. Saved as `src/assets/blog/<slug>.jpg` (at most 2000 px wide).
-- Then `npm run check:posts` and `astro build` must pass.
+- Then `npm run check:posts` and the site's own `npm run build` must pass.
 
 ### What comes back on the issue
 
 | Outcome | Comment | Label | Issue |
 |---|---|---|---|
-| Published | The live URL (`siteInfo.url` + `BLOG_BASE` + `/<slug>`), live after Cloudflare deploys, usually a few minutes. Draft posts never show. | `published` | closed |
+| Published | The live URL (`siteInfo.url` + `BLOG_BASE` + `/<slug>/`, the canonical form with its trailing slash), live after Cloudflare deploys, usually a few minutes. Draft posts never show. | `published` | closed |
 | Failed | What's wrong and how to fix it (plus the last 40 lines of output if the build failed). | `publish-failed` | stays open: **edit the issue to retry** |
 | Duplicate slug | "Already published at …". Updating an existing post isn't supported yet. | `publish-duplicate` | closed |
 

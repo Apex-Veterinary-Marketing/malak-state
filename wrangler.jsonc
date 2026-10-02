@@ -4,8 +4,14 @@
 //   Worker, and the connected one keeps serving its "Hello World" stub.
 // - Workers Builds (Git-connected): build command `npm run build`, deploy
 //   command `npx wrangler deploy`. Every push to main rebuilds and deploys.
-// - Pre-launch preview: set the build variable SITE_URL to the workers.dev
-//   address (see astro.config.mjs); remove it at launch.
+// - Preview: keep the build variable SITE_URL set to the workers.dev address
+//   (see astro.config.mjs), so the preview stays noindexed.
+//
+// MALAK (2026-10-02): this Worker is the STAGING PREVIEW for now. Production is
+// GitHub Pages (.github/workflows/deploy-pages.yml, docs/launch/github-pages-launch.md),
+// because the client keeps the domain at Wix and Wix won't move the nameservers.
+// The Cloudflare production setup is kept below as a FALLBACK
+// (docs/launch/cloudflare-rules.md) in case DNS can move to Cloudflare.
 {
   // The Worker in the Cloudflare dashboard (connected to this repo's main, 2026-10-02).
   "name": "malak-state",
@@ -15,20 +21,17 @@
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   }
-  // Final domain: the apex themalakestategroup.com is canonical (site.ts url);
-  // www 301s to it through a Cloudflare Redirect Rule (docs/launch/cloudflare-rules.md).
+  // FALLBACK: Cloudflare as production. The apex is canonical (site.ts url); www
+  // 301s to it through a Cloudflare Redirect Rule (docs/launch/cloudflare-rules.md).
   // Both hosts attach as custom domains on the first `wrangler deploy`, which
   // needs the themalakestategroup.com zone active in this Cloudflare account
-  // (registrar is Wix, so the nameservers move to Cloudflare first).
-  // DON'T deploy with these routes until launch day: attaching the custom
-  // domains moves the live site off Wix. Path redirects from the old Wix URLs
-  // ship as dist/_redirects (generated in astro.config.mjs).
+  // (the nameservers have to move to Cloudflare first). Path redirects from the
+  // old Wix URLs ship as dist/_redirects (generated in astro.config.mjs).
   //
-  // PRE-LAUNCH (2026-10-02): the routes are commented out, so every push deploys a
-  // preview to the Worker's workers.dev address only. The domain is still on Wix
-  // (ns0/ns1.wixdns.net). On launch day, after the nameservers move to Cloudflare:
-  // uncomment "routes" (and add a comma after the "assets" block), remove the SITE_URL build variable,
-  // run `npm run check:launch`, then push. check:launch fails while routes are missing.
+  // To switch: set the repo variable PAGES_LIVE to false so GitHub Pages stops
+  // publishing, uncomment "routes" (and add a comma after the "assets" block),
+  // remove the SITE_URL build variable, run `npm run check:launch`, then push.
+  // check:launch treats active routes as "Cloudflare is production".
   //
   // "routes": [
   //   { "pattern": "themalakestategroup.com", "custom_domain": true },

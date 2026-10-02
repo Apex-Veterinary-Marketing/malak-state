@@ -101,6 +101,8 @@ const REDIRECTS = {
 
 export default defineConfig({
   // Meta-refresh fallback pages (dev server, any host without _redirects support).
+  // Malak: production is GitHub Pages, which ignores _redirects, so these pages
+  // are what old URLs get on the live site; the Worker preview still gets 301s.
   redirects: REDIRECTS,
   site: siteUrl,
   // sitemap() lists every route; singleSitemap turns that into /sitemap.xml,

@@ -1,9 +1,9 @@
 # Validates blog posts (docs/BLOG-POST-CONTRACT.md) whenever they change.
 # Automations publish straight to main (no branch, no review), so this runs on
 # every push to main that touches the blog: a post that breaks the contract
-# fails here and GitHub notifies the committer. Cloudflare's build fails the
-# same way, so a bad post never replaces the live site (it keeps the last good
-# deploy) — fix or remove the post and push again.
+# fails here and GitHub notifies the committer. The Pages deploy build
+# (deploy-pages.yml) fails the same way, so a bad post never replaces the live
+# site (it keeps the last good deploy) — fix or remove the post and push again.
 name: Check blog posts
 
 on:

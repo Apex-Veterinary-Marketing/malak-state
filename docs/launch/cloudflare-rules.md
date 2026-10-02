@@ -1,4 +1,13 @@
-# Cloudflare setup for themalakestategroup.com
+# Cloudflare setup for themalakestategroup.com (fallback)
+
+> **Not the current plan (2026-10-02).** Production is GitHub Pages with the domain on Wix DNS
+> (`docs/launch/github-pages-launch.md`). Wix won't currently move the nameservers, so step 1.3 below is
+> blocked. Use this runbook only if the domain's DNS can move to Cloudflare. To switch:
+> 1. Set the repo variable `PAGES_LIVE` to `false`, or delete it, so GitHub Pages stops publishing.
+> 2. Follow the steps below. Step 4 uncomments the routes in `wrangler.jsonc`, and `check:launch` then
+>    treats Cloudflare as production.
+> 3. If Pages was already live, remove the custom domain under repo Settings → Pages, and set
+>    `DEPLOY_HOOK_URL` (step 6) so the weekly rebuild reaches Cloudflare.
 
 **Canonical domain: `https://themalakestategroup.com` (no www).** `www` must 301 to it. The repo is
 already configured for this (`src/data/site.ts` url, `wrangler.jsonc` routes, `dist/_redirects`).

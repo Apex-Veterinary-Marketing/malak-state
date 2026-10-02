@@ -78,12 +78,21 @@ for (const [id, file] of used) {
   if (!configured.has(id)) errors.push(`Form "${id}" (${file}) has no embed in src/data/forms.ts — it would render the placeholder.`);
 }
 
-// 4. Deploy — the Worker name must match the Cloudflare dashboard.
+// 4. Deploy — Malak (2026-10-02): two supported production setups. GitHub Pages is the
+// current one (domain stays at Wix DNS; docs/launch/github-pages-launch.md). Cloudflare
+// custom domains are the fallback if DNS can move (docs/launch/cloudflare-rules.md).
+// Active "routes" in wrangler.jsonc means Cloudflare is production.
 const wrangler = read("wrangler.jsonc");
-if (!wrangler) errors.push(`wrangler.jsonc is missing — Cloudflare would deploy its "Hello World" stub.`);
+if (!wrangler) errors.push(`wrangler.jsonc is missing — the workers.dev preview (and the Cloudflare fallback) would deploy Cloudflare's "Hello World" stub.`);
 else if (/"name":\s*"skeleton"/.test(wrangler)) errors.push(`wrangler.jsonc "name" is still "skeleton" — set it to the client's Worker name.`);
-// Malak (2026-10-02): the custom-domain routes are commented out for the workers.dev preview.
-if (wrangler && !/^\s*"routes"\s*:/m.test(wrangler)) errors.push(`wrangler.jsonc has no active "routes" — uncomment the custom domains (see the PRE-LAUNCH note in wrangler.jsonc) before launch.`);
+const pagesWorkflow = read(".github/workflows/deploy-pages.yml");
+if (wrangler && /^\s*"routes"\s*:/m.test(wrangler)) {
+  warnings.push(`Production is Cloudflare (wrangler.jsonc routes are active) — make sure the repo variable PAGES_LIVE isn't "true", or GitHub Pages publishes too (docs/launch/cloudflare-rules.md).`);
+} else {
+  if (!pagesWorkflow) errors.push(`.github/workflows/deploy-pages.yml is missing — nothing would publish the site to GitHub Pages.`);
+  else if (!/vars\.PAGES_LIVE == 'true'/.test(pagesWorkflow)) warnings.push(`deploy-pages.yml no longer checks PAGES_LIVE — confirm that's intended.`);
+  warnings.push(`Production is GitHub Pages. GitHub can't be checked from here — on launch day set Pages Source to "GitHub Actions" and the repo variable PAGES_LIVE=true (docs/launch/github-pages-launch.md).`);
+}
 
 // 5. Content — FAQs per service, leftover placeholder copy, legal pages.
 const servicesDir = "src/content/services";

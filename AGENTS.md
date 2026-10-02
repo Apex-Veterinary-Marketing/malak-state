@@ -22,6 +22,7 @@ This clone is a **real estate** site, not a vet clinic. Deviations from the Skel
 - **Banned wording** (check:seo): veterinar*, pet(s), patients, "new patient", "Dr. ", hooman, paw(s).
 - **Local builds:** Astro's glob loader can keep stale entries in `.astro/data-store.json` when a collection becomes empty. Delete that file (and `node_modules/.astro/data-store.json`) if removed content still renders. CI builds start clean.
 - **Brand images:** `scripts/make-brand-images.mjs` built the OG card and favicons from the brand photo; replace them with the real logo when it arrives.
+- **Hosting (2026-10-02):** production is **GitHub Pages** (`.github/workflows/deploy-pages.yml`), not Cloudflare. The client keeps the domain at Wix, and Wix won't move the nameservers, so Wix DNS points at Pages. The Cloudflare Worker is the noindexed `workers.dev` staging preview only. The deploy workflow is off until the repo variable `PAGES_LIVE` is `true` (launch day). Old Wix URLs get Astro's meta-refresh pages on the live site, because Pages ignores `_redirects`. Runbook: `docs/launch/github-pages-launch.md`. **Cloudflare stays as a ready fallback; don't remove it:** keep `wrangler.jsonc` (its custom-domain routes stay commented out), the `_redirects` generator in `astro.config.mjs` and `docs/launch/cloudflare-rules.md` (it starts with the switch steps). `check:launch` accepts either setup: active routes mean Cloudflare is production. The repo stays **public** until the org's GitHub Team plan is active: Pages on a private repo needs Team, and making it private on Free takes the live site offline.
 
 ## Golden rules
 
@@ -53,7 +54,7 @@ npm run test:publish     # tests for the publish-from-issue script (blog posts f
 npm run check:tokens     # token contract + palette contrast (fast; run it while styling)
 npm run test:palette     # proves the generator passes every contrast rule for ~3,000 random brand colors
 npm run check:links      # after a build: every internal link/asset resolves + every tel: dials one number
-npm run check:launch     # client fork only: placeholder domain/assets/forms/copy, Worker name, legal pages
+npm run check:launch     # client fork only: placeholder domain/assets/forms/copy, deploy setup, legal pages
 SHOW_SCHEDULED=1 astro dev   # preview future-dated (scheduled) blog posts locally
 SITE_URL=https://<x>.workers.dev npm run build   # preview build on a non-production host (noindexed)
 ```
@@ -260,13 +261,13 @@ rarely needed:
   - **`/llms.txt`** (`src/pages/llms.txt.ts`): business summary, pages, services, published posts
     and FAQs for AI assistants.
 
-  **When they update:** on every build, i.e. every push to `main` (Cloudflare rebuilds), plus the
-  weekly `scheduled-publish.yml` rebuild that releases scheduled posts. So:
+  **When they update:** on every build, i.e. every push to `main` (Malak: `deploy-pages.yml` rebuilds), plus the
+  weekly rebuild that releases scheduled posts (Malak: the Thursday cron in `deploy-pages.yml`). So:
   - **New page** (`src/pages/…`) or **new service / doctor / category**: in the sitemap on the next
     deploy. Nothing to do. To keep a page out, give it `noindex` (`<BaseLayout noindex>`).
   - **New blog post**: in the sitemap and llms.txt on the first build on/after its `pubDate`;
-    `draft: true` posts never appear. The weekly rebuild needs the repo secret `DEPLOY_HOOK_URL`,
-    or scheduled posts only appear on the next push.
+    `draft: true` posts never appear. Malak: the weekly rebuild is built into `deploy-pages.yml`; no
+    `DEPLOY_HOOK_URL` secret is needed.
   - **Retired page**: add a redirect in `astro.config.mjs`; redirects are left out automatically.
   - `npm run check:links` (part of `verify`) fails if `sitemap.xml` and the built pages disagree.
   - After launch, submit `https://<domain>/sitemap.xml` once in Google Search Console; Google
@@ -365,13 +366,18 @@ is removed or renamed from the schema. Automations publish straight to `main` (n
   `SHOW_SCHEDULED=1`.
 - The site is static, so something must rebuild on release day:
   `.github/workflows/scheduled-publish.yml` POSTs the repo secret `DEPLOY_HOOK_URL` weekly. Match its cron
-  weekday to the posts' `pubDate`s. Without the secret, the job skips.
+  weekday to the posts' `pubDate`s. Without the secret, the job skips. **Malak:** while production is GitHub
+  Pages, leave that secret unset; `deploy-pages.yml` has its own Thursday cron. On the Cloudflare fallback, set it.
 - Content may link ahead to a scheduled post: run rich text through `unlinkScheduledArticles()` and the
   link renders as plain text until the post is live. Service pages already do this.
 - Listing pages: a featured post shown on its own must be excluded from the grid below it, and a category
   filter with no live posts must not render.
 
 ## Deploy — Cloudflare Workers
+
+**Malak:** production deploys to GitHub Pages instead (see *This fork* above and
+`docs/launch/github-pages-launch.md`). What follows applies to the `workers.dev` staging preview, and to
+production if the Cloudflare fallback is used (`docs/launch/cloudflare-rules.md`).
 
 `wrangler.jsonc` ships with the template: static assets from `./dist`, `404-page` not-found handling, and
 `auto-trailing-slash`. Per client:

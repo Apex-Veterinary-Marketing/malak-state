@@ -108,6 +108,6 @@ export const siteInfo: SiteInfo = {
   // How'd We Do? widget's review link. The client has no Facebook page, so there's no
   // facebookReviewsLink and no Facebook social link.
   googleReviewsLink: "https://www.google.com/search?kgmid=/g/11n45_26qv&q=The+Malak+Estate+Group-+Marissa+Lubera+REALTOR%C2%AE",
-  url: "https://themalakestategroup.com", // apex is canonical; www 301s here (Cloudflare Redirect Rule, see wrangler.jsonc)
+  url: "https://themalakestategroup.com", // apex is canonical; www 301s here (GitHub Pages, or a Cloudflare Redirect Rule in the fallback; see docs/launch/)
   // logoColor / logoWhite: requested from client — Header/Footer render a text wordmark until then
 };

@@ -45,8 +45,8 @@ for (const name of ["googleReviewsLink", "facebookReviewsLink", "yelpReviewLink"
   const value = field(name);
   if (value && /example/.test(value)) errors.push(`site.ts ${name} is a placeholder — set the real link or remove it.`);
 }
-// Malak (client requirement, 2026-10-02): the How'd We Do? widget must always show Facebook.
-if (!field("facebookReviewsLink")) errors.push(`site.ts facebookReviewsLink is empty — Malak's How'd We Do? widget must show the Facebook review link. Get the page URL from the client.`);
+// Malak: the How'd We Do? widget needs at least one review link (the client has Google, no Facebook).
+if (!["googleReviewsLink", "facebookReviewsLink", "yelpReviewLink"].some((n) => field(n))) errors.push(`site.ts has no review link — the How'd We Do? widget would offer nowhere to leave a review.`);
 if (!/^\s*businessSchemaType:/m.test(site)) warnings.push(`site.ts businessSchemaType is unset (defaults to VeterinaryCare) — confirm the business type.`);
 if (/^\s*mobileVet:\s*true/m.test(site) && !/^\s*showStreetAddress:/m.test(site)) warnings.push(`mobileVet is true, so the street address is hidden by default — confirm with the client (showStreetAddress).`);
 if (!/^\s*callTrackingNumber:/m.test(site)) warnings.push(`No callTrackingNumber in site.ts — confirm the client has no call-tracking number.`);
@@ -123,7 +123,9 @@ const phUsers = [];
 })("src");
 if (phUsers.length) warnings.push(`${phUsers.length} file(s) still use Unsplash placeholder photos (src/assets/placeholders/) — swap in client photos:\n    ${phUsers.join("\n    ")}`);
 if (!listDir("src/content/testimonials", /\.(md|mdx|json)$/).length) warnings.push(`No testimonials yet — add the client's Google reviews she wants featured (src/content/testimonials/).`);
-if (/example/.test(read("src/content/social-links/facebook.json"))) errors.push(`src/content/social-links/facebook.json is still a placeholder link — get the client's Facebook URL.`);
+for (const f of listDir("src/content/social-links", /\.(md|json)$/)) {
+  if (/example/.test(read(`src/content/social-links/${f}`))) errors.push(`src/content/social-links/${f} is still a placeholder link — set the real profile or delete the file.`);
+}
 if (!/^\s*brokerageLicense:/m.test(site)) warnings.push(`site.ts brokerageLicense is unset — get the Real of Ohio license number (shown in the footer).`);
 if (/idxEnabled\s*=\s*false/.test(read("src/data/idx.ts"))) warnings.push(`IDX is not enabled (src/data/idx.ts) — expected until an IDX provider is chosen.`);
 if (/noindex/.test(read("src/pages/terms-of-use.astro"))) warnings.push(`terms-of-use.astro is a noindexed placeholder — get the client's Terms of Use.`);

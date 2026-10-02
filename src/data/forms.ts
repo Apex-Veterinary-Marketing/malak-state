@@ -47,5 +47,11 @@
 // placeholder instead — safe to fill these in one at a time during client
 // intake, never blocks a build.
 export const gravityFormEmbeds: Record<string, string> = {
-  // contact: `<iframe src="https://example.com/embed/contact-form/" title="Contact form" loading="lazy" style="width:100%;border:0;min-height:32rem;"></iframe>`,
+  // Malak GF forms on onboarding.apexveterinarymarketing.com (client-supplied
+  // 2026-10-02). gfembed.min.js auto-resizes each iframe to its form's height;
+  // GravityFormEmbed re-runs the script tag so it actually executes.
+
+  // Contact (GF form 666): /contact-us and the site-wide contact modal.
+  contact: `<iframe src="https://onboarding.apexveterinarymarketing.com/gfembed/?f=666" width="100%" height="500" frameBorder="0" class="gfiframe" title="Contact form"></iframe>
+<script src="https://onboarding.apexveterinarymarketing.com/wp-content/plugins/gravity-forms-iframe-master/assets/scripts/gfembed.min.js" type="text/javascript"></script>`,
 };

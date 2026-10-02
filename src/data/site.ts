@@ -105,6 +105,9 @@ export const siteInfo: SiteInfo = {
   footerAbout:
     "Cleveland real estate, guided with intention. Clarity, honesty, and a plan that aligns with your goals, for buyers, sellers, investors and builders.",
   // googleReviewsLink: requested from client (Google Business Profile review URL)
+  // facebookReviewsLink: REQUIRED (client rule, 2026-10-02) — the How'd We Do? widget must always
+  // show Facebook. Requested from client; check:launch fails until it's set. Also update
+  // src/content/social-links/facebook.json (still a placeholder) with the same page.
   url: "https://themalakestategroup.com", // apex is canonical; www 301s here (Cloudflare Redirect Rule, see wrangler.jsonc)
   // logoColor / logoWhite: requested from client — Header/Footer render a text wordmark until then
 };

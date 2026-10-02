@@ -1,32 +1,59 @@
 ---
-// CMS-powered. Generic/token-driven; not grounded in a staged real-markup
-// reference. See Skeleton-Build-Spec.md §6.
+// One blog post, in the listing-card language (V2): photo with a slow zoom on
+// hover, a small uppercase date/read-time line, serif title, summary, arrow cue.
+// size="lg" is the featured layout on /blog: photo left, text right (stacked on
+// small screens). The whole card is the link, so the arrow cue is a span.
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { postHref } from "../lib/data/blog";
+import { formatPostDate } from "../lib/utils/format";
 
 export interface Props {
   post: CollectionEntry<"blog">;
+  size?: "lg" | "sm";
 }
-const { post } = Astro.props;
+const { post, size = "sm" } = Astro.props;
+const d = post.data;
+const meta = [d.monthLabel || formatPostDate(d.pubDate), d.readTime].filter(Boolean).join(" · ");
 ---
 
-<a class="blog-card" href={postHref(post)}>
-  {post.data.postThumbnail && <Image src={post.data.postThumbnail} alt={post.data.thumbnailAlt || ""} class="blog-card__image" />}
+<a class:list={["blog-card", `blog-card--${size}`]} href={postHref(post)}>
+  {d.postThumbnail && (
+    <div class="blog-card__frame">
+      <Image src={d.postThumbnail} alt={d.thumbnailAlt || ""} class="blog-card__image" widths={size === "lg" ? [640, 1000, 1400] : [480, 800]} sizes={size === "lg" ? "(max-width: 900px) 100vw, 55vw" : "(max-width: 767px) 100vw, 33vw"} />
+    </div>
+  )}
   <div class="blog-card__body">
-    {post.data.monthLabel && <span class="blog-card__date">{post.data.monthLabel}</span>}
-    <h3 class="blog-card__heading">{post.data.name}</h3>
-    {post.data.postSummary && <p class="blog-card__summary">{post.data.postSummary}</p>}
-    <span class="blog-card__cta">Read More</span>
+    <p class="blog-card__meta">{meta}</p>
+    {size === "lg" ? <h2 class="blog-card__title">{d.name}</h2> : <h3 class="blog-card__title">{d.name}</h3>}
+    {d.postSummary && <p class="blog-card__summary">{d.postSummary}</p>}
+    <span class="blog-card__cta">Read the article<span class="blog-card__arrow" aria-hidden="true">&rarr;</span></span>
   </div>
 </a>
 
 <style>
-  .blog-card { display: flex; flex-direction: column; text-decoration: none; color: inherit; background: var(--white); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-card); }
-  .blog-card__image { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
-  .blog-card__body { padding: var(--space-md); display: flex; flex-direction: column; gap: var(--space-xs); }
-  .blog-card__date { font-size: var(--font-size-sm); color: var(--text-muted); }
-  .blog-card__heading { margin: 0; font-size: var(--font-size-md); }
-  .blog-card__summary { margin: 0; color: var(--text-muted); font-size: var(--font-size-sm); }
-  .blog-card__cta { margin-block-start: auto; font-weight: 600; color: var(--main); }
+  .blog-card { display: flex; flex-direction: column; text-decoration: none; color: inherit; min-width: 0; }
+  .blog-card__frame { overflow: hidden; }
+  .blog-card__image { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; transition: transform var(--motion-duration-image) var(--motion-ease-out); }
+  .blog-card:hover .blog-card__image { transform: scale(1.03); }
+  .blog-card__body { display: flex; flex-direction: column; flex: 1; padding-block-start: var(--space-md); }
+  .blog-card__meta { margin: 0 0 var(--space-xs); font-size: var(--font-size-xs); font-weight: 600; letter-spacing: var(--letter-spacing-label); text-transform: uppercase; color: var(--text-muted); }
+  .blog-card__title { margin: 0; font-size: var(--font-size-xl); line-height: 1.2; color: var(--main-dark); overflow-wrap: anywhere; }
+  .blog-card__summary { margin: var(--space-sm) 0 0; font-size: var(--font-size-sm); color: var(--text-muted); }
+  .blog-card__cta { display: inline-flex; gap: var(--space-xs); align-items: center; margin-block-start: var(--space-md); font-weight: 600; color: var(--main); }
+  .blog-card:hover .blog-card__cta { color: var(--main-dark); }
+  .blog-card__arrow { transition: transform var(--motion-duration-slow) var(--motion-ease); }
+  .blog-card:hover .blog-card__arrow { transform: translateX(4px); }
+
+  /* Featured: photo left, text right, on the soft background. */
+  .blog-card--lg { display: grid; grid-template-columns: 1.25fr 1fr; background: var(--solid-bg); }
+  .blog-card--lg .blog-card__image { height: 100%; aspect-ratio: 5 / 4; }
+  .blog-card--lg .blog-card__body { justify-content: center; padding: clamp(var(--space-lg), 4vw, var(--space-2xl)); }
+  .blog-card--lg .blog-card__title { font-size: clamp(1.9rem, 3vw, var(--font-size-4xl)); line-height: 1.12; }
+  .blog-card--lg .blog-card__summary { font-size: var(--font-size-md); max-width: 44ch; }
+  .blog-card--lg .blog-card__cta { margin-block-start: var(--space-lg); }
+  @media (max-width: 900px) {
+    .blog-card--lg { grid-template-columns: 1fr; }
+    .blog-card--lg .blog-card__image { aspect-ratio: 3 / 2; }
+  }
 </style>

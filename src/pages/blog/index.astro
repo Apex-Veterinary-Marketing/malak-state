@@ -1,20 +1,73 @@
 ---
+// Blog index (V2): split page header with a photo, the featured post large
+// (the newest post marked `featured`, else the newest post), the rest in a
+// grid, then the book-a-call band. With no posts yet, a soft-background empty
+// state in Marissa's voice (docs/brand-voice.md) points to a call instead.
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../../components/PageHeaderBanner.astro";
+import BlogCard from "../../components/BlogCard.astro";
 import BlogGrid from "../../components/BlogGrid.astro";
+import BookCall from "../../components/BookCall.astro";
+import ArrowLink from "../../components/ArrowLink.astro";
 import { getAllPosts } from "../../lib/data/blog";
+import { getSiteInfo } from "../../lib/data/site";
+import headerImage from "../../assets/brand/marissa-typing.jpg";
 
+const site = await getSiteInfo();
 const posts = await getAllPosts();
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+const rest = posts.filter((p) => p !== featured);
+const graph = [{ "@type": "Blog", "@id": "#blog", name: "Buying & Selling Insights", publisher: { "@id": "#business" } }];
 ---
 
-<BaseLayout title="Real Estate Insights" description="Guides and market notes for buyers, sellers and builders across Northeast Ohio from Realtor Marissa Lubera." breadcrumb="Blog">
-  <PageHeaderBanner heading="Buying & selling *insights*" intro="Guides and market notes for buyers, sellers and builders across Northeast Ohio." />
-  <div class="page-section">
-    {posts.length > 0 ? <BlogGrid posts={posts} /> : <p class="page-section__empty">Articles are coming soon. In the meantime, <a href="/services">explore our services</a>.</p>}
-  </div>
+<BaseLayout
+  title="Real Estate Insights"
+  description="Guides and market notes for buyers, sellers and builders across Northeast Ohio from Realtor Marissa Lubera."
+  schemaGraph={graph}
+  webPage={{ "@type": "CollectionPage", mainEntity: { "@id": "#blog" } }}
+  breadcrumb="Blog"
+>
+  <PageHeaderBanner
+    eyebrow="Blog"
+    heading="Buying & selling *insights*"
+    intro="Guides and market notes for buyers, sellers and builders across Northeast Ohio."
+    image={headerImage}
+    imageAlt="Marissa Lubera writing at her laptop"
+  />
+
+  <section class="blog">
+    <div class="container">
+      {featured ? (
+        <>
+          <div data-reveal><BlogCard post={featured} size="lg" /></div>
+          {rest.length > 0 && (
+            <div class="blog__more">
+              <h2 class="blog__heading">More <em>insights</em></h2>
+              <BlogGrid posts={rest} />
+            </div>
+          )}
+        </>
+      ) : (
+        <div class="blog__empty" data-reveal>
+          <p class="eyebrow">Coming soon</p>
+          <h2>Articles are on the <em>way</em>.</h2>
+          <p class="lede">I'm writing clear, practical guides on buying, selling and building a home in Northeast Ohio. Until the first one is up, book a call and I'll answer your questions directly.</p>
+          <div class="blog__empty-actions">
+            <a class="btn btn--cta" href={site.bookingUrl}>{site.bookingLabel}</a>
+            <ArrowLink href="/services" text="Explore my services" />
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <BookCall />
 </BaseLayout>
 
 <style>
-  .page-section { max-width: var(--container-max); margin-inline: auto; padding: clamp(4rem, 8vw, 6rem) var(--space-md); }
-  .page-section__empty a { color: var(--main); font-weight: 600; }
+  .blog { padding-block: clamp(4rem, 8vw, 6rem) clamp(5rem, 10vw, 8rem); }
+  .blog__more { margin-block-start: clamp(4rem, 8vw, 6rem); }
+  .blog__heading { margin-block-end: clamp(2rem, 4vw, 3rem); }
+  .blog__empty { max-width: 44rem; padding: clamp(2rem, 5vw, 4rem); background: var(--solid-bg); }
+  .blog__empty-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-lg); margin-block-start: var(--space-xl); }
 </style>

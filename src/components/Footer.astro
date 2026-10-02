@@ -8,6 +8,7 @@ import { getAllServices } from "../lib/data/services";
 import { getAllSocialLinks } from "../lib/data/socialLinks";
 import { SOCIAL_LABELS } from "../lib/icons/social";
 import { phoneHref } from "../lib/utils/phone";
+import { BLOG_BASE } from "../lib/data/blog";
 import ReviewsBand from "./ReviewsBand.astro";
 import { countiesSentence } from "../lib/utils/areas";
 
@@ -41,6 +42,7 @@ const countiesText = countiesSentence(site.serviceAreaOfCoverage);
         <li><a href="/builders-developers">Builders &amp; Developers</a></li>
         <li><a href="/listings">Listings</a></li>
         <li><a href="/gather-and-ground">Gather &amp; Ground</a></li>
+        <li><a href={BLOG_BASE}>Blog</a></li>
         <li><a href="/photo-gallery">Photo Gallery</a></li>
         <li><button type="button" class="footer__link-button" data-modal-target="reputation-widget">How'd We Do?</button></li>
         <li><a href="/faq">FAQ</a></li>

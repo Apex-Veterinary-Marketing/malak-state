@@ -18,6 +18,7 @@ import { getServicesByCategory } from "../lib/data/services";
 import { getAllSocialLinks } from "../lib/data/socialLinks";
 import { SOCIAL_LABELS } from "../lib/icons/social";
 import { phoneHref } from "../lib/utils/phone";
+import { BLOG_BASE } from "../lib/data/blog";
 import menuImage from "../assets/brand/marissa-living-room.jpg";
 
 const site = await getSiteInfo();
@@ -32,6 +33,7 @@ const links = [
   { href: "/builders-developers", label: "Builders & Developers" },
   { href: "/listings", label: "Listings" },
   { href: "/gather-and-ground", label: "Gather & Ground" },
+  { href: BLOG_BASE, label: "Blog" },
   { href: "/contact-us", label: "Contact" },
 ];
 const current = Astro.url.pathname.replace(/\/$/, "") || "/";

@@ -12,7 +12,7 @@ import { getSiteInfo } from "../lib/data/site";
 import { phoneHref } from "../lib/utils/phone";
 
 const site = await getSiteInfo();
-const effectiveDate = "[Month DD, YYYY]"; // set at launch
+const effectiveDate = "October 2, 2026"; // set at launch (2026-10-02); update when the text changes
 const telHref = phoneHref(site);
 const siteHost = new URL(site.url || "https://example.com").hostname;
 ---

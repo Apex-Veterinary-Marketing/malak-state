@@ -110,14 +110,19 @@ if (/content goes here|replace with real legal copy/i.test(read("src/pages/terms
 // Report.
 // ---- Real estate fork (The Malak Estate Group) ----
 const listDir = (d, re) => (fs.existsSync(d) ? fs.readdirSync(d).filter((f) => re.test(f)) : []);
+// Listings can be switched off site-wide (LISTINGS_ENABLED in src/lib/data/listings.ts):
+// then nothing under listings is built, so its samples and photos aren't launch issues.
+const listingsOn = !/^export const LISTINGS_ENABLED = false;/m.test(read("src/lib/data/listings.ts"));
+if (!listingsOn) warnings.push(`Listings are switched off (LISTINGS_ENABLED = false): no listings section, link or page is published.`);
 const samples = listDir("src/content/listings", /\.mdx?$/).filter((f) => /^\s*sample:\s*true/m.test(read(`src/content/listings/${f}`)));
-if (samples.length) warnings.push(`${samples.length} sample listing(s) still published (sample: true): ${samples.join(", ")} — replace with real listings or delete.`);
+if (listingsOn && samples.length) warnings.push(`${samples.length} sample listing(s) still published (sample: true): ${samples.join(", ")} — replace with real listings or delete.`);
 const phUsers = [];
 (function walk(dir) {
   if (!fs.existsSync(dir)) return;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, entry.name);
     if (entry.isDirectory()) walk(p);
+    else if (!listingsOn && /[\\/]listings[\\/]/.test(p)) continue; // not built while listings are off
     else if (/\.(astro|md|mdx|json|ts)$/.test(p) && /assets\/placeholders\//.test(read(p))) phUsers.push(p);
   }
 })("src");

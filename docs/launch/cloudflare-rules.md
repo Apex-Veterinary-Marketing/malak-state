@@ -16,16 +16,19 @@ before launch; steps 4–6 are launch day.
    nameservers** → enter the two Cloudflare nameservers. Propagation takes minutes to hours; the
    Wix site stays up because the records point to Wix.
 
-## 2. Create the Worker (before launch)
+## 2. Create the Worker (before launch) — DONE 2026-10-02
 
 1. Workers & Pages → **Create → Import a repository** → `Apex-Veterinary-Marketing/malak-state`.
 2. Build command `npm run build` · Deploy command `npx wrangler deploy` · branch `main`.
-3. The Worker's name must equal `"name"` in `wrangler.jsonc` (currently the placeholder
-   `skeleton`). Tell me the name you choose and I'll update the repo.
-4. For the client review link, add the build variable `SITE_URL` = the `workers.dev` address (the
-   preview is then noindexed). **Note:** `wrangler.jsonc` already lists the custom domains; the first
-   deploy will try to attach them. Until launch day, deploy from a branch without the `routes`
-   block, or ask me to hold the routes back until launch.
+3. The Worker is **`malak-state`**, and `wrangler.jsonc` `"name"` matches it.
+4. The `routes` (custom domains) in `wrangler.jsonc` are **commented out** until launch day, so
+   every push deploys only the `workers.dev` preview. For a noindexed preview, set the build
+   variable `SITE_URL` = the `workers.dev` address.
+
+**State on 2026-10-02:** nameservers are still Wix (`ns0`/`ns1.wixdns.net`). The domain has **no
+MX or TXT records**, so moving DNS can't break email (Marissa's address is on `malakestates.com`)
+or any verification. `npm run check:launch` has one blocker left, the commented-out routes, which
+is step 4 below.
 
 ## 3. SSL/TLS (before launch)
 
@@ -34,12 +37,16 @@ before launch; steps 4–6 are launch day.
 
 ## 4. Launch: point the domain at the Worker
 
+Only once the zone shows **Active** in Cloudflare (nameservers moved, step 1).
+
 1. DNS: **delete** the Wix `A` record for `themalakestategroup.com` and the `CNAME` for `www`
    (custom domains can't attach while conflicting records exist).
-2. Workers → the Worker → Settings → **Domains & Routes**: confirm both custom domains are
-   attached (`themalakestategroup.com` and `www.themalakestategroup.com`). They attach on deploy
-   from `wrangler.jsonc`, or add them here.
-3. Remove the `SITE_URL` build variable and redeploy.
+2. Remove the `SITE_URL` build variable (if set).
+3. In the repo: uncomment `"routes"` in `wrangler.jsonc` and add a comma after the `"assets"`
+   block; run `npm run check:launch` (0 blockers) and `npm run verify`; commit and push `main`.
+   That deploy attaches both custom domains (`themalakestategroup.com` and
+   `www.themalakestategroup.com`); confirm them under Workers → `malak-state` → Settings →
+   **Domains & Routes**.
 
 ## 5. Launch: Redirect Rule, www → apex (the only rule you add)
 

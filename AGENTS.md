@@ -48,7 +48,8 @@ This clone is a **real estate** site, not a vet clinic. Deviations from the Skel
 ```sh
 astro dev --background   # dev server → http://localhost:4321 (use --background; stop: astro dev stop)
 npm run palette -- --main "#16253c" --cta "#008585" [--write]   # generate a contrast-safe Tier 1 palette
-npm run verify           # astro check + check:tokens + test:palette + build + check:links — the definition of done
+npm run verify           # astro check + check:posts + test:publish + check:tokens + test:palette + build + check:links + test:unit + check:seo — the definition of done
+npm run test:publish     # tests for the publish-from-issue script (blog posts from GitHub issues)
 npm run check:tokens     # token contract + palette contrast (fast; run it while styling)
 npm run test:palette     # proves the generator passes every contrast rule for ~3,000 random brand colors
 npm run check:links      # after a build: every internal link/asset resolves + every tel: dials one number
@@ -337,7 +338,7 @@ as a draft for the client in your hand-off; never present it as the client's own
 
 ## Blog — storage contract (automation-safe)
 
-External automations (Zapier / Make / n8n → GitHub API) publish posts to client repos, so blog
+An external automation (Make / n8n → a GitHub issue → the `publish-from-issue` Action) publishes posts to client repos, so blog
 storage is identical in every fork: **posts in `src/content/blog/<slug>.md`, images in
 `src/assets/blog/`**, frontmatter per `docs/BLOG-POST-CONTRACT.md`, validated by
 `npm run check:posts` (part of `verify`, and run by `check-posts.yml` on every push to `main`
@@ -351,6 +352,11 @@ is removed or renamed from the schema. Automations publish straight to `main` (n
 - **Schema changes are additive only:** a fork may add optional fields, never rename/remove a
   contract field or make an optional one required.
 - Build post links with `postHref(post)` / `BLOG_BASE`, never a hard-coded `/blog/`.
+- **Blog posts arrive through publish-from-issue. Don't edit the workflow or script in a site repo;
+  change the template and copy.** (`.github/workflows/publish-from-issue.yml`,
+  `scripts/publish-from-issue.mjs` + its test and `scripts/fixtures/publish/`, `.gitattributes` are
+  byte-identical in every site.) The Action writes `authorName` only, never `author`, so the
+  `brokers` reference is unaffected.
 
 ## Blog — scheduled publishing
 

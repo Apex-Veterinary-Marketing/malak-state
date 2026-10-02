@@ -4,6 +4,10 @@
 // .blog-posts-card as blog.html, just pre-filtered — reuses
 // BlogGrid/BlogCard rather than inventing new markup. Empty-state message
 // mirrors the export's w-dyn-empty "No items found." fallback.
+//
+// Only categories with at least one published post get a page, so an empty
+// category (the placeholder file stays for structure) never ships a thin
+// page or a sitemap entry.
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../../components/PageHeaderBanner.astro";
 import BlogGrid from "../../components/BlogGrid.astro";
@@ -12,7 +16,11 @@ import { getPostsByCategory } from "../../lib/data/blog";
 
 export async function getStaticPaths() {
   const categories = await getAllBlogCategories();
-  return categories.map((category) => ({ params: { slug: category.id }, props: { category } }));
+  const withPosts = [];
+  for (const category of categories) {
+    if ((await getPostsByCategory(category.id)).length > 0) withPosts.push(category);
+  }
+  return withPosts.map((category) => ({ params: { slug: category.id }, props: { category } }));
 }
 
 const { category } = Astro.props;

@@ -20,7 +20,7 @@ verify`, and `.github/workflows/check-posts.yml` runs it on every pull request t
 `hot-pavement-miami-dog-walks`. It must be unique; re-using a slug overwrites that post.
 
 The public URL is `<BLOG_BASE>/<slug>`, where `BLOG_BASE` is set in `src/lib/data/blog.ts`
-(`/blog` by default, `/resources` on MK9). Automations never need it.
+(`/blog`; MK9 labels it "Resources" on screen, but its URL is `/blog` too). Automations never need it.
 
 ## The file
 
@@ -85,21 +85,91 @@ post that isn't live yet shows as plain text until it is.
 
 ## Publishing flow (for automations)
 
-Fully automatic: the automation commits straight to `main`. No branch, no pull request, no
-review step.
+Automations don't write files. They **open a GitHub issue** in the client's repo, and the
+`publish-from-issue` Action (`.github/workflows/publish-from-issue.yml` +
+`scripts/publish-from-issue.mjs`, identical in every site) turns it into the post and its image,
+checks and builds the site, commits both files to `main` in one commit and reports back on the
+issue. Cloudflare deploys the push. No branch, no pull request, no review step.
 
-1. **Validate before sending** (in the automation): slug format, `pubDate` as `YYYY-MM-DD`,
-   category ids from the list above, image present and under 2 MB.
-2. **Commit the image and the post to `main`** — preferably **in one commit** with GitHub's
-   GraphQL `createCommitOnBranch` (both files base64, `expectedHeadOid` = the current `main`
-   commit), so the site never sees a post without its image. With the REST contents API
-   (one file per call) upload the **image first**, then the post.
-3. **Cloudflare builds and deploys `main`** within minutes. A future `pubDate` stays hidden until
-   the first build on or after that date (the weekly `.github/workflows/scheduled-publish.yml`
-   rebuild). `draft: true` never publishes.
+### The issue
 
-Safety net: `check-posts` runs on every push to `main` that touches the blog and fails, with a
-GitHub notification, when a post breaks this contract. A post that fails also fails
-Cloudflare's build, so the live site keeps its last good version until the post is fixed or
-removed. If two posts are sent at the same moment, a stale `expectedHeadOid` (or a 409 from the
-REST API) means `main` moved: re-read it and retry.
+`POST https://api.github.com/repos/Apex-Veterinary-Marketing/<github_repo>/issues` with the
+header `Authorization: Bearer <publisher's token>` and:
+
+- `title`: the post title (for humans; the Action uses `name`).
+- `labels`: `["blog-post"]` (optional; the Action doesn't depend on it).
+- `body`: a fenced `json` block, then a `## Body` heading, then the post in Markdown:
+
+````markdown
+```json
+{
+  "slug": "summer-heat-safety-for-dogs",
+  "name": "Summer Heat Safety for Dogs",
+  "pubDate": "2026-10-07",
+  "draft": false,
+  "titleTag": "Summer Heat Safety for Dogs | Farr West Animal Hospital",
+  "metaDescription": "How to spot heatstroke early and keep walks safe on hot days.",
+  "postSummary": "Hot pavement and humid afternoons are hard on dogs. Here's what to watch for.",
+  "image_url": "https://<allowed-host>/path/image.jpg",
+  "thumbnailAlt": "Dog resting in the shade on a summer lawn",
+  "authorName": "Farr West Animal Hospital",
+  "readTime": "4 min read",
+  "keyTakeaways": ["..."],
+  "sources": [{ "text": "...", "url": "https://..." }],
+  "featured": false
+}
+```
+
+## Body
+
+Opening paragraph...
+
+## First section
+
+...
+````
+
+**Required:** `slug`, `name`, `pubDate`, `image_url`, `thumbnailAlt` and a non-empty body.
+Every other key is optional and is the [field](#fields) of the same name. `postThumbnail` is
+set by the Action from `image_url`. Unknown keys are ignored and listed in the success comment.
+
+**Vet sites don't use blog categories:** the Action ignores `category`. (The field stays in the
+contract for sites whose existing posts already have categories.)
+
+### What the Action checks
+
+- The issue author must be listed in the org variable `BLOG_PUBLISHERS`; any other issue is
+  ignored without a comment.
+- `slug`: lowercase letters, digits and single hyphens, at most 80 characters, and not already
+  published.
+- `pubDate`: `YYYY-MM-DD`, **the day the issue is opened** (UTC) or earlier. The commit is the
+  release, so a future date is rejected. (A hand-written post may still use a future date to
+  schedule itself.)
+- `titleTag` over 60 / `metaDescription` over 160 characters: trimmed at a word boundary, with a
+  warning in the comment.
+- `sources[].url`: `http(s)`.
+- Body: no `<script>`, `<iframe>`, `style=`, HTML event handlers (`onclick=`…) or `javascript:`
+  links. A leading `# Title` line is dropped and any other `#` heading becomes `##`.
+- `image_url`: `https`, a host listed in the org variable `BLOG_IMAGE_HOSTS`, an image, at most
+  15 MB. Saved as `src/assets/blog/<slug>.jpg` (at most 2000 px wide).
+- Then `npm run check:posts` and `astro build` must pass.
+
+### What comes back on the issue
+
+| Outcome | Comment | Label | Issue |
+|---|---|---|---|
+| Published | The live URL (`siteInfo.url` + `BLOG_BASE` + `/<slug>`), live after Cloudflare deploys, usually a few minutes. Draft posts never show. | `published` | closed |
+| Failed | What's wrong and how to fix it (plus the last 40 lines of output if the build failed). | `publish-failed` | stays open: **edit the issue to retry** |
+| Duplicate slug | "Already published at …". Updating an existing post isn't supported yet. | `publish-duplicate` | closed |
+
+`main` only changes with the final commit (`Blog: publish <slug> (#<issue>)`), so a failed
+issue leaves the site untouched. Each issue runs one at a time, and an issue that's already
+closed or labelled `published` is skipped. Different issues can run side by side; if `main`
+moved in the meantime, the Action rebases and retries.
+
+Test an issue body locally, without GitHub:
+`node scripts/publish-from-issue.mjs --dry-run --body-file issue.md --image-file photo.jpg`.
+
+Safety net: `check-posts` also runs on every push to `main` that touches the blog (hand-made
+commits included), and Cloudflare's build fails the same way, so the live site keeps its last
+good version until a broken post is fixed or removed.

@@ -19,6 +19,7 @@ import { getAllSocialLinks } from "../lib/data/socialLinks";
 import { SOCIAL_LABELS } from "../lib/icons/social";
 import { phoneHref } from "../lib/utils/phone";
 import { BLOG_BASE } from "../lib/data/blog";
+import { LISTINGS_ENABLED } from "../lib/data/listings";
 import menuImage from "../assets/brand/marissa-living-room.jpg";
 
 const site = await getSiteInfo();
@@ -31,7 +32,7 @@ const links = [
   { href: "/about", label: "Meet Marissa" },
   { href: "/services", label: "Services", services: true },
   { href: "/builders-developers", label: "Builders & Developers" },
-  { href: "/listings", label: "Listings" },
+  ...(LISTINGS_ENABLED ? [{ href: "/listings", label: "Listings" }] : []),
   { href: "/gather-and-ground", label: "Gather & Ground" },
   { href: BLOG_BASE, label: "Blog" },
   { href: "/contact-us", label: "Contact" },

@@ -4,12 +4,13 @@
 // SearchAction points at it. Noindexed so it never appears in results.
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../components/PageHeaderBanner.astro";
+import { LISTINGS_ENABLED } from "../lib/data/listings";
 ---
 
 <BaseLayout title="Search" description="Search The Malak Estate Group website." noindex>
   <PageHeaderBanner heading="Search" intro="Looking for something specific? Try one of these, or book a call and ask Marissa directly.">
     <ul class="search-links">
-      <li><a href="/listings">Listings</a></li>
+      {LISTINGS_ENABLED && <li><a href="/listings">Listings</a></li>}
       <li><a href="/services">Services</a></li>
       <li><a href="/builders-developers">Builders &amp; Developers</a></li>
       <li><a href="/faq">FAQ</a></li>

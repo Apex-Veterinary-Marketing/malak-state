@@ -17,7 +17,7 @@ import GatherTeaser from "../components/GatherTeaser.astro";
 import BookCall from "../components/BookCall.astro";
 import { getSiteInfo } from "../lib/data/site";
 import { getHomeBrokers } from "../lib/data/brokers";
-import { getFeaturedListings } from "../lib/data/listings";
+import { getFeaturedListings, LISTINGS_ENABLED } from "../lib/data/listings";
 import { getAllTestimonials } from "../lib/data/testimonials";
 import heroImage from "../assets/brand/marissa-doorway-wide.jpg";
 import buyingImage from "../assets/placeholders/interior-living.jpg";
@@ -63,7 +63,7 @@ const about = [{ "@id": "#business" }, ...(broker ? [{ "@id": `/agents/${broker.
     image={heroImage}
     imageAlt="Marissa Lubera opening the double front doors of a home"
     primary={{ text: site.bookingLabel || "Book a call", href: site.bookingUrl || "/schedule" }}
-    secondary={{ text: "View listings", href: "/listings" }}
+    secondary={LISTINGS_ENABLED ? { text: "View listings", href: "/listings" } : undefined}
   />
 
   <MissionQuote quote="Honest guidance, clear communication, and an advocate who puts *your* interests first." label="Our mission" />

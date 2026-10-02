@@ -9,6 +9,7 @@ import { getAllSocialLinks } from "../lib/data/socialLinks";
 import { SOCIAL_LABELS } from "../lib/icons/social";
 import { phoneHref } from "../lib/utils/phone";
 import { BLOG_BASE } from "../lib/data/blog";
+import { LISTINGS_ENABLED } from "../lib/data/listings";
 import ReviewsBand from "./ReviewsBand.astro";
 import { countiesSentence } from "../lib/utils/areas";
 
@@ -40,7 +41,7 @@ const countiesText = countiesSentence(site.serviceAreaOfCoverage);
       <ul>
         <li><a href="/about">Meet Marissa</a></li>
         <li><a href="/builders-developers">Builders &amp; Developers</a></li>
-        <li><a href="/listings">Listings</a></li>
+        {LISTINGS_ENABLED && <li><a href="/listings">Listings</a></li>}
         <li><a href="/gather-and-ground">Gather &amp; Ground</a></li>
         <li><a href={BLOG_BASE}>Blog</a></li>
         <li><a href="/photo-gallery">Photo Gallery</a></li>

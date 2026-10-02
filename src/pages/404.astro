@@ -2,15 +2,16 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../components/PageHeaderBanner.astro";
 import { getSiteInfo } from "../lib/data/site";
+import { LISTINGS_ENABLED } from "../lib/data/listings";
 
 const site = await getSiteInfo();
 ---
 
-<BaseLayout title="Page Not Found" description="This page has moved or no longer exists. Find listings, services, or book a call with Marissa Lubera." noindex>
+<BaseLayout title="Page Not Found" description={`This page has moved or no longer exists. Find ${LISTINGS_ENABLED ? "listings, " : ""}services, or book a call with Marissa Lubera.`} noindex>
   <PageHeaderBanner heading="This page has *moved.*" intro="The page you were looking for isn't here. These will get you back on track.">
     <div class="not-found__links">
       <a class="btn btn--cta" href={site.bookingUrl}>{site.bookingLabel}</a>
-      <a class="btn btn--line" href="/listings">View listings</a>
+      {LISTINGS_ENABLED && <a class="btn btn--line" href="/listings">View listings</a>}
       <a class="btn btn--line" href="/">Home</a>
     </div>
   </PageHeaderBanner>

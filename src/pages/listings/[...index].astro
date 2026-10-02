@@ -2,15 +2,24 @@
 // Listings: IDX search slot (src/data/idx.ts, renders nothing until enabled),
 // then the hand-entered listings collection with client-side status filters,
 // or an empty state when there are none.
+//
+// Served at /listings. It's a rest route ([...index]) rather than index.astro
+// only so the page can be left out of the build: with LISTINGS_ENABLED false
+// (src/lib/data/listings.ts) getStaticPaths returns nothing, so /listings
+// isn't generated. With it true, the one path { index: undefined } is /listings.
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHeaderBanner from "../../components/PageHeaderBanner.astro";
 import IdxEmbed from "../../components/IdxEmbed.astro";
 import ListingGrid from "../../components/ListingGrid.astro";
 import BookCall from "../../components/BookCall.astro";
-import { getAllListings } from "../../lib/data/listings";
+import { getAllListings, LISTINGS_ENABLED } from "../../lib/data/listings";
 import { getSiteInfo } from "../../lib/data/site";
 import { listingTitle } from "../../lib/utils/format";
 import headerImage from "../../assets/placeholders/house-gable-dusk.jpg";
+
+export function getStaticPaths() {
+  return LISTINGS_ENABLED ? [{ params: { index: undefined } }] : [];
+}
 
 const site = await getSiteInfo();
 const listings = await getAllListings();

@@ -133,6 +133,11 @@ const graph = normalizeIds(
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preload" href={manropeLatin400} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={playfairLatin400} as="font" type="font/woff2" crossorigin />
+    {site.gtmId && !isPreviewBuild && (
+      <script is:inline define:vars={{ gtmId: site.gtmId }}>
+        (function (w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != "dataLayer" ? "&l=" + l : ""; j.async = true; j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl; f.parentNode.insertBefore(j, f); })(window, document, "script", "dataLayer", gtmId);
+      </script>
+    )}
     <SeoHead
       title={finalTitle}
       description={finalDescription}
@@ -149,6 +154,9 @@ const graph = normalizeIds(
     <MotionLayer />
   </head>
   <body>
+    {site.gtmId && !isPreviewBuild && (
+      <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${site.gtmId}`} height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
+    )}
     <a class="skip-link" href="#main-content">Skip to content</a>
     <Header />
     <main id="main-content">

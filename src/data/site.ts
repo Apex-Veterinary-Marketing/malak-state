@@ -78,6 +78,8 @@ export interface SiteInfo {
   brokerageName?: string; // the supervising brokerage, shown in header/footer and as schema parentOrganization (Ohio license law: brokerage name in advertising)
   brokerageLicense?: string; // brokerage license number, shown in the footer once supplied
   calendlyUrl?: string; // booking scheduler; /schedule embeds it (CalendlyEmbed)
+  // Google Tag Manager container id (e.g. "GTM-XXXXXXX"). BaseLayout loads it when set.
+  gtmId?: string;
 }
 
 // The Malak Estate Group — values from the client's onboarding form (2026-09-18)
@@ -108,6 +110,7 @@ export const siteInfo: SiteInfo = {
   // How'd We Do? widget's review link. The client has no Facebook page, so there's no
   // facebookReviewsLink and no Facebook social link.
   googleReviewsLink: "https://www.google.com/search?kgmid=/g/11n45_26qv&q=The+Malak+Estate+Group-+Marissa+Lubera+REALTOR%C2%AE",
+  gtmId: "GTM-WM9FCX28",
   url: "https://themalakestategroup.com", // apex is canonical; www 301s here (GitHub Pages, or a Cloudflare Redirect Rule in the fallback; see docs/launch/)
   // logoColor / logoWhite: requested from client — Header/Footer render a text wordmark until then
 };

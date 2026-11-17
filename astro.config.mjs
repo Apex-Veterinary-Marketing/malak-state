@@ -97,6 +97,9 @@ const REDIRECTS = {
     '/book-online': '/schedule',
     '/gatherandground': '/gather-and-ground',
     '/copy-of-home': '/',
+    // Off-topic posts the blog automation published by mistake (Nov 2026), since removed.
+    '/blog/preparing-your-dog-or-cat-for-holiday-gatherings': '/blog',
+    '/blog/no-blog-topic-generated-practice-is-not-veterinary-or-animal-focused': '/blog',
 };
 
 export default defineConfig({

@@ -94,7 +94,7 @@ export const siteInfo: SiteInfo = {
   serviceAreaOfCoverage: "Cuyahoga County, Medina County, Summit County, Stark County, Lake County, Lorain County",
   businessSchemaType: "RealEstateAgent",
   businessDescription:
-    "The Malak Estate Group is led by REALTOR® Marissa Lubera, guiding buyers, sellers, investors and builders across Greater Cleveland with clarity, preparation and thoughtful strategy.",
+    "The Malak Estate Group is led by REALTOR® Marissa Lubera, guiding buyers, sellers, investors and builders across Northeast Ohio with clarity, preparation and thoughtful strategy.",
   brokerageName: "Real of Ohio",
   // brokerageLicense: requested from client
   calendlyUrl: "https://calendly.com/marissa-malakestates/30min",

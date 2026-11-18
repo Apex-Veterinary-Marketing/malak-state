@@ -70,11 +70,11 @@ For sellers, this is the simplest reason to complete the form before you list. H
 
 The form itself says it isn't a warranty and isn't a substitute for an inspection.<sup class="cite"><a href="#source-2">[2]</a></sup> A seller can only disclose what they know, and plenty of issues go unnoticed by people who live with them every day. Buyers should still get a professional home inspection, and consider radon, sewer line or other specialized inspections when the house calls for them.
 
-## Other disclosures in Greater Cleveland
+## Other disclosures in Northeast Ohio
 
 The state form isn't the only disclosure you'll see.
 
-- **Lead-based paint.** For homes built before 1978, which describes much of Greater Cleveland, federal law requires a separate lead disclosure, and buyers get a 10-day window to test for lead unless they waive it in writing.<sup class="cite"><a href="#source-4">[4]</a></sup>
+- **Lead-based paint.** For homes built before 1978, which describes much of Northeast Ohio, federal law requires a separate lead disclosure, and buyers get a 10-day window to test for lead unless they waive it in writing.<sup class="cite"><a href="#source-4">[4]</a></sup>
 - **Point-of-sale reports.** Suburbs like Cleveland Heights require a city inspection before a sale, and the resulting report lists violations the buyer or seller will need to address.<sup class="cite"><a href="#source-5">[5]</a></sup>
 
 ## Questions about a disclosure?

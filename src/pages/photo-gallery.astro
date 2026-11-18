@@ -25,11 +25,11 @@ const graph = photos.length
 
 <BaseLayout
   title="Photo Gallery"
-  description="Photos from The Malak Estate Group: homes, client moments, and Gather & Ground community events across Greater Cleveland."
+  description="Photos from The Malak Estate Group: homes, client moments, and Gather & Ground community events across Northeast Ohio."
   schemaGraph={graph}
   webPage={{ "@type": "CollectionPage", ...(photos.length ? { mainEntity: { "@id": "#gallery" } } : {}) }}
 >
-  <PageHeaderBanner heading="Photo *gallery*" intro="Homes, client moments and community gatherings across Greater Cleveland." image={headerImage} imageAlt="Marissa Lubera seated in a white-paneled studio" imagePosition="50% 55%" />
+  <PageHeaderBanner heading="Photo *gallery*" intro="Homes, client moments and community gatherings across Northeast Ohio." image={headerImage} imageAlt="Marissa Lubera seated in a white-paneled studio" imagePosition="50% 55%" />
 
   <section class="pg">
     <div class="container">

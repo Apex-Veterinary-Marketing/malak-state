@@ -6,7 +6,6 @@
 import { Image } from "astro:assets";
 import { getSiteInfo } from "../lib/data/site";
 import { phoneHref } from "../lib/utils/phone";
-import { countiesSentence } from "../lib/utils/areas";
 import portrait from "../assets/brand/marissa-living-room.jpg";
 
 export interface Props {
@@ -20,7 +19,9 @@ const {
   home = false,
 } = Astro.props;
 const site = await getSiteInfo();
-const counties = countiesSentence(site.serviceAreaOfCoverage);
+// Service areas get their own labeled block (client asked for them to be easy
+// to spot): region name, then every county from site.serviceAreaOfCoverage.
+const counties = (site.serviceAreaOfCoverage || "").split(",").map((s) => s.trim()).filter(Boolean);
 ---
 
 <section class="book" id="book" data-home={home ? "book" : undefined}>
@@ -36,7 +37,15 @@ const counties = countiesSentence(site.serviceAreaOfCoverage);
         {site.email && <li><i class="icon-mail" aria-hidden="true"></i><a href={`mailto:${site.email}`}>{site.email}</a></li>}
         <li><i class="icon-hours" aria-hidden="true"></i><span>Mon to Sun, 8am to 8pm. Evenings by appointment.</span></li>
       </ul>
-      {counties && <p class="book__counties">Serving {counties}.</p>}
+      {counties.length > 0 && (
+        <div class="book__areas">
+          <p class="book__areas-label">Areas we serve</p>
+          <p class="book__areas-region">{site.cityState}</p>
+          <ul class="book__areas-list" aria-label={`Counties served in ${site.cityState}`}>
+            {counties.map((c) => <li>{c}</li>)}
+          </ul>
+        </div>
+      )}
     </div>
     <Image src={portrait} alt="Marissa Lubera, REALTOR®, smiling in a bright living room" class="book__image" data-reveal widths={[480, 800]} sizes="(max-width: 900px) 100vw, 40vw" />
   </div>
@@ -53,7 +62,12 @@ const counties = countiesSentence(site.serviceAreaOfCoverage);
   .book__list li { display: flex; gap: var(--space-md); align-items: center; }
   .book__list i { font-size: 1.3rem; color: var(--cta); }
   .book__list a { color: var(--white); text-decoration: none; }
-  .book__counties { margin: var(--space-xl) 0 0; padding-block-start: var(--space-lg); border-block-start: 1px solid var(--hairline-on-dark); font-size: var(--font-size-sm); }
+  .book__areas { margin: var(--space-xl) 0 0; padding-block-start: var(--space-lg); border-block-start: 1px solid var(--hairline-on-dark); }
+  .book__areas-label { margin: 0; font-size: var(--font-size-xs); font-weight: 600; letter-spacing: var(--letter-spacing-label); text-transform: uppercase; color: var(--cta); }
+  .book__areas-region { margin: var(--space-xs) 0 0; font: 400 var(--font-size-2xl)/1.2 var(--font-heading); color: var(--white); }
+  .book__areas-list { list-style: none; margin: var(--space-md) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, max-content); gap: var(--space-sm) var(--space-xl); }
+  .book__areas-list li { padding-inline-start: var(--space-md); border-inline-start: 1px solid var(--cta); line-height: 1.2; }
+  @media (max-width: 560px) { .book__areas-list { grid-template-columns: repeat(2, max-content); gap: var(--space-sm) var(--space-lg); } }
   .book__image { width: 100%; max-width: 30rem; justify-self: end; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 35%; }
   @media (max-width: 900px) { .book__grid { grid-template-columns: 1fr; } .book__image { justify-self: start; aspect-ratio: 4 / 3; } }
 </style>

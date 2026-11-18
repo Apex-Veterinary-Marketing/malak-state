@@ -1,13 +1,13 @@
 ---
 name: "Selling Your Home"
-customName: "Selling Your Home in Greater Cleveland"
+customName: "Selling Your Home in Northeast Ohio"
 pageHeaderImage: "../../assets/placeholders/house-brick.jpg"
 serviceCategory: ["selling"]
 featured: true
 headline: "Selling with *strategy*, not guesswork"
 featuredText: "Pricing, presentation and preparation working together, so your home is positioned and marketed thoughtfully."
 audience: "Home sellers"
-metaTitle: "Sell Your Home in Greater Cleveland"
+metaTitle: "Sell Your Home in Northeast Ohio"
 metaDescription: "Pricing, preparation and marketing tailored to your home. Sell in Northeast Ohio with an agent who explains every step."
 contentBlocks:
   - image: "../../assets/placeholders/interior-warm.jpg"

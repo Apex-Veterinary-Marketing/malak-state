@@ -67,7 +67,7 @@ Not ready to buy yet? The Ohio Treasurer's Homebuyer Plus program lets Ohio resi
 
 ## Budget for more than the down payment
 
-A realistic budget includes closing costs, a home inspection, moving costs and a cushion for repairs in your first year. Property taxes deserve a close look in Greater Cleveland, because they can vary a lot between neighboring cities and school districts.
+A realistic budget includes closing costs, a home inspection, moving costs and a cushion for repairs in your first year. Property taxes deserve a close look in Northeast Ohio, because they can vary a lot between neighboring cities and school districts.
 
 Newer and fully renovated homes inside Cleveland often carry a city tax abatement. For single-family homes, it can cover 85% to 100% of the increase in assessed taxes from the new construction or renovation, depending on where the home is.<sup class="cite"><a href="#source-8">[8]</a></sup> Before you fall in love with an abated home, ask how many years remain and what the tax bill will be once it ends.
 
@@ -79,7 +79,7 @@ Several Cuyahoga County suburbs require a city inspection before a home can be s
 
 ### Older homes and lead paint
 
-Much of Greater Cleveland's housing is decades old, which is part of its charm. For any home built before 1978, sellers must disclose known lead-based paint and hazards, and you get a 10-day window to have the home tested for lead unless you waive it in writing.<sup class="cite"><a href="#source-7">[7]</a></sup>
+Much of Northeast Ohio's housing is decades old, which is part of its charm. For any home built before 1978, sellers must disclose known lead-based paint and hazards, and you get a 10-day window to have the home tested for lead unless you waive it in writing.<sup class="cite"><a href="#source-7">[7]</a></sup>
 
 ## Follow the steps from first call to closing
 

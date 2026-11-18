@@ -3,10 +3,10 @@ name: "Luxury Homes"
 customName: "Luxury Homes in Northeast Ohio"
 pageHeaderImage: "../../assets/placeholders/house-modern-dusk.jpg"
 serviceCategory: ["specialties"]
-featuredText: "Discreet, high-touch representation for luxury buyers and sellers across Greater Cleveland."
+featuredText: "Discreet, high-touch representation for luxury buyers and sellers across Northeast Ohio."
 audience: "Luxury home buyers and sellers"
 metaTitle: "Luxury Real Estate in Northeast Ohio"
-metaDescription: "Discreet, high-touch representation for luxury buyers and sellers across Greater Cleveland, at a luxury level of service."
+metaDescription: "Discreet, high-touch representation for luxury buyers and sellers across Northeast Ohio, at a luxury level of service."
 contentBlocks:
   - image: "../../assets/placeholders/interior-bath.jpg"
     body: |
@@ -19,7 +19,7 @@ contentBlocks:
   - image: "../../assets/placeholders/house-white-modern.jpg"
     body: |
       <h2>Who this is for</h2>
-      <p>Buyers and sellers of high-end homes, estates and custom new construction across Greater Cleveland, and clients who value privacy and a single point of contact from start to finish.</p>
+      <p>Buyers and sellers of high-end homes, estates and custom new construction across Northeast Ohio, and clients who value privacy and a single point of contact from start to finish.</p>
   - style: "cta"
     body: |
       <h2>Buying or selling a luxury home?</h2>
@@ -34,5 +34,5 @@ faqs:
   - question: "Should I get a pre-listing inspection?"
     answer: "<p>For many high-end homes it's worth it: you learn about issues early and can address them on your schedule. Choose an Ohio-licensed home inspector. Source: <a href=\"https://com.ohio.gov/divisions-and-programs/real-estate-and-professional-licensing/home-inspectors\" rel=\"noopener\">Ohio Department of Commerce, Home Inspectors</a>.</p>"
   - question: "Which areas do you cover?"
-    answer: "<p>Cuyahoga, Medina, Summit, Stark, Lake and Lorain counties across Greater Cleveland and Northeast Ohio.</p>"
+    answer: "<p>Cuyahoga, Medina, Summit, Stark, Lake and Lorain counties across Northeast Ohio.</p>"
 ---

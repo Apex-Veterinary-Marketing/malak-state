@@ -1,12 +1,12 @@
 ---
 name: "Senior Downsizing"
-customName: "Senior Downsizing in Greater Cleveland"
+customName: "Senior Downsizing in Northeast Ohio"
 pageHeaderImage: "../../assets/brand/marissa-living-room.jpg"
 serviceCategory: ["selling"]
 featuredText: "A patient, well-organized plan for moving from a longtime home into the right next one."
 audience: "Seniors and their families"
-metaTitle: "Senior Downsizing in Greater Cleveland"
-metaDescription: "Moving to a smaller home after many years? A patient, well-organized downsizing plan for Greater Cleveland seniors and their families."
+metaTitle: "Senior Downsizing in Northeast Ohio"
+metaDescription: "Moving to a smaller home after many years? A patient, well-organized downsizing plan for Northeast Ohio seniors and their families."
 contentBlocks:
   - image: "../../assets/placeholders/interior-warm.jpg"
     body: |

@@ -16,7 +16,7 @@ secondaryImage: "../../assets/brand/marissa-doorway.jpg"
 imageAltText: "Marissa Lubera, Realtor, seated in a velvet armchair"
 showOnHome: true
 order: 0
-bioShort: "REALTOR® and real estate investor who spent years full-time with a national builder, guiding buyers, sellers, investors and builders across Greater Cleveland."
+bioShort: "REALTOR® and real estate investor who spent years full-time with a national builder, guiding buyers, sellers, investors and builders across Northeast Ohio."
 bio: |
   <p>I created The Malak Estate Group to provide a real estate experience rooted in clarity, preparation, and thoughtful strategy.</p>
   <p>Before stepping into general real estate, I worked full-time for a national builder, where I was responsible for managing listings, guiding buyers through complex timelines, and ensuring each home was positioned and marketed thoughtfully. That experience shaped the way I approach real estate today. I learned how pricing, presentation, financing, and communication all work together to influence outcomes.</p>

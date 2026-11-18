@@ -1,19 +1,19 @@
 ---
 name: "Buying a Home"
-customName: "Buying a Home in Greater Cleveland"
+customName: "Buying a Home in Northeast Ohio"
 pageHeaderImage: "../../assets/placeholders/interior-living.jpg"
 serviceCategory: ["buying"]
 featured: true
 headline: "A clear plan for buying with *confidence*"
 featuredText: "From first conversations to closing day, a plan that keeps buying informed and manageable at every step."
 audience: "Home buyers"
-metaTitle: "Buy a Home in Greater Cleveland"
+metaTitle: "Buy a Home in Northeast Ohio"
 metaDescription: "A clear, personal plan for buying a home in Cuyahoga, Medina and Summit counties, from pre-approval to closing day."
 contentBlocks:
   - image: "../../assets/placeholders/house-colonial.jpg"
     body: |
       <h2>A plan built around your goals</h2>
-      <p>Buying a home is a major decision. My role is to guide you through it with clarity, honesty, and a plan that aligns with your goals. Greater Cleveland offers very different ways to live, from walkable neighborhoods like Ohio City, Tremont and Gordon Square to quiet suburbs in Medina and Summit counties, historic homes and new construction.</p>
+      <p>Buying a home is a major decision. My role is to guide you through it with clarity, honesty, and a plan that aligns with your goals. Northeast Ohio offers very different ways to live, from walkable neighborhoods like Ohio City, Tremont and Gordon Square to quiet suburbs in Medina and Summit counties, historic homes and new construction.</p>
       <p>Many buyers assume certain options are out of reach simply because they haven't been shown otherwise. I take the time to break down numbers, explain scenarios, and walk through choices so you feel empowered rather than overwhelmed.</p>
   - image: "../../assets/placeholders/interior-warm.jpg"
     body: |

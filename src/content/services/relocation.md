@@ -7,12 +7,12 @@ featured: true
 featuredText: "Local guidance on neighborhoods, commutes and homes across six counties, handled remotely when you need it."
 audience: "People relocating to Northeast Ohio"
 metaTitle: "Relocating to Cleveland, Ohio"
-metaDescription: "Moving to Greater Cleveland? Local guidance on neighborhoods, commutes and homes across six counties, handled remotely when you need it."
+metaDescription: "Moving to Northeast Ohio? Local guidance on neighborhoods, commutes and homes across six counties, handled remotely when you need it."
 contentBlocks:
   - image: "../../assets/placeholders/community-friends.jpg"
     body: |
-      <h2>Moving to Greater Cleveland, without the guesswork</h2>
-      <p>Relocating means choosing a home in a place you may only know from a map. Greater Cleveland and Northeast Ohio cover lake towns, historic inner-ring suburbs, rural acreage and fast-growing new-construction communities across Cuyahoga, Medina, Summit, Stark, Lake and Lorain counties. I help you narrow that down to the places that fit your commute, your routines and your budget, whether that's a walkable Cleveland neighborhood like Ohio City, Tremont, Detroit Shoreway, Gordon Square, Battery Park or Downtown, or a quieter suburb.</p>
+      <h2>Moving to Northeast Ohio, without the guesswork</h2>
+      <p>Relocating means choosing a home in a place you may only know from a map. Northeast Ohio covers lake towns, historic inner-ring suburbs, rural acreage and fast-growing new-construction communities across Cuyahoga, Medina, Summit, Stark, Lake and Lorain counties. I help you narrow that down to the places that fit your commute, your routines and your budget, whether that's a walkable Cleveland neighborhood like Ohio City, Tremont, Detroit Shoreway, Gordon Square, Battery Park or Downtown, or a quieter suburb.</p>
   - image: "../../assets/brand/detail-laptop-phone-held.jpg"
     body: |
       <h2>What to expect</h2>
@@ -32,7 +32,7 @@ faqs:
   - question: "How do property taxes work in Ohio?"
     answer: "<p>Property taxes are set locally, so they vary a lot by city and school district. Values are reappraised every six years, with an update in the third year. I'll show you the actual tax bill for each home you consider. Source: <a href=\"https://tax.ohio.gov/government/real-state/reappraisal-and-triennial-update\" rel=\"noopener\">Ohio Department of Taxation, Reappraisal and Update Schedule</a>.</p>"
   - question: "Which areas do you serve?"
-    answer: "<p>Cuyahoga, Medina, Summit, Stark, Lake and Lorain counties, including Greater Cleveland and the surrounding suburbs.</p>"
+    answer: "<p>Cuyahoga, Medina, Summit, Stark, Lake and Lorain counties, including Cleveland and its surrounding suburbs.</p>"
   - question: "How do I choose a neighborhood from out of state?"
     answer: "<p>Start with the non-negotiables: commute, school district if it matters to you, lot size and budget. I'll narrow it to a short list, then we'll look at real homes in each so you can compare what your budget buys in each area.</p>"
   - question: "Can you help me sell my current home too?"

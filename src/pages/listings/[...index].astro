@@ -38,12 +38,12 @@ const graph = listings.length
 
 <BaseLayout
   title="Homes for Sale in Northeast Ohio"
-  description="Featured homes for sale across Greater Cleveland from The Malak Estate Group. Schedule a showing or book a call with Marissa Lubera."
+  description="Featured homes for sale across Northeast Ohio from The Malak Estate Group. Schedule a showing or book a call with Marissa Lubera."
   schemaGraph={graph}
   webPage={{ "@type": "CollectionPage", ...(listings.length ? { mainEntity: { "@id": "#listings" } } : {}) }}
   breadcrumb="Listings"
 >
-  <PageHeaderBanner heading="Featured *listings*" intro="Homes Marissa is proud to represent across Greater Cleveland." image={headerImage} imageAlt="Gabled home with warm lights at dusk" />
+  <PageHeaderBanner heading="Featured *listings*" intro="Homes Marissa is proud to represent across Northeast Ohio." image={headerImage} imageAlt="Gabled home with warm lights at dusk" />
 
   <section class="listings">
     <div class="container">

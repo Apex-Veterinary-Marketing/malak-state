@@ -7,7 +7,7 @@ featured: true
 featuredText: "Years inside a national builder's sales office, now on your side of the table from lot selection to final walkthrough."
 audience: "New construction home buyers"
 metaTitle: "New Construction Homes in Northeast Ohio"
-metaDescription: "Buying a new build? Marissa's builder-side sales experience helps you with lots, plans, upgrades and contracts across Greater Cleveland."
+metaDescription: "Buying a new build? Marissa's builder-side sales experience helps you with lots, plans, upgrades and contracts across Northeast Ohio."
 contentBlocks:
   - image: "../../assets/placeholders/house-modern-dusk.jpg"
     body: |
@@ -16,7 +16,7 @@ contentBlocks:
   - image: "../../assets/placeholders/interior-stairs.jpg"
     body: |
       <h2>What to expect</h2>
-      <p>We start by comparing communities and builders across Greater Cleveland, including what's included as standard and what quietly adds up. I help you choose a lot and plan, prioritize upgrades that hold value, and read the builder's purchase agreement carefully before you sign.</p>
+      <p>We start by comparing communities and builders across Northeast Ohio, including what's included as standard and what quietly adds up. I help you choose a lot and plan, prioritize upgrades that hold value, and read the builder's purchase agreement carefully before you sign.</p>
       <p>During the build I stay involved: timelines, selections, inspections at key stages and the final walkthrough, so the home you close on is the home you were promised.</p>
   - image: "../../assets/placeholders/house-white-modern.jpg"
     body: |

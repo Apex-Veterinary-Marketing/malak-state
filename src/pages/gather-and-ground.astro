@@ -26,7 +26,7 @@ const graph: Record<string, any>[] = upcoming.map((e) => ({
   endDate: e.data.endDate?.toISOString(),
   eventStatus: `https://schema.org/${STATUS_URL[e.data.status]}`,
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-  location: { "@type": "Place", name: e.data.venueName || "Greater Cleveland", address: e.data.venueAddress || "Northeast Ohio" },
+  location: { "@type": "Place", name: e.data.venueName || "Northeast Ohio", address: e.data.venueAddress || "Northeast Ohio" },
   organizer: { "@id": "#business" },
   image: e.data.image ? new URL(e.data.image.src, Astro.site).href : undefined,
 }));

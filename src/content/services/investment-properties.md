@@ -1,13 +1,13 @@
 ---
 name: "Investment Properties"
-customName: "Investment Properties in Greater Cleveland"
+customName: "Investment Properties in Northeast Ohio"
 headline: "Investment properties, approached with *strategy*"
 pageHeaderImage: "../../assets/placeholders/house-brick.jpg"
 serviceCategory: ["specialties"]
 featuredText: "Practical, informed guidance for your first investment or a growing portfolio, from a REALTOR® who invests herself."
 audience: "Real estate investors"
-metaTitle: "Investment Properties in Greater Cleveland"
-metaDescription: "Buying an investment property in Greater Cleveland? Practical guidance on numbers, financing and long-term potential from a REALTOR® who invests herself."
+metaTitle: "Investment Properties in Northeast Ohio"
+metaDescription: "Buying an investment property in Northeast Ohio? Practical guidance on numbers, financing and long-term potential from a REALTOR® who invests herself."
 contentBlocks:
   - image: "../../assets/placeholders/house-colonial.jpg"
     body: |
@@ -21,7 +21,7 @@ contentBlocks:
   - image: "../../assets/placeholders/house-gable-dusk.jpg"
     body: |
       <h2>Who this is for</h2>
-      <p>Whether you're considering your first investment or expanding an existing portfolio, I help clients think through opportunities clearly and strategically so they can move forward with confidence. That includes rentals across Greater Cleveland, from walkable city neighborhoods to the surrounding counties.</p>
+      <p>Whether you're considering your first investment or expanding an existing portfolio, I help clients think through opportunities clearly and strategically so they can move forward with confidence. That includes rentals across Northeast Ohio, from walkable city neighborhoods to the surrounding counties.</p>
   - style: "cta"
     body: |
       <h2>Thinking about your first investment property?</h2>

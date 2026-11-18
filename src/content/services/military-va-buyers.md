@@ -6,12 +6,12 @@ serviceCategory: ["buying"]
 featuredText: "A Realtor who knows VA timelines, appraisals and offers, and advocates for you."
 audience: "Veterans, service members and military families"
 metaTitle: "VA Home Buyers in Northeast Ohio"
-metaDescription: "Buying with a VA loan in Greater Cleveland? A Realtor who knows VA timelines, appraisals and offers, and advocates for you."
+metaDescription: "Buying with a VA loan in Northeast Ohio? A Realtor who knows VA timelines, appraisals and offers, and advocates for you."
 contentBlocks:
   - image: "../../assets/placeholders/house-brick.jpg"
     body: |
       <h2>Thank you for your service. Let's find your home.</h2>
-      <p>A VA-backed loan is one of the strongest benefits available to veterans and service members, but it has its own steps. I help military buyers across Greater Cleveland use it well, from choosing the right homes to writing offers that sellers take seriously.</p>
+      <p>A VA-backed loan is one of the strongest benefits available to veterans and service members, but it has its own steps. I help military buyers across Northeast Ohio use it well, from choosing the right homes to writing offers that sellers take seriously.</p>
   - image: "../../assets/placeholders/interior-living.jpg"
     body: |
       <h2>What to expect</h2>
